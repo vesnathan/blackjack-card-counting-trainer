@@ -1,0 +1,21 @@
+.swiper {
+  width: calc(100% - 3em);
+  height: 100%;
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  bottom: 0;
+  transform: translate(calc(100% + 3em));
+  transition: 0.5s;
+  padding: 35px;
+  z-index: 1003;
+}
+
+.swiperOpen {
+  transform: translate(calc(0% + 3em));
+  transition: 0.5s;
+}
+
+.swiperHide {
+  transform: translate(calc(100% + 6em));
+  transition: 0.5s;
+}

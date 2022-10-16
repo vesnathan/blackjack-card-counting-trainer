@@ -1,0 +1,53 @@
+.popup {
+  background-color: rgba(0,0,0,.5);
+  width: 100%;
+  height: 100%;
+  margin-left: auto;
+  z-index: 1002;
+  display: none;
+}
+.popupTitle {
+  height: 30px;
+  background-color: rgb(58, 136, 69);
+  color: rgb(255,255,255);
+  font-weight: bold;
+  text-align: center;
+  font-size: 100%;
+  line-height: 30px;
+}
+.character {
+  position: absolute;
+  width: 35%;
+  bottom: 0;
+  z-index: 999;
+}
+.character img {
+  width: 100%;
+}
+.true {
+ display: block;
+}
+.messageHolder {
+  background-color: rgba(0,0,0,.7);  position: absolute;
+  margin-top:10%;
+  min-width: 55%;
+  height: 70%;
+  top: 0;
+  right: 5%;
+  z-index: 1000;
+}
+.popupMessage {
+  color: rgb(255,255,255);
+  padding: 20px;
+  font-size: 100%;
+  white-space: pre-wrap;
+  padding-top: 30px;
+}
+.popupForm {
+  color: rgb(255,255,255);
+  padding: 20px;
+  font-size: 100%;
+  white-space: pre-wrap;
+  overflow: hidden;
+  padding-top: 30px;
+}

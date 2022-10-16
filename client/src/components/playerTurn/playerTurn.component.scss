@@ -1,0 +1,8 @@
+.playerTurn {
+  position: absolute;
+  z-index: 10000;
+}
+.playerTurn img  {
+  width: 100px;
+  filter: brightness(0) invert(1);
+}

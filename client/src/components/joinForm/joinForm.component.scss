@@ -1,0 +1,22 @@
+input {
+  height: 40px;
+  margin-bottom: 10px;
+}
+.joinFormErrorWrapper {
+  position: relative;
+}
+.joinFormError {
+  color: white;
+  background-color: rgb(255, 47, 47);
+  font-size: 10px;
+  padding: 4px;
+  display: inline-block;
+  position: absolute;
+  top: -55px;
+  right: -10px;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(62, 62, 62);
+  padding-left: 10px;
+
+}

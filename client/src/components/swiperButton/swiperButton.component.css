@@ -1,0 +1,42 @@
+.swiperButton {
+  position: absolute;
+  left: -1.9rem;
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 5px;
+  width: 1.9rem;
+  height: 33.33%;
+  -ms-writing-mode: tb-lr;
+      writing-mode: vertical-lr;
+  line-height: 1.9rem;
+  padding: 0.8rem 0;
+  text-align: center;
+  cursor: pointer;
+}
+@media screen and (min-width: 480px) {
+  .swiperButton {
+    font-size: 8px;
+  }
+}
+@media screen and (min-width: 640px) {
+  .swiperButton {
+    font-size: 11px;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .swiperButton {
+    font-size: 14px;
+  }
+}
+
+.top {
+  top: 0%;
+}
+
+.middle {
+  top: 33.33%;
+}
+
+.bottom {
+  top: 66.66%;
+}/*# sourceMappingURL=swiperButton.component.css.map */

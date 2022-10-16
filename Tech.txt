@@ -1,0 +1,16 @@
+React
+TypeScript
+Sass - SCSS
+Apollo/GraphQL
+MongoDB/Mongoose
+MaterialUI
+Styled Components
+React Transition Group
+ESLint - Air BnB
+Husky
+bcrypt
+JSON Web Token
+PWA
+Stripe
+
+

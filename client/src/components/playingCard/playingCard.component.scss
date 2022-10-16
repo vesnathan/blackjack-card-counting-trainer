@@ -1,0 +1,171 @@
+$pip-font-sizes: (
+  null : 5px,
+  480px : 7px,
+  640px : 10px,
+  1024px: 20px
+);
+
+$corner-pip-font-sizes: (
+  null : 3px,
+  480px : 5px,
+  640px : 7px,
+  1024px: 15px
+);
+
+$ace-font-sizes: (
+  null : 9px,
+  480px : 15px,
+  640px : 21px,
+  1024px: 45px
+);
+
+@mixin font-size($fs-map) {
+  @each $fs-breakpoint, $fs-font-size in $fs-map {
+    @if $fs-breakpoint == null {
+      font-size: $fs-font-size;
+    }
+    @else {
+      @media screen and (min-width: $fs-breakpoint) {
+        font-size: $fs-font-size;
+      }
+    }
+  }
+}
+
+
+
+
+.playingCard {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255,255,255);
+  border-radius: .5em;
+  position: absolute;
+  border: 1px solid rgba(0,0,0,.2);
+
+}
+.playingCardWrapper {
+
+
+  width: 100%;
+  height: 100%;
+}
+.playingCardWrapperHolder {
+  position:absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+.H, .D {
+  color: red;
+}
+.S, .C {
+  color: rgb(0, 0, 0);
+}
+.tl {
+  position: absolute;
+  top: .2em;
+  left: .2em;
+}
+.tr {
+  position: absolute;
+  top: .2em;
+  right: .2em;
+}
+.bl {
+  position: absolute;
+  bottom: .2em;
+  left: .2em;
+  transform: rotate(180deg); 
+}
+.br {
+  position: absolute;
+  bottom: .2em;
+  right: .2em;
+  transform: rotate(180deg); 
+}
+
+// this the holder for the corner markings
+.cardPipValueHolder {
+  @include font-size($corner-pip-font-sizes);
+  text-align: center;
+  font-weight: bold;
+  line-height: 80%;
+}
+.pip {
+  position: absolute;
+  @include font-size($pip-font-sizes);
+  margin: auto;
+}
+.pipWrapper {
+  position: relative;
+  width: 25%;
+  height: 20%;
+  overflow: hidden;
+}
+.pipHolder {
+  padding: 20%;
+  height: 100%;
+}
+.picCard {
+  text-align: center;
+  vertical-align: middle;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  font-size: 300%;
+  color: green;
+ 
+}
+.picWrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 50%;
+}
+.J {
+  background-image: url(../../assets/images/J.svg);
+  background-size: 100% 100%;
+}
+.Q {
+  background-image: url(../../assets/images/Q.svg);
+  background-size: 100% 100%;
+}
+.K {
+  background-image: url(../../assets/images/K.svg);
+  background-size: 100% 100%;
+}
+
+.picWrapper img {
+  width: 100%;
+  height: 100%;
+}
+
+.cardBackWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.cardBack {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(255,255,255);
+  border-radius: 5px;
+  position: absolute;
+  background-image: url(../../assets/images/back.svg);
+  background-size: 100% 100%;
+}
+.ace {
+  position: absolute;
+  top: 50%; 
+  right: 50%;
+  transform: translate(50%,-50%);
+  @include font-size($ace-font-sizes);
+  //text-align: center;
+
+  //line-height: 1.2em;
+
+}
+
+
+
+

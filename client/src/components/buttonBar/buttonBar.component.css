@@ -1,0 +1,12 @@
+.buttonBar {
+  position: absolute;
+  bottom: 0.5em;
+}
+
+.buttonBarHide {
+  opacity: 0;
+}
+
+.buttonBarShow {
+  opacity: 100;
+}/*# sourceMappingURL=buttonBar.component.css.map */

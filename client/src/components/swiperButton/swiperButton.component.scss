@@ -1,0 +1,43 @@
+
+$swiper-text-font-sizes: (
+  null : 5px,
+  480px : 8px,
+  640px : 11px,
+  1024px: 14px
+);
+
+@mixin font-size($fs-map) {
+  @each $fs-breakpoint, $fs-font-size in $fs-map {
+    @if $fs-breakpoint == null {
+      font-size: $fs-font-size;
+    }
+    @else {
+      @media screen and (min-width: $fs-breakpoint) {
+        font-size: $fs-font-size;
+      }
+    }
+  }
+}
+.swiperButton {
+  position: absolute;
+  left: -1.9rem;
+  color: rgba(255,255,255,1);
+  background-color: rgba(0,0,0,0.5);
+  @include font-size($swiper-text-font-sizes);
+  width: 1.9rem;
+  height: 33.33%;
+  writing-mode: vertical-lr;
+  line-height: 1.9rem;
+  padding: .8rem 0;
+  text-align: center;
+  cursor: pointer;
+}
+.top {
+  top: 0%;
+}
+.middle {
+  top: 33.33%;
+}
+.bottom {
+  top: 66.66%;
+}

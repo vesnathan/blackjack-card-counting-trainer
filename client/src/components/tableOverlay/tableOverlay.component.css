@@ -1,0 +1,24 @@
+.tableOverlay.h1 {
+  font-size: 440%;
+  font-weight: bold;
+}
+
+.tableOverlay.h2 {
+  font-size: 181%;
+  font-weight: bold;
+  margin-top: -6%;
+}
+
+path {
+  fill: transparent;
+}
+
+text {
+  fill: rgba(255, 255, 255, 0.2);
+}
+
+#overlays {
+  position: relative;
+  width: 100%;
+  top: 20%;
+}/*# sourceMappingURL=tableOverlay.component.css.map */

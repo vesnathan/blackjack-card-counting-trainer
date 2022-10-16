@@ -1,0 +1,102 @@
+$chip-text-font-sizes: (
+  null : 5px,
+  480px : 8px,
+  640px : 11px,
+  1024px: 14px
+);
+
+@mixin font-size($fs-map) {
+  @each $fs-breakpoint, $fs-font-size in $fs-map {
+    @if $fs-breakpoint == null {
+      font-size: $fs-font-size;
+    }
+    @else {
+      @media screen and (min-width: $fs-breakpoint) {
+        font-size: $fs-font-size;
+      }
+    }
+  }
+}
+.chipStackHolder {
+  width: 10%;
+  height: 6%;
+  color: white;
+  position: absolute;
+  text-align: center;
+}
+.five path {
+  fill: rgb(58, 136, 69);
+}
+.twentyFive path {
+  fill: rgb(234, 146, 46);
+}
+.fifty path {
+  fill: rgb(80, 67, 255);
+}
+
+.fiveStack {
+  width: 30%;
+  height: 100%;
+  position: relative;
+  display: inline-block;
+
+}
+.five {
+  position: relative;
+  line-height: 130%;
+}
+.fiveText {
+  position: absolute;
+  top: 45%; 
+  right: 50%;
+  transform: translate(50%,-55%);
+  width: 100%;
+  line-height: 100%;
+  @include font-size($chip-text-font-sizes);
+}
+
+
+
+.twentyFiveStack {
+  width: 30%;
+  height: 100%;
+  position: relative;
+  display: inline-block;
+
+}
+.twentyFive {
+  position: relative;
+  line-height: 130%;
+}
+.twentyFiveText {
+  position: absolute;
+  top: 45%; 
+  right: 50%;
+  transform: translate(50%,-55%);
+  width: 100%;
+  @include font-size($chip-text-font-sizes);
+}
+
+
+
+
+.fiftyStack {
+  width: 30%;
+  height: 100%;
+  position: relative;
+  display: inline-block;
+ 
+}
+.fifty {
+  position: relative;
+  line-height: 130%;
+
+}
+.fiftyText {
+  position: absolute;
+  top: 45%; 
+  right: 50%;
+  transform: translate(50%,-55%);
+  width: 100%;
+  @include font-size($chip-text-font-sizes);
+}

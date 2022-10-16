@@ -1,0 +1,13 @@
+.husky
+db/*
+.eslintignore
+.eslintrc.json
+.prettierrc
+package.json
+package-lock.json
+README.md
+/client/build
+/client/public
+/client/node_modules
+/server/node_modules
+/node_modules

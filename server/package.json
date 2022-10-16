@@ -1,0 +1,29 @@
+{
+    "name": "bj-pwa-server",
+    "version": "1.0.0",
+    "description": "Server for Black Jack Card Counting Training App",
+    "main": "server.js",
+    "scripts": {
+        "server": "nodemon server.js --ignore client",
+        "heroku-prebuild": "npm install --dev"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "apollo-server-errors": "^3.3.1",
+        "apollo-server-express": "^3.10.3",
+        "dotenv": "^16.0.2",
+        "express": "^4.17.1",
+        "mongoose": "^5.9.10",
+        "bcrypt": "^5.0.0",
+        "jsonwebtoken": "^8.5.1",
+        "graphql": "^15.5.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.4"
+    },
+    "engines": {
+        "node": "16.17.0"
+    }
+}

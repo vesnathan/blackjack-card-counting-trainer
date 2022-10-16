@@ -1,0 +1,36 @@
+.casinoTableHolder {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  z-index: 500;
+  background-color: rgb(107, 0, 0);
+}
+
+.casinoTableHolder:before {
+  opacity: 0.5;
+  background-image: url(../../assets/images/table.webp);
+  background-size: cover;
+  content: " ";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.casinoTable {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  border: 1px solid rgb(0, 0, 0);
+}
+
+.popupBG {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+}/*# sourceMappingURL=casinoTable.component.css.map */
