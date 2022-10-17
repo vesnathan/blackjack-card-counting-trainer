@@ -32,7 +32,8 @@ import {
   UPDATE_COUNT,
   UPDATE_DEALER_CUT_CARD,
   RESET_CARDS_DEALT,
-  SHOW_PLAY_BUTTONS
+  SHOW_PLAY_BUTTONS,
+  SHOW_STRIPE_FORM
 } from "../../utils/actions";
 
 const Deal = (): JSX.Element => {

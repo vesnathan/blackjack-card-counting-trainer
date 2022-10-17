@@ -50,4 +50,5 @@ export const PLAYER_BUSTED = "playerBusted";
 export const SET_USER_HIT_CARD = "userHitCard";
 export const SET_USER_SCORE_MESSAGE = "userScoreMessage";
 export const RESET_CARDS_DEALT = "resetCardsDealt";
+export const SHOW_STRIPE_FORM = "showStripeForm";
 //export const GAME_RULES = "gameRules";

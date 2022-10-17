@@ -47,6 +47,7 @@ export const APP_STATUS = () => {
     playersTurn: 0,
     hitCard: false,
     userHitCard: false,
+    showStripeForm: false,
   }
 
   return appStatusArray;

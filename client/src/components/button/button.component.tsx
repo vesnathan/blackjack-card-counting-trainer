@@ -18,7 +18,8 @@ import {
   SET_USER_SCORE_MESSAGE,
   UPDATE_PLAY_BUTTONS,
   USER_DOUBLED,
-  SET_PLAYERS_TURN
+  SET_PLAYERS_TURN,
+  SHOW_STRIPE_FORM
 } from "../../utils/actions";
 
 
@@ -76,6 +77,11 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
         }
       ); 
     }
+
+
+
+
+    
     if (buttonType === "playButton") { 
       
       const whichButton = (e.target as HTMLElement).id;
