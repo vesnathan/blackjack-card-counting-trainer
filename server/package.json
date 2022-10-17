@@ -19,7 +19,9 @@
         "graphql": "^15.5.0",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.9.10",
-        "stripe": "^10.14.0"
+        "@stripe/react-stripe-js": "^1.0.0",
+        "@stripe/stripe-js": "^1.0.0",
+        "stripe": "^8.202.0"
     },
     "devDependencies": {
         "nodemon": "^2.0.4"

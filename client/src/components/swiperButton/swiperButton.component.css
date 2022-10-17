@@ -5,7 +5,7 @@
   background-color: rgba(0, 0, 0, 0.5);
   font-size: 5px;
   width: 1.9rem;
-  height: 33.33%;
+  height: 50%;
   -ms-writing-mode: tb-lr;
       writing-mode: vertical-lr;
   line-height: 1.9rem;
@@ -34,7 +34,7 @@
 }
 
 .middle {
-  top: 33.33%;
+  top: 50%;
 }
 
 .bottom {
