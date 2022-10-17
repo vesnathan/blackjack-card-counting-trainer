@@ -25,15 +25,20 @@ import { useGameContext } from "../../utils/GameStateContext";
 import { 
   UPDATE_CHIPS,       UPDATE_SCORE,               UPDATE_POSITION,          UPDATE_LEVEL, 
   SHOW_PICK_SPOT,     SHOW_BET_BUTTONS,           GAME_RULES,               POPUP_MESSAGE,
-  SHOW_POPUP,         SHOW_JOIN_FORM_OK,          SHOW_JOIN_FORM,           UPDATE_DEAL_HAND,
-  POPUP_TITLE,        UPDATE_SHOE,                SET_HIT_CARD,             AWAITING_INPUT,
-  UPDATE_COUNT,       UPDATE_PLAYER_HAND_RESULT,  RESET_PLAYER_HAND,        UPDATE_CARDS_DEALT,
-  SET_TABLE_MESSAGE,  RESHUFFLE,                  UPDATE_DEALER_CUT_CARD,   SHOW_PLAYER_TURN_ICON,
-  SET_USER_HAD_TURN,  SET_DEALER_DOWN_CARD,       BET_AMOUNT,               USER_DOUBLED,
-  UPDATE_PLAYERS,     UPDATE_STREAK,              UPDATE_BET_BUTTONS,       UPDATE_PLAY_BUTTONS,
-  SET_PLAYERS_TURN,   PLAYER_BUSTED,              SHOW_PLAY_BUTTONS,        UPDATE_PLAYER_HAND_CARDS,
-  UPDATE_PLAYER_HAND_COUNT
-
+  SHOW_POPUP,         SHOW_JOIN_FORM_OK,          SHOW_JOIN_FORM,           POPUP_TITLE,        
+  UPDATE_SHOE,        UPDATE_COUNT,               UPDATE_CARDS_DEALT,       UPDATE_DEALER_CUT_CARD, 
+  UPDATE_STREAK,      RESHUFFLE,
+  SHOW_PLAYER_TURN_ICON,
+  BET_AMOUNT,
+  SET_TABLE_MESSAGE,
+  SET_USER_HAD_TURN,
+  UPDATE_DEAL_HAND,
+  SET_DEALER_DOWN_CARD,
+  USER_DOUBLED,
+  UPDATE_PLAYERS,
+  UPDATE_PLAY_BUTTONS,
+  UPDATE_BET_BUTTONS,
+  RESET_DEAL_COUNTER
 } from "../../utils/actions";
 
 const CasinoTable = (): JSX.Element => {
@@ -43,8 +48,7 @@ const CasinoTable = (): JSX.Element => {
   const { numDecks, tableOverlays } = state.state.gameRules;
   const { players } = state.state;
   const { 
-    firstVisit, 
-    autoPlay, 
+    firstVisit,  
     dealerCutCard, 
     cardsDealt, 
     showPopup, 
@@ -53,19 +57,12 @@ const CasinoTable = (): JSX.Element => {
     dealHand,
     playersTurn,
     showPlayerTurnIcon,
-    hitCard,
-    awaitingUserInput,
-    count,
     playerPosition,
-    userHitCard,
-    shoeCards,
-    chipsTotal,
-    betAmount,
-    reshuffleDue,
-    userDoubled,
     playButtonsShow,
     tableMessage,
-    userScoreMessage
+    userScoreMessage,
+    reshuffleDue,
+    shoeCards
   } = state.state.appStatus;
 
   // useEffect entry point
@@ -125,37 +122,9 @@ const CasinoTable = (): JSX.Element => {
 
   },[]);
 
-  /*
-  useEffect(()=>{
-    if(hitCard){
-      state.updateGameState( { newDispatches: [ { which: SET_HIT_CARD, data: false } ] } );
-      dealACard(playersTurn);
-      playersHand(playersTurn);
 
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[hitCard]);
-*/
-/*
-  useEffect(()=>{
-    if (!awaitingUserInput){
-      playersHand(playersTurn);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[playersTurn]);
-*/
-/*
-  const recalcHand = (whichPlayer: number) => {
 
-    const newCount =  players[whichPlayer].hand.reduce((accumulator: any, card: any) => {
-     return accumulator + card.points;
-    }, 0);    
-    state.updateGameState({ newDispatches: [
-      { which: UPDATE_PLAYER_HAND_COUNT, data: { player: whichPlayer, card: { points: -10 } } }
-    ]});
-    return newCount;
-  }
-  */
+
   const shuffleShoe = (currentShoe: Array<object>) => {
     for (let i = currentShoe.length - 1; i > 0; i--) {
       let j = Math.floor(Math.random() * i);
@@ -169,9 +138,9 @@ const CasinoTable = (): JSX.Element => {
       { which: UPDATE_CARDS_DEALT, data: 0 },
       { which: UPDATE_COUNT, data: 0 }, 
       { which: UPDATE_DEALER_CUT_CARD, data:  (numDecks*10)-Math.floor(Math.random()*52)+26 } 
-  ] } );
+    ] } );
   }
-  /*
+  
     // this function resets everything ready for the next hand
     const resetHand = () => {
       if (reshuffleDue) {
@@ -207,15 +176,7 @@ const CasinoTable = (): JSX.Element => {
           { which: UPDATE_PLAYERS, data: players }
         ] } );
   
-        if (autoPlay) {
-          // reset some stuff ready for the new hand
-          setTimeout(()=>{
-            state.updateGameState( { newDispatches: [
-              { which: UPDATE_DEAL_HAND, data: true }
-            ] } );
-          },0);
-        }
-        else {
+
           
           // set deal button to disabled
           state.updateGameState( { newDispatches: [
@@ -234,13 +195,13 @@ const CasinoTable = (): JSX.Element => {
   
 
           state.updateGameState( { newDispatches: [
-            { which: AWAITING_INPUT, data: true  }
+            { which: RESET_DEAL_COUNTER  }
           ] } );
-        } 
+         
   
       },3000);
     }
-    
+    /*
   const calcPayout = () => {
     if (players[playerPosition].handCount === 21 && players[playerPosition].hand.length === 2){
       // user has BJ
@@ -522,14 +483,14 @@ const CasinoTable = (): JSX.Element => {
         { showPickSpot            ? <PickSpot /> : null }
         { betButtonsShow          ? <ButtonBar key="betButtons" buttons={betButtons} /> : null  }
         { playButtonsShow         ? <ButtonBar key="playButtons" buttons={playButtons} /> : null  }
-        { dealHand                ? <Deal /> : null }
+        { dealHand                ? <Deal resetHand={resetHand}/> : null }
         { showPlayerTurnIcon      ? <PlayerTurn playerPosition={players[playersTurn].position} /> : null }
         { tableMessage !== ""     ? <TableMessage tableMessage={tableMessage} /> : null  }
         { userScoreMessage !== 0  ? <UserScoreMessage userScoreMessage={userScoreMessage} position={players[playerPosition].position}/> : null }
         { players.map((player: Object) => {
           return (
             // @ts-ignore
-            player.playerHandResult !== "" ? <PlayerHandResult playerPosition={player.position} positionAdjust={[50,0]} playerHandResult={player.playerHandResult}/> : null 
+            player.playerHandResult !== "" ? <PlayerHandResult key={`${player.position}-result`} playerPosition={player.position} positionAdjust={[50,0]} playerHandResult={player.playerHandResult}/> : null 
           )
         })}
       </div>

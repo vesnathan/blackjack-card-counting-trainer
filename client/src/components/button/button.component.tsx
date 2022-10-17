@@ -6,12 +6,10 @@ import { STRATEGY_HARD, STRATEGY_SOFT, STRATEGY_PAIRS } from "../../consts/strat
 import { 
   SHOW_BET_BUTTONS,
   UPDATE_DEAL_HAND,
-  AWAITING_INPUT,
   UPDATE_CHIPS,
   BET_AMOUNT,
   UPDATE_BET_BUTTONS,
   SET_HIT_CARD,
-  SET_USER_HIT_CARD,
   SHOW_PLAY_BUTTONS,
   UPDATE_SCORE,
   UPDATE_STREAK,
@@ -19,6 +17,8 @@ import {
   UPDATE_PLAY_BUTTONS,
   USER_DOUBLED,
   SET_PLAYERS_TURN,
+  SHOW_POPUP,
+  POPUP_MESSAGE,
   SHOW_STRIPE_FORM
 } from "../../utils/actions";
 
@@ -45,43 +45,42 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
       switch ((e.target as HTMLElement).id) {
         case "5":
           betAmount[0] += 1;
-          chipsTotal -= 5;
           break;      
         case "25":
           betAmount[1] += 1;
-          chipsTotal -= 25;
           break;      
         case "50":
           betAmount[2] += 1;
-          chipsTotal -= 50;
           break;     
         case "DEAL":
           state.updateGameState(
             { newDispatches: 
               [ 
-                { which: AWAITING_INPUT,  data: false },
                 { which: UPDATE_DEAL_HAND,  data: true },
-                { which: SHOW_BET_BUTTONS,  data: false }
+                { which: SHOW_BET_BUTTONS,  data: false },
+                { which: UPDATE_CHIPS,  data: -((betAmount[0]*5)+(betAmount[1]*25)+(betAmount[2]*50)) },
               ]
             }
           ); 
           break;
       }
-      state.updateGameState(
-        { newDispatches: 
-          [ 
-            { which: UPDATE_CHIPS,  data: chipsTotal },
-            { which: BET_AMOUNT,  data: [betAmount[0],betAmount[1],betAmount[2]] },
-            { which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } },
-          ]
-        }
-      ); 
+      state.updateGameState({newDispatches:[{ which: BET_AMOUNT,  data: [betAmount[0],betAmount[1],betAmount[2]] }]}); 
+      if (chipsTotal-((betAmount[0]*5)+(betAmount[1]*25)+(betAmount[2]*50)) >= 0 ) {
+        state.updateGameState({newDispatches:[{ which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } }]}); 
+      }
+      else {
+        state.updateGameState({newDispatches:[{ which: SHOW_POPUP,  data: true }]}); 
+        state.updateGameState({newDispatches:[{ which: SHOW_STRIPE_FORM,  data: true }]}); 
+        state.updateGameState({newDispatches:[{ which: POPUP_MESSAGE,  data: 
+`Uh oh. \n\n 
+I hope that's not the last of your bankroll!? \n\n
+If it is, then I guess we're done here...\n\n
+To keep going, buy 1000 more chips for $5!
+          
+          
+          ` }]}); 
+      }
     }
-
-
-
-
-    
     if (buttonType === "playButton") { 
       
       const whichButton = (e.target as HTMLElement).id;
@@ -99,7 +98,6 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
         let strategyButtonName = "";
         const acesInHandWorthEleven: Array<any> = players[playerPosition].hand.filter((card: any) => card.pip === "A" && card.points === 11);
         let playerHandRow: Array<string> = [];
-        console.log("playerHand in buttons",playerHand);
         // soft hand, the -4 adjusts for the fact that the array starts at 4
         if (acesInHandWorthEleven.length > 0) {
           playerHandRow = STRATEGY_SOFT[playerHand.handCount-14];
@@ -137,13 +135,11 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
               newScore = -5*userStreak;
             }
             state.updateGameState( { newDispatches: [ 
-              { which: SET_HIT_CARD, data: true }, 
-              { which: SET_USER_HIT_CARD, data: true }, 
+              { which: SET_HIT_CARD, data: true },  
               { which: SHOW_PLAY_BUTTONS, data: false }, 
               { which: UPDATE_SCORE, data: scoreTotal+newScore }, 
               { which: SET_USER_SCORE_MESSAGE, data: newScore }, 
               { which: UPDATE_STREAK, data: (newScore < 0)?1:userStreak+=1  },
-              { which: AWAITING_INPUT, data: false } 
             ] } );
   ;
           break;
@@ -163,7 +159,6 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
               { which: UPDATE_SCORE, data: scoreTotal+newScore },
               { which: SET_USER_SCORE_MESSAGE, data: newScore },
               { which: UPDATE_STREAK, data:  (newScore < 0)?1:userStreak+=1  },
-              { which: AWAITING_INPUT, data: false } 
             ]}); 
 
 
@@ -220,9 +215,7 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
                 { which: UPDATE_SCORE, data: scoreTotal+newScore },
                 { which: SET_USER_SCORE_MESSAGE, data: newScore }, 
                 { which: UPDATE_STREAK, data: (newScore < 0)?1:userStreak+=1 },
-                { which: SET_USER_HIT_CARD, data: true },
                 { which: SET_HIT_CARD, data: true },
-                { which: AWAITING_INPUT, data: false }, 
                 { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: true }},
             ]}); 
 
