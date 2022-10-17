@@ -187,7 +187,9 @@ function reducer(state: any, action: any) {
         tempStatus.userScoreMessage = action.payload;
         return { ...state, appStatus: tempStatus }
 
-
+      case "showStripeForm":
+        tempStatus.showStripeForm = action.payload;
+        return { ...state, appStatus: tempStatus }
 
 
 

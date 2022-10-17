@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import './App.css';
 import './storage/indexedDB/connect';
 
+
+
 // Material UI Components
 import { ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';

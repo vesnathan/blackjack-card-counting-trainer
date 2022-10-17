@@ -14,6 +14,7 @@ export const SHOW_LOGIN_FORM_BUTTON_SPINNER = "showLoginFormButtonSpinner";
 export const LOGIN_FORM_MESSAGE = "loginFormMessage";
 export const LOGIN_FORM_STATUS = "loginFormStatus";
 export const LOG_IN = "logIn";
+export const SHOW_STRIPE_FORM = "showStripeForm";
 
 // button stuff
 export const SHOW_BET_BUTTONS = "showBetButtons";

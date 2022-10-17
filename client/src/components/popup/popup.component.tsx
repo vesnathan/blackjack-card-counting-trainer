@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import JoinForm from "../joinForm/joinForm.component";
 import JoinFormOk from "../joinForm/joinFormOk/joinFormOk.component";
 import LoginForm from "../loginForm/loginForm.component";
+import StripePayment from "../Stripe/StripePayment";
 
 
 const Popup = (): JSX.Element => {
@@ -21,7 +22,8 @@ const Popup = (): JSX.Element => {
     showLoginForm,
     popupTitle, 
     popupMessage,
-    popupCharacter
+    popupCharacter,
+    showStripeForm
   } = state.state.appStatus;
 
   return (
@@ -54,6 +56,12 @@ const Popup = (): JSX.Element => {
                 <JoinFormOk />   
               : null
             }
+            {
+              showStripeForm ?
+                <StripePayment />
+              : null
+            }
+            
             </Grid>
         </Grid>
       </div>

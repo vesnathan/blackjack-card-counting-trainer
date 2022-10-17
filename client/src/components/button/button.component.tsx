@@ -18,7 +18,8 @@ import {
   USER_DOUBLED,
   SET_PLAYERS_TURN,
   SHOW_POPUP,
-  POPUP_MESSAGE
+  POPUP_MESSAGE,
+  SHOW_STRIPE_FORM
 } from "../../utils/actions";
 
 
@@ -69,6 +70,7 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
       }
       else {
         state.updateGameState({newDispatches:[{ which: SHOW_POPUP,  data: true }]}); 
+        state.updateGameState({newDispatches:[{ which: SHOW_STRIPE_FORM,  data: true }]}); 
         state.updateGameState({newDispatches:[{ which: POPUP_MESSAGE,  data: 
 `Uh oh. \n\n 
 I hope that's not the last of your bankroll!? \n\n

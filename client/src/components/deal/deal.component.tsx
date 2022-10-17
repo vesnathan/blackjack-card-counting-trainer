@@ -20,7 +20,8 @@ import {
   OVERWRITE_PLAYERS_HAND,
   UPDATE_CHIPS,
   PLAYER_BUSTED,
-  UPDATE_PLAY_BUTTONS
+  UPDATE_PLAY_BUTTONS,
+  SHOW_STRIPE_FORM
 } from "../../utils/actions";
 
 type DealProps = {

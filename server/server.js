@@ -1,4 +1,5 @@
 const express = require("express");
+const stripe = require("stripe")("sk_test_wsFx86XDJWwmE4dMskBgJYrt");
 const { ApolloServer } = require("apollo-server-express");
 const path = require("path");
 
@@ -29,6 +30,26 @@ app.get("/", (req, res) => {
     }
   });
 });
+
+const calculateOrderAmount = () => 500;
+
+app.post("/create-payment-intent", async (req, res) => {
+  const { items } = req.body;
+
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: calculateOrderAmount(items),
+    currency: "usd",
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
+
 // eslint-disable-next-line no-shadow, no-unused-vars
 const startApolloServer = async (typeDefs, resolvers) => {
   await server.start();
