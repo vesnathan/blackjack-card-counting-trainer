@@ -89,7 +89,6 @@ function App() {
                 <Popup />
                 <Swiper buttonString="STRATEGY" buttonPosition="top" swiperStatus="" swiperType="strategy" />
                 <Swiper buttonString="SETTINGS" buttonPosition="middle" swiperStatus="" swiperType="settings" />
-                <Swiper buttonString="LOGIN" buttonPosition="bottom" swiperStatus="" swiperType="login" />
               </Grid>
             </Container>
           </ThemeProvider>
