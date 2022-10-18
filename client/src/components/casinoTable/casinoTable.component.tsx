@@ -30,7 +30,7 @@ import {
   UPDATE_STREAK,      RESHUFFLE,                  SHOW_PLAYER_TURN_ICON,    BET_AMOUNT,
   SET_TABLE_MESSAGE,  SET_USER_HAD_TURN,          UPDATE_DEAL_HAND,         SET_DEALER_DOWN_CARD,
   USER_DOUBLED,       UPDATE_PLAYERS,             UPDATE_PLAY_BUTTONS,      UPDATE_BET_BUTTONS,
-  RESET_DEAL_COUNTER, SET_ONLINE_STATUS
+  RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE
 } from "../../utils/actions";
 
 const CasinoTable = (): JSX.Element => {
@@ -91,6 +91,7 @@ const CasinoTable = (): JSX.Element => {
               { which: SHOW_PICK_SPOT,   data: false },
               { which: SHOW_BET_BUTTONS, data: true },
               { which: GAME_RULES,       data: gameExists.game.gameRules },
+              { which: UPDATE_USER_TYPE, data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
             ]
           }
         );
