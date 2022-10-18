@@ -1,10 +1,10 @@
 import React from 'react';
 import './scoreBar.component.css';
-
+import OnlineIcon from "../onlineIcon/onlineIcon.component";
 import { useGameContext } from "../../utils/GameStateContext";
 
 import { 
-  LOG_IN,
+  LOGGED_IN,
   SHOW_POPUP,
   SHOW_LOGIN_FORM,
   SHOW_PICK_SPOT
@@ -13,14 +13,14 @@ import {
 const ScoreBar = (): JSX.Element => {
   // TODO: Fix the use of "any" type below
   const state: any = useGameContext();
-  const { count, scoreTotal, chipsTotal, userStreak, loggedIn } = state.state.appStatus;
+  const { count, scoreTotal, chipsTotal, userStreak, loggedIn, onlineStatus } = state.state.appStatus;
 
   const logoutClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     state.updateGameState(
       { newDispatches: 
         [ 
-          { which: LOG_IN,          data: false },
+          { which: LOGGED_IN,       data: false },
           { which: SHOW_POPUP,      data: true  },
           { which: SHOW_PICK_SPOT,  data: false },
           { which: SHOW_LOGIN_FORM, data: true  },
@@ -37,6 +37,11 @@ const ScoreBar = (): JSX.Element => {
         {
           (loggedIn)? 
             <button id="buttonLogout" onClick={(e) => { logoutClickHandler(e) }}>LOGOUT</button>
+          : null
+        }
+        {
+          (onlineStatus)? 
+            <OnlineIcon />
           : null
         }
         <span id="countSpan">COUNT: {count}</span>

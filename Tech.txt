@@ -11,6 +11,6 @@ Husky
 bcrypt
 JSON Web Token
 PWA
-Stripe Elements 4242424242424242 12/37 555
+Stripe Elements
 
 

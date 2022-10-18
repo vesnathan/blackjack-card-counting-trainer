@@ -62,7 +62,7 @@
   cursor: pointer;
   z-index: 2000;
   float: right;
-  margin-right: 5px;
+  margin-left: 5px;
 }
 
 #buttonLogout:hover {

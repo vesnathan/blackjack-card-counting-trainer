@@ -25,7 +25,7 @@ $swiper-text-font-sizes: (
   background-color: rgba(0,0,0,0.5);
   @include font-size($swiper-text-font-sizes);
   width: 1.9rem;
-  height: 33.33%;
+  height: 50%;
   writing-mode: vertical-lr;
   line-height: 1.9rem;
   padding: .8rem 0;
@@ -36,7 +36,7 @@ $swiper-text-font-sizes: (
   top: 0%;
 }
 .middle {
-  top: 33.33%;
+  top: 50%;
 }
 .bottom {
   top: 66.66%;

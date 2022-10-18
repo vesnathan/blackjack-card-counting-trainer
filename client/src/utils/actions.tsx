@@ -13,7 +13,7 @@ export const LOGIN_BUTTON_TEXT = "loginButtonText";
 export const SHOW_LOGIN_FORM_BUTTON_SPINNER = "showLoginFormButtonSpinner";
 export const LOGIN_FORM_MESSAGE = "loginFormMessage";
 export const LOGIN_FORM_STATUS = "loginFormStatus";
-export const LOG_IN = "logIn";
+export const LOGGED_IN = "loggedIn";
 export const SHOW_STRIPE_FORM = "showStripeForm";
 
 // button stuff
@@ -60,6 +60,7 @@ export const UPDATE_COUNT = "updateCount";
 export const SET_TABLE_MESSAGE = "setTableMessage";
 export const RESET_DEAL_COUNTER = "resetDealCounter";
 
+export const SET_ONLINE_STATUS = "setOnlineStatus";
 
 
 

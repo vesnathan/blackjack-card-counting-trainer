@@ -44,7 +44,7 @@ const client = new ApolloClient({
 
 function App() {
 
-  // useEffect for PWA install
+  // useEffect for PWA install and start stuff, runs only once
   useEffect(() => {
     console.log('PWA useEffect');
     const butInstall = document.getElementById('buttonInstall');
@@ -69,6 +69,7 @@ function App() {
       console.log('appinstalled', event);
     });
   },[]);
+
 
 
 
