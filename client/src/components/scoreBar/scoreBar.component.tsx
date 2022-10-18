@@ -13,7 +13,15 @@ import {
 const ScoreBar = (): JSX.Element => {
   // TODO: Fix the use of "any" type below
   const state: any = useGameContext();
-  const { count, scoreTotal, chipsTotal, userStreak, loggedIn, onlineStatus } = state.state.appStatus;
+  const { 
+    count, 
+    scoreTotal, 
+    chipsTotal, 
+    userStreak, 
+    loggedIn, 
+    onlineStatus,
+    showCount 
+  } = state.state.appStatus;
 
   const logoutClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -44,7 +52,12 @@ const ScoreBar = (): JSX.Element => {
             <OnlineIcon />
           : null
         }
-        <span id="countSpan">COUNT: {count}</span>
+        {
+          showCount?
+          <span id="countSpan">COUNT: {count}</span>
+          : null
+        }
+        
         <span id="scoreSpan">SCORE: {scoreTotal}</span>
         <span id="chipsSpan">CHIPS: {chipsTotal}</span>
         <span id="chipsSpan">STREAK: {userStreak-1}</span>

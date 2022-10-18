@@ -15,6 +15,9 @@ export const LOGIN_FORM_MESSAGE = "loginFormMessage";
 export const LOGIN_FORM_STATUS = "loginFormStatus";
 export const LOGGED_IN = "loggedIn";
 export const SHOW_STRIPE_FORM = "showStripeForm";
+export const POPUP_CHARACTER = "popupCharacter";
+export const WHAT_COUNT_FORM = "showWhatCountForm";
+
 
 // button stuff
 export const SHOW_BET_BUTTONS = "showBetButtons";
@@ -61,7 +64,7 @@ export const SET_TABLE_MESSAGE = "setTableMessage";
 export const RESET_DEAL_COUNTER = "resetDealCounter";
 
 export const SET_ONLINE_STATUS = "setOnlineStatus";
-
+export const SHOW_COUNT = "showCount";
 
 
 

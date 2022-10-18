@@ -11,6 +11,7 @@ db.once("open", async () => {
   // clean database
   await User.deleteMany({});
 
+  // eslint-disable-next-line no-console
   console.log("all done!");
   process.exit(0);
 });

@@ -5,7 +5,6 @@ import { PLAY_BUTTONS }  from "../consts/playButtons";
 import { GAME_RULES }  from "../consts/gameRules";
 import { PLAYERS }  from "../consts/players";
 import { BET_BUTTONS } from "../consts/betButtons";
-import { cardActionAreaClasses } from '@mui/material';
 
 function reducer(state: any, action: any) {
   let tempStatus = state.appStatus;
@@ -194,6 +193,20 @@ function reducer(state: any, action: any) {
       case "setOnlineStatus":
         tempStatus.onlineStatus = action.payload;
         return { ...state, appStatus: tempStatus }
+      
+      case "popupCharacter":
+        tempStatus.popupCharacter = action.payload;
+        return { ...state, appStatus: tempStatus }
+      
+        case "showWhatCountForm":
+          tempStatus.showWhatCountForm = action.payload;
+          return { ...state, appStatus: tempStatus }
+
+      case "showCount":
+        tempStatus.showCount = action.payload;
+        return { ...state, appStatus: tempStatus }
+
+
 
 
 

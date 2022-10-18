@@ -5,6 +5,8 @@ import PlayingCardAnimation from "../playingCardAnimation/playingCardAnimation.c
 import { useFirstRender } from "../../utils/firstRender";
 import { useGameContext } from "../../utils/GameStateContext";
 import saveGame from "../../functions/saveGame";
+import Spacey from "../../assets/images/characters/spacey.png";
+import { WHAT_COUNT }  from "../../consts/whatCountMessage";
 import { 
   UPDATE_PLAYER_HAND_CARDS, 
   UPDATE_PLAYER_HAND_COUNT,
@@ -20,7 +22,13 @@ import {
   OVERWRITE_PLAYERS_HAND,
   UPDATE_CHIPS,
   PLAYER_BUSTED,
-  UPDATE_PLAY_BUTTONS
+  UPDATE_PLAY_BUTTONS,
+  POPUP_MESSAGE,
+  POPUP_TITLE,
+  SHOW_POPUP,
+  POPUP_CHARACTER,
+  WHAT_COUNT_FORM,
+  SHOW_COUNT
 } from "../../utils/actions";
 
 type DealProps = {
@@ -219,6 +227,22 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             }
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
+            if (Math.random() < .2) {
+              state.updateGameState(
+                { newDispatches: 
+                  [ 
+                    { which: POPUP_MESSAGE,     data: WHAT_COUNT() },
+                    { which: POPUP_TITLE,       data: "WHAT'S THE COUNT?" },
+                    { which: SHOW_POPUP,        data: true },
+                    { which: POPUP_CHARACTER,   data: Spacey },  
+                    { which: WHAT_COUNT_FORM,   data: true },
+                    { which: SHOW_PLAY_BUTTONS, data: false },
+                    { which: SHOW_COUNT, data: false },
+
+                  ]
+                }
+              );
+            }
             if (hitCard) {
               state.updateGameState({ newDispatches: [
                 { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
