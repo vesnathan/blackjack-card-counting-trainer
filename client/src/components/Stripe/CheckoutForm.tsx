@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   PaymentElement,
   useStripe,
@@ -20,6 +20,15 @@ export default function CheckoutForm() {
 
   const { chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel } = state.state.appStatus;
   const { gameRules } = state.state;
+
+  const chipsTotalRef = useRef(chipsTotal);
+  const scoreTotalRef = useRef(scoreTotal);
+  const playerPositionRef = useRef(playerPosition);
+  const userStreakRef = useRef(userStreak);
+  const gameLevelRef = useRef();
+  const gameRulesRef = useRef(gameRules);
+
+
   const stripe = useStripe();
   const elements = useElements();
 
@@ -84,7 +93,15 @@ export default function CheckoutForm() {
         state.updateGameState( { newDispatches: [ { which: UPDATE_CHIPS, data: 1000 } ] } );
         state.updateGameState( { newDispatches: [ { which: SHOW_POPUP, data: false } ] } );
         state.updateGameState({newDispatches:[{ which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } }]});
-        saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);
+        saveGame(
+          chipsTotalRef.current.value, 
+          scoreTotalRef.current.value, 
+          playerPositionRef.current.value, 
+          userStreakRef.current.value, 
+          // @ts-ignore
+          gameLevelRef.current.value, 
+          gameRulesRef.current.value,
+        );
       }
     }
 

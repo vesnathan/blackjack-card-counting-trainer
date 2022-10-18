@@ -26,4 +26,5 @@ export const saveGameToIndexDB = async (gameObject: Object) => {
   const tx = BJCTTGames.transaction('BJCTTGames', 'readwrite');
   const store = tx.objectStore('BJCTTGames');
   await store.put({id: "game",  game: gameObject});
+  console.log("Saved game to IndexedDB");
 }
