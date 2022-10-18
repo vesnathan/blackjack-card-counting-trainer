@@ -4,7 +4,7 @@ import PlayingCard from "../playingCard/playingCard.component";
 import PlayingCardAnimation from "../playingCardAnimation/playingCardAnimation.component";
 import { useFirstRender } from "../../utils/firstRender";
 import { useGameContext } from "../../utils/GameStateContext";
-
+import saveGame from "../../functions/saveGame";
 import { 
   UPDATE_PLAYER_HAND_CARDS, 
   UPDATE_PLAYER_HAND_COUNT,
@@ -20,8 +20,7 @@ import {
   OVERWRITE_PLAYERS_HAND,
   UPDATE_CHIPS,
   PLAYER_BUSTED,
-  UPDATE_PLAY_BUTTONS,
-  SHOW_STRIPE_FORM
+  UPDATE_PLAY_BUTTONS
 } from "../../utils/actions";
 
 type DealProps = {
@@ -42,10 +41,17 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     hitCard,
     playerPosition,
     betAmount,
-    userDoubled
+    userDoubled,
+    chipsTotal,
+    scoreTotal,
+    userStreak,
+    gameLevel
   } = state.state.appStatus;
 
-  
+  const { gameRules } = state.state;
+
+
+
   const calcPayout = () => {
     if (players[playerPosition].handCount === 21 && players[playerPosition].hand.length === 2){
       // user has BJ
@@ -238,7 +244,6 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             }
           break;
 
-
           case "dealer":            
           console.log("dealer: ", players[playersTurn].handCount );
           state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
@@ -251,39 +256,34 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             state.updateGameState({ newDispatches: [
               { which: UPDATE_PLAYER_HAND_COUNT,  data: { player: playersTurn, card: shoeCards[cardsDealt] } }
             ]}); 
-          }
-          
- 
-            setTimeout(()=> { 
-              const dealerBusted = checkBusted();
-              console.log(players[playersTurn].handCount);
-              if (!dealerBusted) {
-                if (players[playersTurn].handCount > 16) { 
-                  setTimeout(()=> { 
-                    console.log("END HAND DEALER DIDN'T BUST");
-                    calcPayout();
-                    resetHand();
-                  },2000);
-                }
-                else {
-                  state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
-                }
-              }
-              else {
-                setTimeout(() => {
-                  state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
+          }      
+          setTimeout(()=> { 
+            const dealerBusted = checkBusted();
+            console.log(players[playersTurn].handCount);
+            if (!dealerBusted) {
+              if (players[playersTurn].handCount > 16) { 
+                setTimeout(()=> { 
+                  console.log("END HAND DEALER DIDN'T BUST");
                   calcPayout();
                   resetHand();
-                  },2000);
+                },2000);
               }
-            },2000);
-
-
-          
-          break;
-          
+              else {
+                state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
+              }
+            }
+            else {
+              setTimeout(() => {
+                state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
+                calcPayout();
+                resetHand();
+                },2000);
+            }
+          },2000);
+          break;   
         }
       }
+      saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[firstRender, playersTurn, hitCard]);

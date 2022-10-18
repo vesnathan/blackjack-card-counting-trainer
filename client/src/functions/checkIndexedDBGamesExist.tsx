@@ -1,8 +1,8 @@
-import { gamesExist, saveGameToDb } from "../storage/indexedDB/functions";
+import { gamesExistIndexDB } from "../storage/indexedDB/functions";
 
 const checkIndexedDBGamesExist = async (firstVisit: Boolean) => {
 
-  const games = await gamesExist();
+  const games = await gamesExistIndexDB();
 
     // if the user has a game saved locally, load that.
     if (games.length !== 0 && !firstVisit) {

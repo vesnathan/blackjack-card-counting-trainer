@@ -4,6 +4,7 @@ import { useGameContext } from "../../utils/GameStateContext";
 
 import './joinForm.component.css';
 import Auth from '../../utils/auth';
+import saveGame from "../../functions/saveGame";
 
 // Material UI Components
 import Grid from '@mui/material/Grid';
@@ -36,8 +37,14 @@ const JoinForm = (): React.ReactElement  => {
     loginButtonText,
     showJoinFormOkMessage,
     showJoinFormButtonSpinner,
+    chipsTotal,
+    scoreTotal,
+    playerPosition,
+    userStreak,
+    gameLevel
   } = state.state.appStatus;
 
+  const { gameRules } = state.state;
   const [createUser] = useMutation(CREATE_USER);
 
   const [inputs, setInputs] = useState({
@@ -156,7 +163,7 @@ const JoinForm = (): React.ReactElement  => {
               [ 
                 { which: SHOW_JOIN_FORM_OK_MESSAGE, data: "Successfully joined! Enjoy your 1000 free chips!" },
                 { which: SHOW_JOIN_FORM_OK_STATUS,  data: "success" },
-                { which: UPDATE_CHIPS,              data: 1000 },
+                { which: UPDATE_CHIPS,              data: 100 },
                 { which: SHOW_JOIN_FORM,            data: false },
                 { which: SHOW_JOIN_FORM_OK,         data: true },
              ]
@@ -169,7 +176,8 @@ const JoinForm = (): React.ReactElement  => {
                 { which: LOG_IN, data: true },
               ]
             }
-          );    
+          );
+          saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);    
         }
       } catch (err: any) {
         console.log(err);
