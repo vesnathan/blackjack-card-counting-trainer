@@ -107,7 +107,7 @@ function reducer(state: any, action: any) {
         tempStatus.loginFormStatus = action.payload;
           return { ...state, appStatus: tempStatus }
 
-      case "logIn" :
+      case "loggedIn" :
         tempStatus.loggedIn = action.payload;
           return { ...state, appStatus: tempStatus }
       
@@ -191,7 +191,9 @@ function reducer(state: any, action: any) {
         tempStatus.showStripeForm = action.payload;
         return { ...state, appStatus: tempStatus }
 
-
+      case "setOnlineStatus":
+        tempStatus.onlineStatus = action.payload;
+        return { ...state, appStatus: tempStatus }
 
 
 

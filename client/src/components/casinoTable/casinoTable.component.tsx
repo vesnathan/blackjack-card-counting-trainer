@@ -27,18 +27,10 @@ import {
   SHOW_PICK_SPOT,     SHOW_BET_BUTTONS,           GAME_RULES,               POPUP_MESSAGE,
   SHOW_POPUP,         SHOW_JOIN_FORM_OK,          SHOW_JOIN_FORM,           POPUP_TITLE,        
   UPDATE_SHOE,        UPDATE_COUNT,               UPDATE_CARDS_DEALT,       UPDATE_DEALER_CUT_CARD, 
-  UPDATE_STREAK,      RESHUFFLE,
-  SHOW_PLAYER_TURN_ICON,
-  BET_AMOUNT,
-  SET_TABLE_MESSAGE,
-  SET_USER_HAD_TURN,
-  UPDATE_DEAL_HAND,
-  SET_DEALER_DOWN_CARD,
-  USER_DOUBLED,
-  UPDATE_PLAYERS,
-  UPDATE_PLAY_BUTTONS,
-  UPDATE_BET_BUTTONS,
-  RESET_DEAL_COUNTER
+  UPDATE_STREAK,      RESHUFFLE,                  SHOW_PLAYER_TURN_ICON,    BET_AMOUNT,
+  SET_TABLE_MESSAGE,  SET_USER_HAD_TURN,          UPDATE_DEAL_HAND,         SET_DEALER_DOWN_CARD,
+  USER_DOUBLED,       UPDATE_PLAYERS,             UPDATE_PLAY_BUTTONS,      UPDATE_BET_BUTTONS,
+  RESET_DEAL_COUNTER, SET_ONLINE_STATUS
 } from "../../utils/actions";
 
 const CasinoTable = (): JSX.Element => {
@@ -62,42 +54,43 @@ const CasinoTable = (): JSX.Element => {
     tableMessage,
     userScoreMessage,
     reshuffleDue,
-    shoeCards
+    shoeCards,
+    onlineStatus
   } = state.state.appStatus;
+
+  useEffect(() => {
+    const onlineCheck = setInterval(()=> {
+      if (navigator.onLine !== onlineStatus) {
+        state.updateGameState({ newDispatches: [{ which: SET_ONLINE_STATUS,    data: navigator.onLine }] });
+      }
+    }, 2000);
+
+    return () => {
+      clearInterval(onlineCheck)
+    }
+  },[]);
 
   // useEffect entry point
   useEffect( () => {
     const tempShoe = setUpShoe(numDecks);
     shuffleShoe(tempShoe);
-    state.updateGameState(
-      { newDispatches: 
-        [ 
-          { which: UPDATE_SHOE,    data: tempShoe },
-        ]
-      }
-    );
-
-    state.updateGameState(
-      { newDispatches: 
-        [ 
-          { which: SHOW_PICK_SPOT, data: true },
-       ]
-      }
-    );
+    state.updateGameState({ newDispatches: [{ which: UPDATE_SHOE,    data: tempShoe }] });
+    state.updateGameState({ newDispatches: [{ which: SHOW_PICK_SPOT, data: true }]});
     const checkGames = async () => {
-      const gameExists = await checkIndexedDBGamesExist(firstVisit);
+      const gameExists = await checkIndexedDBGamesExist();
+      console.log("gameExists", gameExists);
       if (gameExists) {
         state.updateGameState(
           { newDispatches: 
             [ 
-              { which: UPDATE_CHIPS,     data: gameExists.chipsTotal },
-              { which: UPDATE_SCORE,     data: gameExists.scoreTotal },
-              { which: UPDATE_POSITION,  data: gameExists.playerPosition },
-              { which: UPDATE_STREAK,    data: gameExists.userStreak },
-              { which: UPDATE_LEVEL,     data: gameExists.gameLevel },
+              { which: UPDATE_CHIPS,     data: gameExists.game.chipsTotal },
+              { which: UPDATE_SCORE,     data: gameExists.game.scoreTotal },
+              { which: UPDATE_POSITION,  data: gameExists.game.playerPosition },
+              { which: UPDATE_STREAK,    data: gameExists.game.userStreak },
+              { which: UPDATE_LEVEL,     data: gameExists.game.gameLevel },
               { which: SHOW_PICK_SPOT,   data: false },
               { which: SHOW_BET_BUTTONS, data: true },
-              { which: GAME_RULES,       data: gameExists.gameRules },
+              { which: GAME_RULES,       data: gameExists.game.gameRules },
             ]
           }
         );

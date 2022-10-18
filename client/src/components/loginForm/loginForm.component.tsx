@@ -19,7 +19,7 @@ import {
   SHOW_LOGIN_FORM_BUTTON_SPINNER,
   LOGIN_FORM_MESSAGE,
   LOGIN_FORM_STATUS,
-  LOG_IN,
+  LOGGED_IN,
   SHOW_PICK_SPOT
 } from "../../utils/actions";
 
@@ -97,7 +97,7 @@ const LoginForm = (): React.ReactElement  => {
             { newDispatches: 
               [ 
                 { which: SHOW_POPUP, data: false },
-                { which: LOG_IN, data: true },
+                { which: LOGGED_IN, data: true },
                 { which: SHOW_PICK_SPOT, data: true },
              ]
             }

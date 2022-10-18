@@ -25,7 +25,7 @@ import {
   SHOW_LOGIN_FORM,
   JOIN_BUTTON_TEXT,
   LOGIN_BUTTON_TEXT,
-  LOG_IN
+  LOGGED_IN
 } from "../../utils/actions";
 
 const JoinForm = (): React.ReactElement  => {
@@ -173,7 +173,7 @@ const JoinForm = (): React.ReactElement  => {
           state.updateGameState(
             { newDispatches: 
               [ 
-                { which: LOG_IN, data: true },
+                { which: LOGGED_IN, data: true },
               ]
             }
           );
