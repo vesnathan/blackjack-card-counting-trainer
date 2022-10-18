@@ -1,5 +1,13 @@
+/* eslint-disable no-underscore-dangle */
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const _SERVER_PORT = process.env.SERVER_PORT;
+const _STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+
 const express = require("express");
-const stripe = require("stripe")("sk_test_wsFx86XDJWwmE4dMskBgJYrt");
+const stripe = require("stripe")(_STRIPE_SECRET_KEY);
 const { ApolloServer } = require("apollo-server-express");
 const path = require("path");
 
@@ -8,7 +16,7 @@ const db = require("./config/connection");
 const { authMiddleware } = require("./utils/auth");
 
 const app = express();
-const PORT = process.env.PORT || 3002;
+const PORT = _SERVER_PORT || 3000;
 
 const server = new ApolloServer({
   typeDefs,
@@ -39,7 +47,7 @@ app.post("/create-payment-intent", async (req, res) => {
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
     amount: calculateOrderAmount(items),
-    currency: "usd",
+    currency: "aud",
     automatic_payment_methods: {
       enabled: true,
     },

@@ -11,6 +11,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@stripe/react-stripe-js": "^1.0.0",
+        "@stripe/stripe-js": "^1.0.0",
         "apollo-server-errors": "^3.3.1",
         "apollo-server-express": "^3.10.3",
         "bcrypt": "^5.0.0",
@@ -19,8 +21,7 @@
         "graphql": "^15.5.0",
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.9.10",
-        "@stripe/react-stripe-js": "^1.0.0",
-        "@stripe/stripe-js": "^1.0.0",
+        "processenv": "^3.0.9",
         "stripe": "^8.202.0"
     },
     "devDependencies": {

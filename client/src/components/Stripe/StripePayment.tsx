@@ -4,6 +4,7 @@ import { Elements } from "@stripe/react-stripe-js";
 
 import CheckoutForm from "./CheckoutForm";
 import "./Stripe.css";
+import { NONAME } from "dns";
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -20,7 +21,7 @@ export default function StripePayment() {
     fetch("/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
+      body: JSON.stringify({ items: [{ id: "1000-chips" }] }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
@@ -28,6 +29,16 @@ export default function StripePayment() {
 
   const appearance = {
     theme: 'stripe',
+    rules: {
+      ".Error": {
+        fontSize: "0px",
+        lineHeight: "0px"
+      },
+      ".Label": {
+        fontSize: "0px",
+        lineHeight: "0px"
+      },
+    }
   };
   const options: any = {
     clientSecret,

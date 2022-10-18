@@ -10,8 +10,6 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import { useGameContext } from "./utils/GameStateContext";
-
 // import theme
 import theme from "./assets/js/theme";
 
@@ -20,8 +18,6 @@ import CasinoTable from "./components/casinoTable/casinoTable.component";
 import Swiper from "./components/swiper/swiper.component";
 import ScoreBar from "./components/scoreBar/scoreBar.component";
 import Popup from "./components/popup/popup.component";
-
-import Auth from "./utils/auth";
 
 import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';

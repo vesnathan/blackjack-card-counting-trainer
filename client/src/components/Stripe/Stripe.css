@@ -20,6 +20,7 @@ form {
   box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
     0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
   padding-right: 30px;
+  padding-top: 30px;
 }
 
 
@@ -82,11 +83,6 @@ form {
   transform: translateZ(0);
 }
 
-#payment-form .spinner:before,
-#payment-form .spinner:after {
-  position: absolute;
-  content: '';
-}
 
 #payment-form .spinner:before {
   width: 10.4px;
@@ -100,9 +96,8 @@ form {
   -webkit-animation: loading 2s infinite ease 1.5s;
   animation: loading 2s infinite ease 1.5s;
 }
-#payment-form .Error {
-  color: rgb(58, 136, 69);
-}
+
+
 #payment-form .spinner:after {
   width: 10.4px;
   height: 10.2px;

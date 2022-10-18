@@ -2,7 +2,7 @@ import './button.component.css';
 
 import { useGameContext } from "../../utils/GameStateContext";
 import { STRATEGY_HARD, STRATEGY_SOFT, STRATEGY_PAIRS } from "../../consts/strategyCard";
-
+import { STRIPE_MESSAGE } from "../../consts/stripeMessage";
 import { 
   SHOW_BET_BUTTONS,
   UPDATE_DEAL_HAND,
@@ -71,14 +71,7 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
       else {
         state.updateGameState({newDispatches:[{ which: SHOW_POPUP,  data: true }]}); 
         state.updateGameState({newDispatches:[{ which: SHOW_STRIPE_FORM,  data: true }]}); 
-        state.updateGameState({newDispatches:[{ which: POPUP_MESSAGE,  data: 
-`Uh oh. \n\n 
-I hope that's not the last of your bankroll!? \n\n
-If it is, then I guess we're done here...\n\n
-To keep going, buy 1000 more chips for $5!
-          
-          
-          ` }]}); 
+        state.updateGameState({newDispatches:[{ which: POPUP_MESSAGE,  data: STRIPE_MESSAGE() }]}); 
       }
     }
     if (buttonType === "playButton") { 
