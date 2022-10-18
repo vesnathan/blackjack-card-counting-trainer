@@ -118,8 +118,9 @@ const CasinoTable = (): JSX.Element => {
         );
       }
     }
-    // checkGames();
+    checkGames();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
 

@@ -5,6 +5,8 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 
+import saveGame from "../../functions/saveGame";
+
 import { useGameContext } from "../../utils/GameStateContext";
 
 import { 
@@ -16,6 +18,8 @@ import {
 export default function CheckoutForm() {
   const state: any = useGameContext();
 
+  const { chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel } = state.state.appStatus;
+  const { gameRules } = state.state;
   const stripe = useStripe();
   const elements = useElements();
 
@@ -80,6 +84,7 @@ export default function CheckoutForm() {
         state.updateGameState( { newDispatches: [ { which: UPDATE_CHIPS, data: 1000 } ] } );
         state.updateGameState( { newDispatches: [ { which: SHOW_POPUP, data: false } ] } );
         state.updateGameState({newDispatches:[{ which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } }]});
+        saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);
       }
     }
 
