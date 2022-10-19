@@ -14,3 +14,9 @@ PWA
 Stripe Elements
 
 
+Further Dev
+Leader Board
+Social Media Integration
+Ability to change game gameRules
+
+
