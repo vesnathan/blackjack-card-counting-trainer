@@ -19,6 +19,8 @@ import { WELCOME_MESSAGE } from "../../consts/welcomeMessage";
 import setUpShoe from "../../functions/setUpShoe";
 import checkIndexedDBGamesExist from "../../functions/checkIndexedDBGamesExist";
 
+// classes
+import Auth from "../../utils/auth";
 
 import { useGameContext } from "../../utils/GameStateContext";
 
@@ -30,7 +32,7 @@ import {
   UPDATE_STREAK,      RESHUFFLE,                  SHOW_PLAYER_TURN_ICON,    BET_AMOUNT,
   SET_TABLE_MESSAGE,  SET_USER_HAD_TURN,          UPDATE_DEAL_HAND,         SET_DEALER_DOWN_CARD,
   USER_DOUBLED,       UPDATE_PLAYERS,             UPDATE_PLAY_BUTTONS,      UPDATE_BET_BUTTONS,
-  RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE
+  RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE,         LOGGED_IN
 } from "../../utils/actions";
 
 const CasinoTable = (): JSX.Element => {
@@ -79,6 +81,8 @@ const CasinoTable = (): JSX.Element => {
     const checkGames = async () => {
       const gameExists = await checkIndexedDBGamesExist();
       console.log("gameExists", gameExists);
+
+      // if the game data exists load it
       if (gameExists) {
         console.log("gameExists.game.scoreTotal",gameExists.game.scoreTotal);
         state.updateGameState(
@@ -99,18 +103,49 @@ const CasinoTable = (): JSX.Element => {
         setUpShoe(numDecks);
       }
       else {
-        state.updateGameState(
-          { newDispatches: 
-            [ 
-              { which: POPUP_MESSAGE,     data: WELCOME_MESSAGE() },
-              { which: POPUP_TITLE,       data: "WELCOME" },
-              { which: SHOW_POPUP,        data: true },
-              { which: SHOW_PICK_SPOT,    data: false },
-              { which: SHOW_JOIN_FORM_OK, data: false },
-              { which: SHOW_JOIN_FORM,    data: true },
-            ]
+
+        // if there is no game data in IndexedDB, this may be a new user, or they may have deleted local data.
+        // first, check to see if they are logged in with a valid token
+        if (Auth.loggedIn()) {
+
+          // firstly, show the logout button
+          state.updateGameState({ newDispatches: [{ which: LOGGED_IN, data: true }]});
+          // if they are logged in, then they likely have deleted local storage
+          // check if they are online
+          if (onlineStatus) {
+            
+            // try to fetch game data from server
           }
-        );
+          else {
+            // if they are logged in, and have no local game data
+            // show game unavailable till they get a connection
+            // If we don't do this, they could just keep resetting local storage and never have to pay
+            // we assume if they are actually a new user they would still have an internet connection as they just downloaded the app.
+          }
+        }
+        else {
+          // if they aren't logged in, and have no local game data, they may be new
+          // are they online?
+          if (onlineStatus) {
+            // if they are online, show the join form
+            state.updateGameState(
+              { newDispatches: 
+                [ 
+                  { which: POPUP_MESSAGE,     data: WELCOME_MESSAGE() },
+                  { which: POPUP_TITLE,       data: "WELCOME" },
+                  { which: SHOW_POPUP,        data: true },
+                  { which: SHOW_PICK_SPOT,    data: false },
+                  { which: SHOW_JOIN_FORM_OK, data: false },
+                  { which: SHOW_JOIN_FORM,    data: true },
+                ]
+              }
+            );
+          }
+          else {
+            // if they aren't online, show unavailable until they get a connection
+          }
+          
+        }
       }
     }
     checkGames();

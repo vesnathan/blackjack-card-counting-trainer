@@ -3,6 +3,8 @@ import './scoreBar.component.css';
 import OnlineIcon from "../onlineIcon/onlineIcon.component";
 import { useGameContext } from "../../utils/GameStateContext";
 
+import Auth from "../../utils/auth";
+
 import { 
   LOGGED_IN,
   SHOW_POPUP,
@@ -35,6 +37,7 @@ const ScoreBar = (): JSX.Element => {
         ]
       }
     ); 
+    Auth.logout();
   }
 
   return (
