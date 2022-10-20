@@ -167,6 +167,24 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     return false;
   }
 
+  const checkBJ = () => {
+
+    // check if player has BJ
+    if (players[playersTurn].handCount === 21 && players[playersTurn].hand.length === 2) {
+      state.updateGameState({ newDispatches: [{ which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playersTurn, data: "BLACKJACK!!!" } }]});
+      setTimeout(()=>{
+        state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
+      }, 2000) ;
+      return true;    
+    }
+    return false;  
+  }
+
+  const nextPlayer = () => {
+    state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
+    state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
+  }
+
   useEffect(()=>{
     if (!firstRender) {
       state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
@@ -184,6 +202,9 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
         state.updateGameState({ newDispatches: [{ which: UPDATE_DEAL_COUNT }]});
       }
       else {
+        const playerHasBJ = checkBJ();
+
+
         switch (players[playersTurn].playerType) {
           case "ai":
             console.log("ai "+playersTurn+": ", players[playersTurn].handCount );
@@ -199,20 +220,12 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
             }
 
-            // check if player has BJ
-            if (players[playersTurn].handCount === 21 && players[playersTurn].hand.length === 2) {
-              state.updateGameState({ newDispatches: [
-                { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "BLACKJACK!!!" } },
-                { which: SET_PLAYERS_TURN,          data: (playersTurn === 5) ? 0 : playersTurn+1 }
-              ]}); 
-            }
-
             setTimeout(()=> { 
               const aiBusted = checkBusted();
               if (!aiBusted) {
                 if (players[playersTurn].handCount > 16) {
 
-                  state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
+                  nextPlayer();
                 }
                 else {
                   setTimeout(()=>{
@@ -223,7 +236,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
               else {
                 setTimeout(() => {
                   state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
-                  state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
+                  nextPlayer();
                 },2000);
               }
             },2000);
@@ -255,16 +268,13 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
               state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: false }}]});
             }
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
-            state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
-
-            // check if player has BJ
-            if (players[playersTurn].handCount === 21 && players[playersTurn].hand.length === 2) {
-              state.updateGameState({ newDispatches: [
-                { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "BLACKJACK!!!" } },
-                { which: SET_PLAYERS_TURN,          data: (playersTurn === 5) ? 0 : playersTurn+1 }
-              ]}); 
+           
+            if (playerHasBJ && playersTurn === playerPosition) {
+              state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
             }
-
+            else {
+              state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
+            }
             if (hitCard) {
               state.updateGameState({ newDispatches: [
                 { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
@@ -281,12 +291,12 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
               setTimeout(() => {
                 state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
                 state.updateGameState({ newDispatches: [{ which: BET_AMOUNT, data: [[0],[0],[0]] }]});
-                state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
+                nextPlayer();
               },2000);
             }
             else if (userDoubled) {
               state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
-              state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
+              nextPlayer();
             }
           break;
 
@@ -302,7 +312,8 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             state.updateGameState({ newDispatches: [
               { which: UPDATE_PLAYER_HAND_COUNT,  data: { player: playersTurn, card: shoeCards[cardsDealt] } }
             ]}); 
-          }      
+          }    
+ 
           setTimeout(()=> { 
             const dealerBusted = checkBusted();
             if (!dealerBusted) {

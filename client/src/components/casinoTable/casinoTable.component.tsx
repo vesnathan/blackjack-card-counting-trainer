@@ -28,11 +28,12 @@ import {
   UPDATE_CHIPS,       UPDATE_SCORE,               UPDATE_POSITION,          UPDATE_LEVEL, 
   SHOW_PICK_SPOT,     SHOW_BET_BUTTONS,           GAME_RULES,               POPUP_MESSAGE,
   SHOW_POPUP,         SHOW_JOIN_FORM_OK,          SHOW_JOIN_FORM,           POPUP_TITLE,        
-  UPDATE_SHOE,        UPDATE_COUNT,               UPDATE_CARDS_DEALT,       UPDATE_DEALER_CUT_CARD, 
+  UPDATE_SHOE,        UPDATE_COUNT,               UPDATE_DEALER_CUT_CARD, 
   UPDATE_STREAK,      RESHUFFLE,                  SHOW_PLAYER_TURN_ICON,    BET_AMOUNT,
   SET_TABLE_MESSAGE,  SET_USER_HAD_TURN,          UPDATE_DEAL_HAND,         SET_DEALER_DOWN_CARD,
   USER_DOUBLED,       UPDATE_PLAYERS,             UPDATE_PLAY_BUTTONS,      UPDATE_BET_BUTTONS,
-  RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE,         LOGGED_IN
+  RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE,         LOGGED_IN,
+  RESET_CARDS_DEALT
 } from "../../utils/actions";
 
 const CasinoTable = (): JSX.Element => {
@@ -78,43 +79,90 @@ const CasinoTable = (): JSX.Element => {
     shuffleShoe(tempShoe);
 
     const stackDeck = [
+      // P1 C1
       {
         suit: "H",
         pip: "A",
         count: -1,
         points: 11
-      },{
+      },
+      // P2 C1
+      {
         suit: "H",
         pip: "2",
         count: -1,
         points: 2
-      },{
+      },
+      // P3 C1
+      {
         suit: "H",
-        pip: "3",
+        pip: "A",
         count: -1,
-        points: 3
-      },{
+        points: 11
+      },
+      // P4 C1
+      {
         suit: "H",
         pip: "4",
         count: -1,
         points: 4
-      },{
+      },
+      // P5 C1
+      {
         suit: "H",
         pip: "5",
         count: -1,
         points: 5
-      },{
+      },
+      // D C1
+      {
         suit: "H",
-        pip: "6",
+        pip: "A",
         count: -1,
-        points: 6
-      },{
+        points: 11
+      },
+      // P1 C2
+      {
         suit: "H",
         pip: "K",
         count: -1,
         points: 10
       },
-      
+      // P2 C2
+      {
+        suit: "H",
+        pip: "K",
+        count: -1,
+        points: 10
+      },
+      // P3 C2
+      {
+        suit: "H",
+        pip: "K",
+        count: -1,
+        points: 10
+      },
+      // P4 C2
+      {
+        suit: "H",
+        pip: "K",
+        count: -1,
+        points: 10
+      },
+      // P5 C2
+      {
+        suit: "H",
+        pip: "A",
+        count: -1,
+        points: 11
+      },
+      // D C2
+      {
+        suit: "H",
+        pip: "K",
+        count: -1,
+        points: 10
+      },
 
     ];  // for testing
 
@@ -210,7 +258,7 @@ const CasinoTable = (): JSX.Element => {
     state.updateGameState( { newDispatches: [ 
       { which: UPDATE_SHOE, data: currentShoe } ,
       { which: RESHUFFLE, data: false } ,
-      { which: UPDATE_CARDS_DEALT, data: 0 },
+      { which: RESET_CARDS_DEALT, data: true },
       { which: UPDATE_COUNT, data: 0 }, 
       { which: UPDATE_DEALER_CUT_CARD, data:  (numDecks*10)-Math.floor(Math.random()*52)+26 } 
     ] } );
