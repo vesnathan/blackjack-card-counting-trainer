@@ -135,6 +135,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
         break;
     }   
   }
+
   const checkBusted = () => {
     if (players[playersTurn].handCount > 21) {
       const acesInHandWorthEleven: Array<any> = players[playerPosition].hand.filter((card:any) => card.pip === "A" && card.points === 11);    
@@ -165,11 +166,14 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     }
     return false;
   }
+
   useEffect(()=>{
     if (!firstRender) {
       state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
       if (players[playersTurn].hand.length < 2) {
-
+        console.log("dealCounter",dealCounter);
+        console.log("cardsDealt",cardsDealt);
+        console.log("shoeCards[cardsDealt]",shoeCards[cardsDealt]);
         state.updateGameState({ newDispatches: [
           { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
         ]}); 
@@ -195,10 +199,19 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
             }
 
+            // check if player has BJ
+            if (players[playersTurn].handCount === 21 && players[playersTurn].hand.length === 2) {
+              state.updateGameState({ newDispatches: [
+                { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "BLACKJACK!!!" } },
+                { which: SET_PLAYERS_TURN,          data: (playersTurn === 5) ? 0 : playersTurn+1 }
+              ]}); 
+            }
+
             setTimeout(()=> { 
               const aiBusted = checkBusted();
               if (!aiBusted) {
-                if (players[playersTurn].handCount > 16) { 
+                if (players[playersTurn].handCount > 16) {
+
                   state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
                 }
                 else {
@@ -221,7 +234,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             console.log("user: ", players[playersTurn].handCount );
             
             // Randomly show Spacey Popup
-            if (Math.random() < 1) {
+            if (Math.random() < .01) {
               state.updateGameState(
                 { newDispatches: 
                   [ 
@@ -243,6 +256,14 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             }
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
+
+            // check if player has BJ
+            if (players[playersTurn].handCount === 21 && players[playersTurn].hand.length === 2) {
+              state.updateGameState({ newDispatches: [
+                { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "BLACKJACK!!!" } },
+                { which: SET_PLAYERS_TURN,          data: (playersTurn === 5) ? 0 : playersTurn+1 }
+              ]}); 
+            }
 
             if (hitCard) {
               state.updateGameState({ newDispatches: [

@@ -1,7 +1,7 @@
 import './playingCard.component.css';
 import { useEffect, useState } from 'react';
 import { useGameContext } from "../../utils/GameStateContext";
-import { flushSync } from 'react-dom';
+
 
 // Custom Components
 import { PipA, Pip2, Pip3, Pip4, Pip5, Pip6, Pip7, Pip8, Pip9, Pip10, PipJ, PipQ, PipK } from "../cardLayouts/cardLayouts.component";
@@ -10,9 +10,7 @@ import { PipA, Pip2, Pip3, Pip4, Pip5, Pip6, Pip7, Pip8, Pip9, Pip10, PipJ, PipQ
 import Grid from '@mui/material/Grid';
 
 import { 
-  UPDATE_PLAYER_HAND_CARDS,
   UPDATE_CARDS_DEALT,
-  UPDATE_PLAYER_HAND_COUNT
 } from "../../utils/actions";
 
 
@@ -30,13 +28,10 @@ const [showCard, setShowCard] = useState(false);
 const state: any = useGameContext();
 const { 
   shoeCards, 
-  cardsDealt,
-  playersTurn
+  cardsDealt
 } = state.state.appStatus;
 
-const { 
-  players
-} = state.state;
+
 
 setTimeout(() => {
   setShowCard(true);
@@ -100,14 +95,10 @@ setTimeout(() => {
   }
 
 useEffect(() => {
-
+    console.log("cardsDealt in PlayeingCard", cardsDealt);
     state.updateGameState({ newDispatches: [
       { which: UPDATE_CARDS_DEALT,  data:  { card: shoeCards[cardsDealt], addToCount: true } }
     ]}); 
-    // state.updateGameState({ newDispatches: [
-    //   { which: UPDATE_PLAYER_HAND_COUNT,  data:  { card: shoeCards[cardsDealt], player: playersTurn } }
-    // ]}); 
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
 },[]);
  

@@ -74,9 +74,53 @@ const CasinoTable = (): JSX.Element => {
 
   // useEffect entry point
   useEffect( () => {
-    const tempShoe = setUpShoe(numDecks);
+    let tempShoe = setUpShoe(numDecks);
     shuffleShoe(tempShoe);
-    state.updateGameState({ newDispatches: [{ which: UPDATE_SHOE,    data: tempShoe }] });
+
+    const stackDeck = [
+      {
+        suit: "H",
+        pip: "A",
+        count: -1,
+        points: 11
+      },{
+        suit: "H",
+        pip: "2",
+        count: -1,
+        points: 2
+      },{
+        suit: "H",
+        pip: "3",
+        count: -1,
+        points: 3
+      },{
+        suit: "H",
+        pip: "4",
+        count: -1,
+        points: 4
+      },{
+        suit: "H",
+        pip: "5",
+        count: -1,
+        points: 5
+      },{
+        suit: "H",
+        pip: "6",
+        count: -1,
+        points: 6
+      },{
+        suit: "H",
+        pip: "K",
+        count: -1,
+        points: 10
+      },
+      
+
+    ];  // for testing
+
+    const newTempShoe = [ ...stackDeck, ...tempShoe ];
+    console.log("newTempShoe", newTempShoe);
+    state.updateGameState({ newDispatches: [{ which: UPDATE_SHOE,    data: newTempShoe }] });
     state.updateGameState({ newDispatches: [{ which: SHOW_PICK_SPOT, data: true }]});
     const checkGames = async () => {
       const gameExists = await checkIndexedDBGamesExist();
