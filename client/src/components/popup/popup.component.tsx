@@ -5,11 +5,11 @@ import './popup.component.css';
 
 import Grid from '@mui/material/Grid';
 
-import JoinForm from "../joinForm/joinForm.component";
-import JoinFormOk from "../joinForm/joinFormOk/joinFormOk.component";
-import LoginForm from "../loginForm/loginForm.component";
-import StripePayment from "../Stripe/StripePayment";
-
+import JoinForm       from "../joinForm/joinForm.component";
+import JoinFormOk     from "../joinForm/joinFormOk/joinFormOk.component";
+import LoginForm      from "../loginForm/loginForm.component";
+import StripePayment  from "../Stripe/StripePayment";
+import SpaceyForm     from "../spaceyForm/spaceyForm.component";
 
 const Popup = (): JSX.Element => {
 
@@ -23,7 +23,8 @@ const Popup = (): JSX.Element => {
     popupTitle, 
     popupMessage,
     popupCharacter,
-    showStripeForm
+    showStripeForm,
+    showSpaceyForm
   } = state.state.appStatus;
 
   return (
@@ -59,6 +60,11 @@ const Popup = (): JSX.Element => {
             {
               showStripeForm ?
                 <StripePayment />
+              : null
+            }
+            {
+              showSpaceyForm ?
+                <SpaceyForm />
               : null
             }
             

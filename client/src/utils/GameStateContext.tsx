@@ -17,7 +17,8 @@ function reducer(state: any, action: any) {
         tempStatus.popupTitle = action.payload;
         return { ...state, appStatus: tempStatus }
 
-      case "updateScore" : 
+      case "updateScore" :
+        console.log(action.payload); 
         tempStatus.scoreTotal = action.payload;
         return { ...state, appStatus: tempStatus }
 
@@ -85,7 +86,15 @@ function reducer(state: any, action: any) {
       case "showLoginFormButtonSpinner" :
         tempStatus.showLoginFormButtonSpinner = action.payload;
           return { ...state, appStatus: tempStatus }
-      
+
+      case "showSpaceyFormButtonSpinner" :
+        tempStatus.showSpaceyFormButtonSpinner = action.payload;
+          return { ...state, appStatus: tempStatus }
+          
+      case "showSpaceyForm" :
+        tempStatus.showSpaceyForm = action.payload;
+          return { ...state, appStatus: tempStatus }
+
       case "showLoginForm" :
         tempStatus.showLoginForm = action.payload;
           return { ...state, appStatus: tempStatus }
@@ -206,8 +215,11 @@ function reducer(state: any, action: any) {
         tempStatus.showCount = action.payload;
         return { ...state, appStatus: tempStatus }
 
+      case "spaceyFormMessage":
+        tempStatus.spaceyFormMessage = action.payload;
+        return { ...state, appStatus: tempStatus }
 
-
+        
 
 
       case "updatePlayerHandResult" :

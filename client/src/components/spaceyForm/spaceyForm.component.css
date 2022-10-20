@@ -1,0 +1,29 @@
+input {
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+#guessButton {
+  line-height: 1.75;
+}
+
+::-moz-placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(62, 62, 62);
+  padding-left: 10px;
+}
+
+:-ms-input-placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(62, 62, 62);
+  padding-left: 10px;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgb(62, 62, 62);
+  padding-left: 10px;
+}
+
+.spaceyFormMessage {
+  font-size: 150%;
+  padding-top: 1%;
+  color: #ffffff;
+}/*# sourceMappingURL=spaceyForm.component.css.map */

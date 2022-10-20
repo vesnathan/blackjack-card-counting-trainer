@@ -220,7 +220,7 @@ const JoinForm = (): React.ReactElement  => {
         
         <Grid container  sx={{mt: 2}} >
           <Grid item sm={6} container justifyContent="left">
-            <Button id="loginButton" variant="contained" color="primary" sx={{width: "90%"}} onClick={(e) => {showLoginFormFunction(e)}}>{loginButtonText}</Button>
+            <Button id="joinButton" variant="contained" color="primary" sx={{width: "90%"}} onClick={(e) => {showLoginFormFunction(e)}}>{loginButtonText}</Button>
           </Grid>
           <Grid item sm={6} container justifyContent="right">
             <Button id="joinButton" variant="contained" color="primary" sx={{width: "90%"}} onClick={(e) => { handleSubmit(e)}}>

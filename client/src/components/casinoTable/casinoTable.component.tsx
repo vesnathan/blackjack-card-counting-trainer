@@ -39,8 +39,7 @@ const CasinoTable = (): JSX.Element => {
   const { betButtons, playButtons } = state.state;
   const { numDecks, tableOverlays } = state.state.gameRules;
   const { players } = state.state;
-  const { 
-    firstVisit,  
+  const {  
     dealerCutCard, 
     cardsDealt, 
     showPopup, 
@@ -68,6 +67,7 @@ const CasinoTable = (): JSX.Element => {
     return () => {
       clearInterval(onlineCheck)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   // useEffect entry point
@@ -80,6 +80,7 @@ const CasinoTable = (): JSX.Element => {
       const gameExists = await checkIndexedDBGamesExist();
       console.log("gameExists", gameExists);
       if (gameExists) {
+        console.log("gameExists.game.scoreTotal",gameExists.game.scoreTotal);
         state.updateGameState(
           { newDispatches: 
             [ 
