@@ -16,8 +16,9 @@ export const LOGIN_FORM_STATUS = "loginFormStatus";
 export const LOGGED_IN = "loggedIn";
 export const SHOW_STRIPE_FORM = "showStripeForm";
 export const POPUP_CHARACTER = "popupCharacter";
-export const WHAT_COUNT_FORM = "showWhatCountForm";
-
+export const SHOW_SPACEY_FORM = "showSpaceyForm";
+export const SHOW_SPACEY_FORM_BUTTON_SPINNER = "showSpaceyFormButtonSpinner";
+export const SPACEY_FORM_MESSAGE = "spaceyFormMessage";
 
 // button stuff
 export const SHOW_BET_BUTTONS = "showBetButtons";

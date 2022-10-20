@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
   PaymentElement,
   useStripe,
@@ -15,19 +15,13 @@ import {
   UPDATE_BET_BUTTONS
 } from "../../utils/actions";
 
+import { SHOW_STRIPE_FORM } from "../../utils/actions";
+
 export default function CheckoutForm() {
   const state: any = useGameContext();
 
   const { chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel } = state.state.appStatus;
   const { gameRules } = state.state;
-
-  const chipsTotalRef = useRef(chipsTotal);
-  const scoreTotalRef = useRef(scoreTotal);
-  const playerPositionRef = useRef(playerPosition);
-  const userStreakRef = useRef(userStreak);
-  const gameLevelRef = useRef();
-  const gameRulesRef = useRef(gameRules);
-
 
   const stripe = useStripe();
   const elements = useElements();
@@ -74,8 +68,6 @@ export default function CheckoutForm() {
     e.preventDefault();
 
     if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       return;
     }
 
@@ -92,15 +84,16 @@ export default function CheckoutForm() {
       if (paymentIntent.status === "succeeded"){
         state.updateGameState( { newDispatches: [ { which: UPDATE_CHIPS, data: 1000 } ] } );
         state.updateGameState( { newDispatches: [ { which: SHOW_POPUP, data: false } ] } );
+        state.updateGameState( { newDispatches: [ { which: SHOW_POPUP, data: false } ] } );
+        state.updateGameState( { newDispatches: [ { which: SHOW_STRIPE_FORM, data: false } ] } );
         state.updateGameState({newDispatches:[{ which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } }]});
         saveGame(
-          chipsTotalRef.current.value, 
-          scoreTotalRef.current.value, 
-          playerPositionRef.current.value, 
-          userStreakRef.current.value, 
-          // @ts-ignore
-          gameLevelRef.current.value, 
-          gameRulesRef.current.value,
+          chipsTotal, 
+          scoreTotal, 
+          playerPosition, 
+          userStreak, 
+          gameLevel, 
+          gameRules,
         );
       }
     }

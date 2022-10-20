@@ -20,15 +20,13 @@ import {
   LOGIN_FORM_MESSAGE,
   LOGIN_FORM_STATUS,
   LOGGED_IN,
-  SHOW_PICK_SPOT
+  SHOW_PICK_SPOT,
+  SHOW_POPUP
 } from "../../utils/actions";
 
 import { useMutation } from '@apollo/client';
 import{ LOGIN_USER } from  "../../storage/mongoDB/mutations";
 
-import { 
-  SHOW_POPUP
-} from "../../utils/actions";
 
 const LoginForm = (): React.ReactElement  => {
 

@@ -27,7 +27,7 @@ import {
   POPUP_TITLE,
   SHOW_POPUP,
   POPUP_CHARACTER,
-  WHAT_COUNT_FORM,
+  SHOW_SPACEY_FORM,
   SHOW_COUNT
 } from "../../utils/actions";
 
@@ -136,8 +136,6 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     }   
   }
   const checkBusted = () => {
-    console.log("checkBusted players["+playersTurn+"].handCount", players[playersTurn].handCount);
-    console.log("checkBusted players["+playersTurn+"].hand", players[playersTurn].hand);
     if (players[playersTurn].handCount > 21) {
       const acesInHandWorthEleven: Array<any> = players[playerPosition].hand.filter((card:any) => card.pip === "A" && card.points === 11);    
       if (acesInHandWorthEleven.length > 0) {
@@ -221,28 +219,31 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
           case "user":         
             console.log("user: ", players[playersTurn].handCount );
-            // check if player has a hard 9-11 and can double
-            if (players[playersTurn].hand.length === 2 && players[playersTurn].handCount >=9 && players[playersTurn].handCount <= 11) {
-              state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: false }}]});
-            }
-            state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
-            state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
-            if (Math.random() < .2) {
+            
+            // Randomly show Spacey Popup
+            if (Math.random() < 1) {
               state.updateGameState(
                 { newDispatches: 
                   [ 
                     { which: POPUP_MESSAGE,     data: WHAT_COUNT() },
                     { which: POPUP_TITLE,       data: "WHAT'S THE COUNT?" },
                     { which: SHOW_POPUP,        data: true },
-                    { which: POPUP_CHARACTER,   data: Spacey },  
-                    { which: WHAT_COUNT_FORM,   data: true },
+                    { which: POPUP_CHARACTER,   data: Spacey },
+                    { which: SHOW_SPACEY_FORM,  data: true },
                     { which: SHOW_PLAY_BUTTONS, data: false },
-                    { which: SHOW_COUNT, data: false },
-
+                    { which: SHOW_COUNT,        data: false },
                   ]
                 }
               );
             }
+
+            // check if player has a hard 9-11 and can double
+            if (players[playersTurn].hand.length === 2 && players[playersTurn].handCount >=9 && players[playersTurn].handCount <= 11) {
+              state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: false }}]});
+            }
+            state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
+            state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
+
             if (hitCard) {
               state.updateGameState({ newDispatches: [
                 { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
@@ -283,11 +284,9 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           }      
           setTimeout(()=> { 
             const dealerBusted = checkBusted();
-            console.log(players[playersTurn].handCount);
             if (!dealerBusted) {
               if (players[playersTurn].handCount > 16) { 
                 setTimeout(()=> { 
-                  console.log("END HAND DEALER DIDN'T BUST");
                   calcPayout();
                   resetHand();
                 },2000);
@@ -306,15 +305,15 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           },2000);
           break;   
         }
+        saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);
       }
-      saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);
+      
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[firstRender, playersTurn, hitCard]);
 
   useEffect(() => {
     if (dealCounter <= 12) {
-      console.log("in main useEffect dealCounter <= 12");
       if (dealCounter === 12) {
         state.updateGameState({ newDispatches: [{ which: UPDATE_DEAL_COUNT }]});
         state.updateGameState({ newDispatches: [ { which: SET_PLAYERS_TURN, data: 1 } ] });
