@@ -97,14 +97,14 @@ export default function CheckoutForm() {
         );
       }
     }
-
-    // @ts-ignore
-    if (error.type === "card_error" || error.type === "validation_error") {
-      // @ts-ignore
-      setMessage(error.message);
-    } else {
-      // @ts-ignore
-      setMessage("An unexpected error occurred.");
+    else {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        // @ts-ignore
+        setMessage(error.message);
+      } else {
+        // @ts-ignore
+        setMessage("An unexpected error occurred.");
+      }
     }
 
     setIsLoading(false);
