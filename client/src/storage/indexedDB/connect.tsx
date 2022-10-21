@@ -10,10 +10,11 @@ const initGamesDb = async () => {
           return;
         }
         db.createObjectStore('BJCTTGames', { keyPath: 'id', autoIncrement: true });
+        console.log("IDB BJCTTGames Created");
       },
     });
   } catch (err) {
-    console.log(err);
+    console.log("ERROR: IDB BJCTTGames NOT CREATED")
   }
 }
 

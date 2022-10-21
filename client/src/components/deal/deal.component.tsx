@@ -137,24 +137,40 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
   }
 
   const checkBusted = () => {
+    console.log("players["+playersTurn+"] in checkBusted");
     if (players[playersTurn].handCount > 21) {
+      console.log("in busted > 21");
       const acesInHandWorthEleven: Array<any> = players[playerPosition].hand.filter((card:any) => card.pip === "A" && card.points === 11);    
       if (acesInHandWorthEleven.length > 0) {
+        console.log("in busted acesInHandWorthEleven > 0");
+        let changedOneAceAlready = false;
         const newPlayersHand = players[playersTurn].hand.map(
           (obj:any) => {
-            if (obj.points === 11) {
+            if (obj.points === 11 && !changedOneAceAlready) {
+              
+              console.log("in busted acesInHandWorthEleven > 0 !changedOneAceAlready");
+              changedOneAceAlready = true;
               return {...obj, points: 1}
             }
             return obj;
           }
         );
-        const newHandCount = players[playersTurn].hand.reduce((accumulator: number, card: any) => {
-          return accumulator + ((card.points === 11)? 1 : card.points) ;
+        const newHandCount = newPlayersHand.reduce((accumulator: number, card: any) => {
+          return accumulator + card.points;
         }, 0);
         state.updateGameState({ newDispatches: [
           { which: OVERWRITE_PLAYERS_HAND,  data: { whichPlayer: playersTurn, data: { hand: newPlayersHand, handCount: newHandCount } } }
         ]});
-        return false;  
+        if (newHandCount <= 21) {
+          return false; 
+        }
+        else {        
+          state.updateGameState({ newDispatches: [
+          { which: UPDATE_PLAYER_HAND_RESULT,  data: { whichPlayer: playersTurn, data: "BUSTED" } },
+          { which: PLAYER_BUSTED,  data: { whichPlayer: playersTurn, data: true } },
+        ]}); 
+          return true;
+        } 
       }
       else {
         state.updateGameState({ newDispatches: [
@@ -173,15 +189,28 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     if (players[playersTurn].handCount === 21 && players[playersTurn].hand.length === 2) {
       state.updateGameState({ newDispatches: [{ which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playersTurn, data: "BLACKJACK!!!" } }]});
       setTimeout(()=>{
-        state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
+        if (playersTurn !== 0) {
+          nextPlayer();
+        }
       }, 2000) ;
       return true;    
     }
     return false;  
   }
 
+  const dealCard = (caller: string) => {
+    console.log(playersTurn+": dealCard caller", caller);
+    state.updateGameState({ newDispatches: [
+      { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
+    ]}); 
+    state.updateGameState({ newDispatches: [
+      { which: UPDATE_PLAYER_HAND_COUNT,  data: { player: playersTurn, card: shoeCards[cardsDealt] } }
+    ]});
+    state.updateGameState({ newDispatches: [{ which: UPDATE_DEAL_COUNT }]});
+  }
+  
   const nextPlayer = () => {
-    state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
+    // state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
     state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
   }
 
@@ -189,63 +218,44 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     if (!firstRender) {
       state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
       if (players[playersTurn].hand.length < 2) {
-        console.log("dealCounter",dealCounter);
-        console.log("cardsDealt",cardsDealt);
-        console.log("shoeCards[cardsDealt]",shoeCards[cardsDealt]);
-        state.updateGameState({ newDispatches: [
-          { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
-        ]}); 
-        state.updateGameState({ newDispatches: [
-          { which: UPDATE_PLAYER_HAND_COUNT,  data: { player: playersTurn, card: shoeCards[cardsDealt] } }
-        ]}); 
-
-        state.updateGameState({ newDispatches: [{ which: UPDATE_DEAL_COUNT }]});
+        dealCard("!firstRender"); 
       }
       else {
         const playerHasBJ = checkBJ();
-
-
         switch (players[playersTurn].playerType) {
+
+          // ------------------------------------------------------------------------------------------------------- AI
           case "ai":
             console.log("ai "+playersTurn+": ", players[playersTurn].handCount );
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: true }]});
-            if (players[playersTurn].handCount < 17) {
-
-              state.updateGameState({ newDispatches: [
-                { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
-              ]});
-              state.updateGameState({ newDispatches: [
-                { which: UPDATE_PLAYER_HAND_COUNT,  data: { player: playersTurn, card: shoeCards[cardsDealt] } }
-              ]}); 
-
+            if (hitCard) {
+              dealCard("hitCard");
+              state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
             }
-
-            setTimeout(()=> { 
-              const aiBusted = checkBusted();
+            const aiBusted = checkBusted();
+            console.log(playersTurn+" busted: ",aiBusted);
+            setTimeout(()=> {  
               if (!aiBusted) {
                 if (players[playersTurn].handCount > 16) {
-
                   nextPlayer();
                 }
                 else {
-                  setTimeout(()=>{
-                      state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
-                    }, 1000)
-                  }
+                  state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});  
+                }
               }
-              else {
-                setTimeout(() => {
-                  state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
-                  nextPlayer();
-                },2000);
+              else {   
+                state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
+                 nextPlayer();
               }
             },2000);
             break;
             
 
+          // ------------------------------------------------------------------------------------------------------- USER
           case "user":         
             console.log("user: ", players[playersTurn].handCount );
-            
+            state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
+
             // Randomly show Spacey Popup
             if (Math.random() < .01) {
               state.updateGameState(
@@ -267,21 +277,16 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             if (players[playersTurn].hand.length === 2 && players[playersTurn].handCount >=9 && players[playersTurn].handCount <= 11) {
               state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: false }}]});
             }
-            state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
+            
            
-            if (playerHasBJ && playersTurn === playerPosition) {
+            if (playerHasBJ /*&& playersTurn === playerPosition*/) {
               state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
             }
             else {
               state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
             }
             if (hitCard) {
-              state.updateGameState({ newDispatches: [
-                { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
-              ]});  
-              state.updateGameState({ newDispatches: [
-                { which: UPDATE_PLAYER_HAND_COUNT,  data: { player: playersTurn, card: shoeCards[cardsDealt] } }
-              ]}); 
+              dealCard("user hit");
             }
              
             const playerBusted = checkBusted();
@@ -294,47 +299,40 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
                 nextPlayer();
               },2000);
             }
-            else if (userDoubled) {
+            else if (userDoubled || (players[playersTurn].hand.length > 2 && players[playersTurn].handCount === 21)) {
               state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
               nextPlayer();
             }
           break;
 
+          // ------------------------------------------------------------------------------------------------------- DEALER
           case "dealer":            
           console.log("dealer: ", players[playersTurn].handCount );
           state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
           state.updateGameState({ newDispatches: [{ which: SET_DEALER_DOWN_CARD,  data: true }]});
           
-          if (players[playersTurn].handCount < 17) {             
-            state.updateGameState({ newDispatches: [
-              { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
-            ]});
-            state.updateGameState({ newDispatches: [
-              { which: UPDATE_PLAYER_HAND_COUNT,  data: { player: playersTurn, card: shoeCards[cardsDealt] } }
-            ]}); 
-          }    
+
+          if (hitCard) {
+            dealCard("hitCard");
+            state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
+          }  
  
+          const dealerBusted = checkBusted();
           setTimeout(()=> { 
-            const dealerBusted = checkBusted();
             if (!dealerBusted) {
-              if (players[playersTurn].handCount > 16) { 
-                setTimeout(()=> { 
-                  calcPayout();
-                  resetHand();
-                },2000);
-              }
-              else {
+              if (players[playersTurn].handCount <= 16) { 
                 state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
-              }
-            }
-            else {
-              setTimeout(() => {
-                state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
                 calcPayout();
                 resetHand();
-                },2000);
+              } 
+            }
+            else {
+              state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
+              calcPayout();
+              resetHand();
             }
           },2000);
+
           break;   
         }
         saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);
@@ -342,7 +340,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
       
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[firstRender, playersTurn, hitCard]);
+  },[ playersTurn, hitCard]);
 
   useEffect(() => {
     if (dealCounter <= 12) {
