@@ -5,6 +5,8 @@ dotenv.config();
 
 const _SERVER_PORT = process.env.SERVER_PORT;
 const _STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+// eslint-disable-next-line no-unused-vars
+const _STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
 
 const express = require("express");
 const stripe = require("stripe")(_STRIPE_SECRET_KEY);

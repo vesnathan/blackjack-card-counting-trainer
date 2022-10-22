@@ -2,6 +2,7 @@
   "name": "blackjack-card-counting-trainer-client",
   "version": "0.1.0",
   "description": "Client for Black Jack Card Counting Training App",
+  "proxy": "http://localhost:3002",
   "homepage": "../",
   "dependencies": {
     "@apollo/client": "^3.7.0",
