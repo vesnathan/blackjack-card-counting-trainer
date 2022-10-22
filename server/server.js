@@ -4,12 +4,13 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const _SERVER_PORT = process.env.SERVER_PORT;
-const _STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+// const _STRIPE_SECRET_KEY = process.env.STRIPE_SK;
+const _STRIPE_SK = process.env.STRIPE_SK_TEST;
 // eslint-disable-next-line no-unused-vars
-const _STRIPE_PUBLIC_KEY = process.env.STRIPE_PUBLIC_KEY;
+const _STRIPE_PK = process.env.STRIPE_PK;
 
 const express = require("express");
-const stripe = require("stripe")(_STRIPE_SECRET_KEY);
+const stripe = require("stripe")(_STRIPE_SK);
 const { ApolloServer } = require("apollo-server-express");
 const path = require("path");
 
