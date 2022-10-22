@@ -138,6 +138,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
   const checkBusted = () => {
     console.log("players["+playersTurn+"] in checkBusted");
+    console.log("players["+playersTurn+"]", players[playerPosition].hand);
     if (players[playersTurn].handCount > 21) {
       console.log("in busted > 21");
       const acesInHandWorthEleven: Array<any> = players[playerPosition].hand.filter((card:any) => card.pip === "A" && card.points === 11);    
