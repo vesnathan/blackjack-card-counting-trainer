@@ -64,7 +64,7 @@ const startApolloServer = async (typeDefs, resolvers) => {
   server.applyMiddleware({ app });
 
   db.once("open", () => {
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       // eslint-disable-next-line no-console
       console.log(`API server running on port ${PORT}!`);
       // eslint-disable-next-line no-console
