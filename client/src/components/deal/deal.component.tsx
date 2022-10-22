@@ -257,7 +257,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
 
             // Randomly show Spacey Popup
-            if (Math.random() < .5) {
+            if (Math.random() < .1) {
               state.updateGameState(
                 { newDispatches: 
                   [ 
