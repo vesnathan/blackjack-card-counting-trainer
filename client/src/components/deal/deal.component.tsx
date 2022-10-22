@@ -268,7 +268,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             }
             else {
               // Randomly show Spacey Popup
-              if (Math.random() < .1) {
+              if (Math.random() < .5) {
                 state.updateGameState(
                   { newDispatches: 
                     [ 
