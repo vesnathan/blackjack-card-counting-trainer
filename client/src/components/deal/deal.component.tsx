@@ -257,7 +257,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
 
             // Randomly show Spacey Popup
-            if (Math.random() < .01) {
+            if (Math.random() < .5) {
               state.updateGameState(
                 { newDispatches: 
                   [ 
@@ -322,9 +322,11 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             if (!dealerBusted) {
               if (players[playersTurn].handCount <= 16) { 
                 state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
+              } 
+              else {
                 calcPayout();
                 resetHand();
-              } 
+              }
             }
             else {
               state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
