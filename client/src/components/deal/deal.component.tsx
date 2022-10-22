@@ -257,23 +257,6 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             console.log("user: ", players[playersTurn].handCount );
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
 
-            // Randomly show Spacey Popup
-            if (Math.random() < .1) {
-              state.updateGameState(
-                { newDispatches: 
-                  [ 
-                    { which: POPUP_MESSAGE,     data: WHAT_COUNT() },
-                    { which: POPUP_TITLE,       data: "WHAT'S THE COUNT?" },
-                    { which: SHOW_POPUP,        data: true },
-                    { which: POPUP_CHARACTER,   data: Spacey },
-                    { which: SHOW_SPACEY_FORM,  data: true },
-                    { which: SHOW_PLAY_BUTTONS, data: false },
-                    { which: SHOW_COUNT,        data: false },
-                  ]
-                }
-              );
-            }
-
             // check if player has a hard 9-11 and can double
             if (players[playersTurn].hand.length === 2 && players[playersTurn].handCount >=9 && players[playersTurn].handCount <= 11) {
               state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: false }}]});
@@ -284,7 +267,25 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
               state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
             }
             else {
-              state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
+              // Randomly show Spacey Popup
+              if (Math.random() < .5) {
+                state.updateGameState(
+                  { newDispatches: 
+                    [ 
+                      { which: POPUP_MESSAGE,     data: WHAT_COUNT() },
+                      { which: POPUP_TITLE,       data: "WHAT'S THE COUNT?" },
+                      { which: SHOW_POPUP,        data: true },
+                      { which: POPUP_CHARACTER,   data: Spacey },
+                      { which: SHOW_SPACEY_FORM,  data: true },
+                      { which: SHOW_PLAY_BUTTONS, data: false },
+                      { which: SHOW_COUNT,        data: false },
+                    ]
+                  }
+                );
+              }
+              else {
+                state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
+              }
             }
             if (hitCard) {
               dealCard("user hit");
