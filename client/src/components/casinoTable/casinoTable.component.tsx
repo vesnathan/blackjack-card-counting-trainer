@@ -79,7 +79,7 @@ const CasinoTable = (): JSX.Element => {
     shuffleShoe(tempShoe);
 
     const stackDeck: Array<Object> = [
-      
+      /*
       // P1 C1
       {
         suit: "H",
@@ -172,7 +172,7 @@ const CasinoTable = (): JSX.Element => {
         points: 11
       },
       
-
+*/
     ];  // for testing
 
     const newTempShoe = [ ...stackDeck, ...tempShoe ];
