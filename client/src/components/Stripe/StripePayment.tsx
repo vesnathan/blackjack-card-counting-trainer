@@ -10,7 +10,7 @@ import "./Stripe.css";
 // This is a public sample test API key.
 // Don’t submit any personally identifiable information in requests made with this key.
 // Sign in to see your own test API key embedded in code samples.
-const stripePromise = loadStripe("pk_test_L1f0e3XAzjsG7jtp4uN7L9ql");
+const stripePromise = loadStripe("pk_live_51LvezMATqsXJH0231Y8UHVlidJkDo201Vp2Who3ldZOe3sPlEwiTQJxhrgLZM6SJZDeD4qd7G3mZSZdCRYuONZLP00LPhXESXT");
 
 export default function StripePayment() {
   const [clientSecret, setClientSecret] = useState("");
