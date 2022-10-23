@@ -226,6 +226,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
       }
       else {
         console.log("%c ------------- PLAYER -------------" + playersTurn,'background: #222; color: #bada55');
+        // eslint-disable-next-line array-callback-return
         players[playersTurn].hand.map((card: string, index: number) => {
           console.log(card)
         });
@@ -374,6 +375,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
       dealCard("hitCard");
       state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hitCard])
 
   // this useEffect takes care of the deal

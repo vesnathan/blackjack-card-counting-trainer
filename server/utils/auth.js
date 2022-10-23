@@ -24,6 +24,7 @@ module.exports = {
       const { data } = jwt.verify(token, secret, { maxAge: expiration });
       req.user = data;
     } catch {
+      // eslint-disable-next-line no-console
       console.log("Invalid token");
     }
 
