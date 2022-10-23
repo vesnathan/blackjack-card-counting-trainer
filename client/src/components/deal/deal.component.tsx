@@ -225,7 +225,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
         dealCard("!firstRender"); 
       }
       else {
-        console.log("%c ------------- PLAYER " + playersTurn + "-------------" ,'background: #222; color: #bada55');
+        console.log("%c ------------- PLAYER " + playersTurn + " -------------" ,'background: #222; color: #bada55');
         // eslint-disable-next-line array-callback-return
         players[playersTurn].hand.map((card: string, index: number) => {
           console.log(card)
