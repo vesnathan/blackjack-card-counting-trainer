@@ -1,14 +1,13 @@
 import './button.component.css';
 
 import { useGameContext } from "../../utils/GameStateContext";
-import { STRATEGY_HARD, STRATEGY_SOFT, STRATEGY_PAIRS } from "../../consts/strategyCard";
+import { STRATEGY_HARD, STRATEGY_SOFT } from "../../consts/strategyCard";
 import { STRIPE_MESSAGE } from "../../consts/stripeMessage";
 import { 
   SHOW_BET_BUTTONS,
   UPDATE_DEAL_HAND,
   UPDATE_CHIPS,
   BET_AMOUNT,
-  UPDATE_BET_BUTTONS,
   SET_HIT_CARD,
   SHOW_PLAY_BUTTONS,
   UPDATE_SCORE,
