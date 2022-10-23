@@ -9,6 +9,7 @@ import { WHAT_COUNT }  from "../../consts/whatCountMessage";
 import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
 import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
 import { useMutation } from '@apollo/client';
+import Auth from "../../utils/auth";
 
 import { 
   UPDATE_PLAYER_HAND_CARDS, 
@@ -343,8 +344,9 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           break;   
         }
         saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
-        saveGameMongoDB({variables: {chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules}});
-        //saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);
+        const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
+        const user = Auth.getProfile();
+        saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
       }
       
     }

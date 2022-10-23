@@ -12,6 +12,7 @@ mutation createUser(
     email
     username
     _id
+    gameData
     token
   }
 }
@@ -25,6 +26,7 @@ mutation loginUser(
 {
   loginUser(username: $username, password: $password) {
     username
+    gameData
     _id
     token
   }
@@ -34,11 +36,12 @@ mutation loginUser(
 export const SAVE_GAME_MONGODB = gql`
 mutation saveGame(
   $username: String!,
-  $gameData: GraphQLObjectType!
+  $gameData: String!
 )
 {
   saveGame(username: $username, gameData: $gameData){
     username
+    gameData
   }
 }
 `;

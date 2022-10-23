@@ -31,7 +31,13 @@ const SpaceyForm = () => {
   const [inputCount, setInputCount] = useState<number>();
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputCount(parseInt(e.target.value));
+    var regex = /[0-9]|\./;
+    if( !regex.test(e.target.value) ) {
+      e.target.value = "";
+    }
+    else {
+      setInputCount(parseInt(e.target.value));
+    }
   }
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -103,7 +109,7 @@ You lose ${(scoreAdjustment > -1)?scoreAdjustment:-scoreAdjustment} points.
     <>
       <div className="popupForm">
         <FormGroup className="marginBottom">
-          <input type="text" id="count-Input" name="count" placeholder="Count:" onChange={handleChange}/> 
+          <input type="tel" id="count-Input" name="count" placeholder="Count:" value={inputCount} onChange={handleChange}/> 
           <Grid container  sx={{mt: 2}} >
             <Grid item sm={6} container justifyContent="left">
             <Button id="guessButton" variant="contained" color="primary" sx={{width: "90%", height: "40px"}} onClick={(e) => {handleSubmit(e)}}>

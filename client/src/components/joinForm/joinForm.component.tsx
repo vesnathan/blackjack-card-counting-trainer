@@ -4,7 +4,8 @@ import { useGameContext } from "../../utils/GameStateContext";
 
 import './joinForm.component.css';
 import Auth from '../../utils/auth';
-import saveGame from "../../functions/saveGame";
+import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
+import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
 
 // Material UI Components
 import Grid from '@mui/material/Grid';
@@ -46,7 +47,7 @@ const JoinForm = (): React.ReactElement  => {
 
   const { gameRules } = state.state;
   const [createUser] = useMutation(CREATE_USER);
-
+  const [saveGameMongoDB] = useMutation(SAVE_GAME_MONGODB);
   const [inputs, setInputs] = useState({
     username: "",
     email: "",
@@ -177,7 +178,10 @@ const JoinForm = (): React.ReactElement  => {
               ]
             }
           );
-          saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);    
+          saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
+          const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
+          const user = Auth.getProfile();
+          saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
         }
       } catch (err: any) {
         console.log(err);

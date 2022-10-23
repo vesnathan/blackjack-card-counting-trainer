@@ -18,6 +18,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    gameData: {
+      type: String,
+    },
   },
   // set this to use virtual below
   {

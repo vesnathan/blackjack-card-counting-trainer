@@ -5,7 +5,12 @@ import {
   useElements
 } from "@stripe/react-stripe-js";
 
-import saveGame from "../../functions/saveGame";
+import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
+import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
+
+import { useMutation } from '@apollo/client';
+
+import Auth from '../../utils/auth';
 
 import { useGameContext } from "../../utils/GameStateContext";
 
@@ -28,6 +33,8 @@ export default function CheckoutForm() {
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [saveGameMongoDB] = useMutation(SAVE_GAME_MONGODB);
 
   useEffect(() => {
     if (!stripe) {
@@ -87,14 +94,10 @@ export default function CheckoutForm() {
         state.updateGameState( { newDispatches: [ { which: SHOW_POPUP, data: false } ] } );
         state.updateGameState( { newDispatches: [ { which: SHOW_STRIPE_FORM, data: false } ] } );
         state.updateGameState({newDispatches:[{ which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } }]});
-        saveGame(
-          chipsTotal, 
-          scoreTotal, 
-          playerPosition, 
-          userStreak, 
-          gameLevel, 
-          gameRules,
-        );
+        saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
+        const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
+        const user = Auth.getProfile();
+        saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
       }
     }
     else {
