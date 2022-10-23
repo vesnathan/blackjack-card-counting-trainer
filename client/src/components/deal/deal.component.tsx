@@ -10,6 +10,7 @@ import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
 import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
 import { useMutation } from '@apollo/client';
 import Auth from "../../utils/auth";
+import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
 import { 
   UPDATE_PLAYER_HAND_CARDS, 
@@ -140,17 +141,9 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
   }
 
   const checkBusted = () => {
-    
-    console.log("------------- PLAYER " + playersTurn);
-    players[playersTurn].hand.map((card: string, index: number) => {
-      console.log(card)
-    });
-
     if (players[playersTurn].handCount > 21) {
       console.log(">21");
-      const acesInHandWorthEleven: Array<any> = players[playersTurn].hand.filter((card:any) => card.points === 11);  
-
-      console.log(acesInHandWorthEleven);  
+      const acesInHandWorthEleven: Array<any> = players[playersTurn].hand.filter((card:any) => card.points === 11);   
       if (acesInHandWorthEleven.length > 0) {
         console.log("Aces in hand worth 11", acesInHandWorthEleven.length);
         let changedOneAceAlready = false;
@@ -223,6 +216,8 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     state.updateGameState( { newDispatches: [ { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 } ] } );
   }
 
+  let deps = [playersTurn, hitCard]
+  useWhatChanged(deps, 'playersTurn, hitCard');
   useEffect(()=>{
     if (!firstRender) {
       
@@ -230,37 +225,44 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
         dealCard("!firstRender"); 
       }
       else {
-        
+        console.log("%c ------------- PLAYER -------------" + playersTurn,'background: #222; color: #bada55');
+        players[playersTurn].hand.map((card: string, index: number) => {
+          console.log(card)
+        });
         switch (players[playersTurn].playerType) {
 
           // ------------------------------------------------------------------------------------------------------- AI
           case "ai":
-
+            
             state.updateGameState({ newDispatches: [
               { which: SHOW_PLAYER_TURN_ICON,  data: true },
               { which: SHOW_PLAY_BUTTONS, data: false }
             ]});
+            const aiHasBJ = checkBJ();
+            if (!aiHasBJ) {
+              // if (hitCard) {
+                
+              //   dealCard("hitCard");
+              //   state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
+              // }
+              const aiBusted = checkBusted();
 
-            if (hitCard) {
-              dealCard("hitCard");
-              state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
+              setTimeout(()=> {  
+                if (!aiBusted) {
+                  if (players[playersTurn].handCount > 16) {
+                    setTimeout(()=>{nextPlayer()},1000);
+                  }
+                  else {
+                    if (hitCard) { console.log("Hit Card Set");}
+                    state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]})
+                  }
+                }
+                else {   
+                  state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
+                    setTimeout(()=>{nextPlayer()},1000);
+                }
+              },2000);
             }
-            const aiBusted = checkBusted();
-
-            setTimeout(()=> {  
-              if (!aiBusted) {
-                if (players[playersTurn].handCount > 16) {
-                  setTimeout(()=>{nextPlayer()},1000);
-                }
-                else {
-                  state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});  
-                }
-              }
-              else {   
-                state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
-                  setTimeout(()=>{nextPlayer()},1000);
-              }
-            },2000);
             break;
             
 
@@ -285,10 +287,10 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             }
             else {
 
-              if (hitCard) {
-                dealCard("user hit");
-                state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
-              }
+              // if (hitCard) {
+              //   dealCard("user hit");
+              //   state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
+              // }
               const playerBusted = checkBusted();
               if (playerBusted) {
                 state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
@@ -329,29 +331,31 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
           state.updateGameState({ newDispatches: [{ which: SET_DEALER_DOWN_CARD,  data: true }]});
           
-
-          if (hitCard) {
-            dealCard("hitCard");
-            state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
-          }  
- 
-          const dealerBusted = checkBusted();
-          setTimeout(()=> { 
-            if (!dealerBusted) {
-              if (players[playersTurn].handCount <= 16) { 
-                state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
-              } 
+          const dealerHasBJ = checkBJ();
+          if (!dealerHasBJ) {
+            // if (hitCard) {
+            //   dealCard("hitCard");
+            //   state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
+            // }  
+  
+            const dealerBusted = checkBusted();
+            setTimeout(()=> { 
+              if (!dealerBusted) {
+                if (players[playersTurn].handCount <= 16) { 
+                  state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
+                } 
+                else {
+                  calcPayout(); 
+                  resetHand();
+                }
+              }
               else {
+                state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
                 calcPayout(); 
                 resetHand();
               }
-            }
-            else {
-              state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
-              calcPayout(); 
-              resetHand();
-            }
-          },2000);
+            },2000);
+          }
 
           break;   
         }
@@ -363,8 +367,14 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
       
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[ playersTurn, hitCard]);
+  },deps);
 
+  useEffect(()=>{
+    if (hitCard) {
+      dealCard("hitCard");
+      state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
+    }
+  }, [hitCard])
 
   // this useEffect takes care of the deal
   useEffect(() => {
