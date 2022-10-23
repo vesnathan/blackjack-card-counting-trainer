@@ -30,3 +30,15 @@ mutation loginUser(
   }
 }
 `;
+
+export const SAVE_GAME_MONGODB = gql`
+mutation saveGame(
+  $username: String!,
+  $gameData: GraphQLObjectType!
+)
+{
+  saveGame(username: $username, gameData: $gameData){
+    username
+  }
+}
+`;

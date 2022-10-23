@@ -39,6 +39,14 @@ const resolvers = {
       }
       throw new Error("User not created");
     },
+
+    saveGame: async (parent, args) => {
+      const thisUser = await User.findOneAndUpdate(
+        { username: args.username },
+        { game: args.gameData }
+      );
+      return thisUser;
+    },
   },
 };
 
