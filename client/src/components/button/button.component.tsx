@@ -66,7 +66,7 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
       }
       state.updateGameState({newDispatches:[{ which: BET_AMOUNT,  data: [betAmount[0],betAmount[1],betAmount[2]] }]}); 
       if (chipsTotal-((betAmount[0]*5)+(betAmount[1]*25)+(betAmount[2]*50)) >= 0 ) {
-        state.updateGameState({newDispatches:[{ which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } }]}); 
+        // state.updateGameState({newDispatches:[{ which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } }]}); 
       }
       else {
         state.updateGameState({newDispatches:[{ which: SHOW_POPUP,  data: true }]}); 

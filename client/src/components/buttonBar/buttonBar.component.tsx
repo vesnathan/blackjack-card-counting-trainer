@@ -21,7 +21,7 @@ type ButtonBarProps = {
 const ButtonBar = ({ buttons }: ButtonBarProps): React.ReactElement  => {
 
   const state: any = useGameContext();
-
+  const { betAmount } = state.state.appStatus;
 
   let buttonArray: React.ReactElement[] = [];
   buttons.forEach((button: ButtonObject) => {
@@ -31,7 +31,10 @@ const ButtonBar = ({ buttons }: ButtonBarProps): React.ReactElement  => {
       buttonType={button.type} //"betButton"
       buttonString={button.name} 
       bgColor={button.bgColor} 
-      buttonDisabled={button.buttonDisabled} 
+      buttonDisabled={
+        (((betAmount[0]*5)+(betAmount[1]*25)+(betAmount[2]*50) > 0) && button.type === "betButton" && button.name === "DEAL")
+        ? false
+        : button.buttonDisabled} 
     />);
   });
   return (

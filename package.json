@@ -19,9 +19,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@stripe/react-stripe-js": "^1.0.0",
-    "@stripe/stripe-js": "^1.0.0",
-    "stripe": "^8.202.0"
   },
   "devDependencies": {  
     "husky": "^8.0.0",

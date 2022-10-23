@@ -312,7 +312,7 @@ const CasinoTable = (): JSX.Element => {
           
           // set deal button to disabled
           state.updateGameState( { newDispatches: [
-            { which: UPDATE_BET_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true } },
+            // { which: UPDATE_BET_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true } },
             { which: SHOW_BET_BUTTONS, data: true }
           ] } );
      
