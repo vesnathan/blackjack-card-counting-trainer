@@ -4,9 +4,13 @@ import PlayingCard from "../playingCard/playingCard.component";
 import PlayingCardAnimation from "../playingCardAnimation/playingCardAnimation.component";
 import { useFirstRender } from "../../utils/firstRender";
 import { useGameContext } from "../../utils/GameStateContext";
-import saveGame from "../../functions/saveGame";
 import Spacey from "../../assets/images/characters/spacey.png";
 import { WHAT_COUNT }  from "../../consts/whatCountMessage";
+import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
+import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
+import { useMutation } from '@apollo/client';
+import Auth from "../../utils/auth";
+
 import { 
   UPDATE_PLAYER_HAND_CARDS, 
   UPDATE_PLAYER_HAND_COUNT,
@@ -36,7 +40,7 @@ type DealProps = {
 };
 
 const Deal = ({ resetHand }: DealProps): JSX.Element => {
-
+  const [saveGameMongoDB] = useMutation(SAVE_GAME_MONGODB);
   const firstRender = useFirstRender();
   const state: any = useGameContext();
   const { players } = state.state;
@@ -339,7 +343,10 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
           break;   
         }
-        saveGame(chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules);
+        saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
+        const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
+        const user = Auth.getProfile();
+        saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
       }
       
     }

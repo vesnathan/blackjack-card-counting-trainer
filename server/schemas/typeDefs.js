@@ -7,6 +7,7 @@ const typeDefs = gql`
     email: String!
     password: String!
     token: String
+    gameData: String
   }
 
   type Query {
@@ -16,6 +17,7 @@ const typeDefs = gql`
   type Mutation {
     createUser(username: String!, email: String!, password: String!): User
     loginUser(username: String!, password: String!): User
+    saveGame(username: String!, gameData: String!): User
   }
 `;
 

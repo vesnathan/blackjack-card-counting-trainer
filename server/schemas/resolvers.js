@@ -13,6 +13,7 @@ const resolvers = {
         username: args.username,
         password: args.password,
         email: args.email,
+        gameData: "{}",
       };
       const userExists = await User.findOne({ email: userData.email });
       if (!userExists) {
@@ -38,6 +39,15 @@ const resolvers = {
         return newObj;
       }
       throw new Error("User not created");
+    },
+
+    saveGame: async (parent, args) => {
+      const thisUser = await User.findOneAndUpdate(
+        { username: args.username },
+        { gameData: args.gameData },
+        { new: true }
+      );
+      return thisUser;
     },
   },
 };

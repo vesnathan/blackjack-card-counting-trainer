@@ -21,7 +21,7 @@ export const gamesExistIndexDB = async () => {
   return result;
 }
 
-export const saveGameToIndexDB = async (gameObject: Object) => {
+export const saveGameIndexedDB = async (gameObject: Object) => {
   const BJCTTGames = await openDB('BJCTTGames', 1);
   const tx = BJCTTGames.transaction('BJCTTGames', 'readwrite');
   const store = tx.objectStore('BJCTTGames');
