@@ -68,7 +68,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
   const calcPayout = () => {
     if (!handPaidOut) { 
-      setHandPaidOut(true);
+      
       // if user has BJ
       if (players[playerPosition].handCount === 21 && players[playerPosition].hand.length === 2 && !handPaidOut){
         // if dealer has BJ
