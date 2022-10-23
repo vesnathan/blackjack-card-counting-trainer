@@ -10,7 +10,6 @@ const initGamesDb = async () => {
           return;
         }
         db.createObjectStore('BJCTTGames', { keyPath: 'id', autoIncrement: true });
-        console.log("IDB BJCTTGames Created");
       },
     });
   } catch (err) {

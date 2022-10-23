@@ -141,19 +141,16 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
   }
 
   const checkBusted = () => {
-    console.log("players["+playersTurn+"] in checkBusted");
-    console.log("players["+playersTurn+"]", players[playerPosition].hand);
     if (players[playersTurn].handCount > 21) {
-      console.log("in busted > 21");
+
       const acesInHandWorthEleven: Array<any> = players[playerPosition].hand.filter((card:any) => card.pip === "A" && card.points === 11);    
       if (acesInHandWorthEleven.length > 0) {
-        console.log("in busted acesInHandWorthEleven > 0");
+
         let changedOneAceAlready = false;
         const newPlayersHand = players[playersTurn].hand.map(
           (obj:any) => {
             if (obj.points === 11 && !changedOneAceAlready) {
-              
-              console.log("in busted acesInHandWorthEleven > 0 !changedOneAceAlready");
+            
               changedOneAceAlready = true;
               return {...obj, points: 1}
             }
@@ -204,7 +201,6 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
   }
 
   const dealCard = (caller: string) => {
-    console.log(playersTurn+": dealCard caller", caller);
     state.updateGameState({ newDispatches: [
       { which: UPDATE_PLAYER_HAND_CARDS,  data: { player: playersTurn, card: shoeCards[cardsDealt] } },
     ]}); 
@@ -221,7 +217,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
   useEffect(()=>{
     if (!firstRender) {
-      state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
+      
       if (players[playersTurn].hand.length < 2) {
         dealCard("!firstRender"); 
       }
@@ -231,7 +227,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
           // ------------------------------------------------------------------------------------------------------- AI
           case "ai":
-            console.log("ai "+playersTurn+": ", players[playersTurn].handCount );
+
             state.updateGameState({ newDispatches: [
               { which: SHOW_PLAYER_TURN_ICON,  data: true },
               { which: SHOW_PLAY_BUTTONS, data: false }
@@ -242,7 +238,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
               state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
             }
             const aiBusted = checkBusted();
-            console.log(playersTurn+" busted: ",aiBusted);
+
             setTimeout(()=> {  
               if (!aiBusted) {
                 if (players[playersTurn].handCount > 16) {
@@ -262,12 +258,15 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
           // ------------------------------------------------------------------------------------------------------- USER
           case "user":         
-            console.log("user: ", players[playersTurn].handCount );
+
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
 
             // check if player has a hard 9-11 and can double
             if (players[playersTurn].hand.length === 2 && players[playersTurn].handCount >=9 && players[playersTurn].handCount <= 11) {
               state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: false }}]});
+            }
+            else {
+              state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: true }}]});
             }
             
            
@@ -275,8 +274,26 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
               state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
             }
             else {
+
+              if (hitCard) {
+                dealCard("user hit");
+                state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});
+              }
+              const playerBusted = checkBusted();
+              if (playerBusted) {
+                state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
+                setTimeout(() => {
+                  state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
+                  state.updateGameState({ newDispatches: [{ which: BET_AMOUNT, data: [[0],[0],[0]] }]});
+                  nextPlayer();
+                },2000);
+              }
+              else if (userDoubled || (players[playersTurn].hand.length > 2 && players[playersTurn].handCount === 21)) {
+                state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
+                nextPlayer();
+              }
               // Randomly show Spacey Popup
-              if (Math.random() < .5) {
+              else if (Math.random() < .5) {
                 state.updateGameState(
                   { newDispatches: 
                     [ 
@@ -295,29 +312,10 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
                 state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: true }]});
               }
             }
-            if (hitCard) {
-              dealCard("user hit");
-            }
-             
-            const playerBusted = checkBusted();
-
-            if (playerBusted) {
-              state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
-              setTimeout(() => {
-                state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
-                state.updateGameState({ newDispatches: [{ which: BET_AMOUNT, data: [[0],[0],[0]] }]});
-                nextPlayer();
-              },2000);
-            }
-            else if (userDoubled || (players[playersTurn].hand.length > 2 && players[playersTurn].handCount === 21)) {
-              state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
-              nextPlayer();
-            }
           break;
 
           // ------------------------------------------------------------------------------------------------------- DEALER
           case "dealer":            
-          console.log("dealer: ", players[playersTurn].handCount );
           state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
           state.updateGameState({ newDispatches: [{ which: SET_DEALER_DOWN_CARD,  data: true }]});
           
@@ -357,6 +355,8 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[ playersTurn, hitCard]);
 
+
+  // this useEffect takes care of the deal
   useEffect(() => {
     if (dealCounter <= 12) {
       if (dealCounter === 12) {

@@ -95,7 +95,6 @@ setTimeout(() => {
   }
 
 useEffect(() => {
-    console.log("cardsDealt in PlayeingCard", cardsDealt);
     state.updateGameState({ newDispatches: [
       { which: UPDATE_CARDS_DEALT,  data:  { card: shoeCards[cardsDealt], addToCount: true } }
     ]}); 

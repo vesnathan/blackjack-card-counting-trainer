@@ -3,7 +3,6 @@ import { gamesExistIndexDB } from "../storage/indexedDB/functions";
 const checkIndexedDBGamesExist = async () => {
 
   const games = await gamesExistIndexDB();
-    console.log("games", games)
     // if the user has a game saved locally, load that.
     if (games.length !== 0 ) {
       return games[0];

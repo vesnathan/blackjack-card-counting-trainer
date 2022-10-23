@@ -176,16 +176,16 @@ const CasinoTable = (): JSX.Element => {
     ];  // for testing
 
     const newTempShoe = [ ...stackDeck, ...tempShoe ];
-    console.log("newTempShoe", newTempShoe);
+
     state.updateGameState({ newDispatches: [{ which: UPDATE_SHOE,    data: newTempShoe }] });
     state.updateGameState({ newDispatches: [{ which: SHOW_PICK_SPOT, data: true }]});
     const checkGames = async () => {
       const gameExists = await checkIndexedDBGamesExist();
-      console.log("gameExists", gameExists);
+
 
       // if the game data exists load it
       if (gameExists) {
-        console.log("gameExists.game.scoreTotal",gameExists.game.scoreTotal);
+        
         state.updateGameState(
           { newDispatches: 
             [ 

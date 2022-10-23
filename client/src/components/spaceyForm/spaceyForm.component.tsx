@@ -18,7 +18,7 @@ import {
 } from "../../utils/actions";
 
 const SpaceyForm = () => {
-
+  const [showFormGroup, setShowFormGroup] = useState(true);
   const state: any = useGameContext();
 
   const { 
@@ -41,6 +41,7 @@ const SpaceyForm = () => {
   }
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setShowFormGroup(false);
     if (inputCount !== undefined) {
       state.updateGameState({ newDispatches: [{ which: SHOW_SPACEY_FORM_BUTTON_SPINNER,  data: true }]}); 
       if (count === inputCount) {
@@ -59,18 +60,12 @@ const SpaceyForm = () => {
         },2000);
       }
       else {
-        console.log("guess incorrect");
         // @ts-ignore
         const countUserInputed: number = parseInt(inputCount);
         const scoreAdjustment = 
           (count - countUserInputed > -1)
             ? -(count - countUserInputed)*100
             : (count - countUserInputed)*100;
-        
-        console.log("countUserInputed", countUserInputed);
-        console.log("scoreAdjustment", scoreAdjustment);
-        console.log("score", scoreTotal);
-        console.log("score - scoreAdjustment", scoreTotal - scoreAdjustment);
 
         state.updateGameState({ newDispatches: [
           { which: SHOW_SPACEY_FORM_BUTTON_SPINNER,   data: false },
@@ -99,7 +94,6 @@ You lose ${(scoreAdjustment > -1)?scoreAdjustment:-scoreAdjustment} points.
       ]});   
     }
     else {
-      console.log("guess no input");
       state.updateGameState({ newDispatches: [
         { which: SPACEY_FORM_MESSAGE, data: "There's no getting out of this..." }, 
       ]});  
@@ -108,22 +102,27 @@ You lose ${(scoreAdjustment > -1)?scoreAdjustment:-scoreAdjustment} points.
   return (
     <>
       <div className="popupForm">
-        <FormGroup className="marginBottom">
-          <input type="tel" id="count-Input" name="count" placeholder="Count:" value={inputCount} onChange={handleChange}/> 
-          <Grid container  sx={{mt: 2}} >
-            <Grid item sm={6} container justifyContent="left">
-            <Button id="guessButton" variant="contained" color="primary" sx={{width: "90%", height: "40px"}} onClick={(e) => {handleSubmit(e)}}>
-                  {
-                    (showSpaceyFormButtonSpinner)
-                    ? <CircularProgress color="info" size={12}/>
-                    : "GUESS"
-                  }
-                </Button>
-            </Grid>
-          </Grid>
-        </FormGroup>
+        {
+          showFormGroup
+          ? <FormGroup className="marginBottom">
+              <input type="tel" id="count-Input" name="count" placeholder="Count:" value={inputCount} onChange={handleChange}/> 
+              <Grid container  sx={{mt: 2}} >
+                <Grid item sm={6} container justifyContent="left">
+                <Button id="guessButton" variant="contained" color="primary" sx={{width: "90%", height: "40px"}} onClick={(e) => {handleSubmit(e)}}>
+                      {
+                        (showSpaceyFormButtonSpinner)
+                        ? <CircularProgress color="info" size={12}/>
+                        : "GUESS"
+                      }
+                    </Button>
+                </Grid>
+              </Grid>
+            </FormGroup>
+          : null
+        }
+        <div className="spaceyFormMessage">{spaceyFormMessage}</div>
       </div>
-      <div className="spaceyFormMessage">{spaceyFormMessage}</div>
+      
     </>
   )
 }
