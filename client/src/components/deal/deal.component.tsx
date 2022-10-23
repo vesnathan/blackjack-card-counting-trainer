@@ -1,5 +1,5 @@
 // import './scoreBar.component.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import PlayingCard from "../playingCard/playingCard.component";
 import PlayingCardAnimation from "../playingCardAnimation/playingCardAnimation.component";
 import { useFirstRender } from "../../utils/firstRender";
@@ -40,7 +40,7 @@ type DealProps = {
 };
 
 const Deal = ({ resetHand }: DealProps): JSX.Element => {
-  const [handPaidOut, setHandPaidOut] = useState(false);
+  const handPaidOut = useRef(false);
 
   const [saveGameMongoDB] = useMutation(SAVE_GAME_MONGODB);
   const firstRender = useFirstRender();
@@ -67,10 +67,10 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
 
   const calcPayout = () => {
-    if (!handPaidOut) { 
+    if (!handPaidOut.current) { 
       
       // if user has BJ
-      if (players[playerPosition].handCount === 21 && players[playerPosition].hand.length === 2 && !handPaidOut){
+      if (players[playerPosition].handCount === 21 && players[playerPosition].hand.length === 2 && !handPaidOut.current){
         // if dealer has BJ
         if (players[0].handCount === 21 && players[0].hand.length === 2){
           // user bet returned
@@ -78,12 +78,12 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           ((betAmount[0] * 5) + 
           (betAmount[1] * 25) + 
           (betAmount[2] * 50));
-          console.log("PAYOUT 1");
+          console.log("PAYOUT 1: " + chipsWon);
           state.updateGameState( { newDispatches: [ 
             { which: UPDATE_CHIPS, data: chipsWon } ,
             { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "BET RETURNED" } }
           ]}); 
-          setHandPaidOut(true);
+          handPaidOut.current = true;
         }
         else {    
           // user wins bet is paid 3:2 
@@ -91,46 +91,46 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           (((betAmount[0] * 5) + 
           (betAmount[1] * 25) + 
           (betAmount[2] * 50))*2.5); 
-          console.log("PAYOUT 2"); 
+          console.log("PAYOUT 2: " + chipsWon);
           state.updateGameState( { newDispatches: [ 
             { which: UPDATE_CHIPS, data: chipsWon } ,
             { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "YOU WIN" } }
           ]}); 
-          setHandPaidOut(true);   
+          handPaidOut.current = true;
         }
       }
 
       // if dealer busted and user didnt bust
-      if (players[0].busted && !players[playerPosition].busted  && !handPaidOut) {
+      if (players[0].busted && !players[playerPosition].busted  && !handPaidOut.current) {
         const chipsWon = 
           ((betAmount[0] * 5) + 
           (betAmount[1] * 25) + 
           (betAmount[2] * 50))*2;
-          console.log("PAYOUT 3");
+          console.log("PAYOUT 3: " + chipsWon);
           state.updateGameState( { newDispatches: [ 
             { which: UPDATE_CHIPS, data: chipsWon },
             { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "YOU WIN" } }
           ]});
-          setHandPaidOut(true);  
+          handPaidOut.current = true;
       } 
       
       // if neither busted and dealer handcount is < user handcount
-      if (!players[0].busted && players[0].handCount < players[playerPosition].handCount  && !players[playerPosition].busted  && !handPaidOut) { 
+      if (!players[0].busted && players[0].handCount < players[playerPosition].handCount  && !players[playerPosition].busted  && !handPaidOut.current) { 
         const chipsWon = 
           ((betAmount[0] * 5) + 
           (betAmount[1] * 25) + 
           (betAmount[2] * 50))*2;
-          console.log("PAYOUT 4");
+          console.log("PAYOUT 4: " + chipsWon);
         state.updateGameState( { newDispatches: [ 
           { which: UPDATE_CHIPS, data: chipsWon } ,
           { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: 0, data: `PAYING ${players[0].handCount+1}` } },
           { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "YOU WIN" } }
         ]});
-        setHandPaidOut(true);  
+        handPaidOut.current = true; 
       }
 
       // if neither busted and dealer hand count >= user hand count
-      if (!players[0].busted && players[0].handCount >= players[playerPosition].handCount  && !players[playerPosition].busted  && !handPaidOut) { 
+      if (!players[0].busted && players[0].handCount >= players[playerPosition].handCount  && !players[playerPosition].busted  && !handPaidOut.current) { 
         state.updateGameState({ newDispatches: [
           { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: 0, data: (players[0].handCount === 21)?"DEALER WINS":`PAYING ${players[0].handCount+1}` } },
           { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "YOU LOSE" } }
