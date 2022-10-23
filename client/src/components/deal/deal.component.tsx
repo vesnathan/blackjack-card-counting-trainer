@@ -70,7 +70,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
     if (!handPaidOut) { 
       setHandPaidOut(true);
       // if user has BJ
-      if (players[playerPosition].handCount === 21 && players[playerPosition].hand.length === 2){
+      if (players[playerPosition].handCount === 21 && players[playerPosition].hand.length === 2 && !handPaidOut){
         // if dealer has BJ
         if (players[0].handCount === 21 && players[0].hand.length === 2){
           // user bet returned
@@ -83,6 +83,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             { which: UPDATE_CHIPS, data: chipsWon } ,
             { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "BET RETURNED" } }
           ]}); 
+          setHandPaidOut(true);
         }
         else {    
           // user wins bet is paid 3:2 
@@ -94,12 +95,13 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           state.updateGameState( { newDispatches: [ 
             { which: UPDATE_CHIPS, data: chipsWon } ,
             { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "YOU WIN" } }
-          ]});    
+          ]}); 
+          setHandPaidOut(true);   
         }
       }
 
       // if dealer busted and user didnt bust
-      if (players[0].busted && !players[playerPosition].busted) {
+      if (players[0].busted && !players[playerPosition].busted  && !handPaidOut) {
         const chipsWon = 
           ((betAmount[0] * 5) + 
           (betAmount[1] * 25) + 
@@ -109,10 +111,11 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             { which: UPDATE_CHIPS, data: chipsWon },
             { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "YOU WIN" } }
           ]});
+          setHandPaidOut(true);  
       } 
       
       // if neither busted and dealer handcount is < user handcount
-      if (!players[0].busted && players[0].handCount < players[playerPosition].handCount  && !players[playerPosition].busted) { 
+      if (!players[0].busted && players[0].handCount < players[playerPosition].handCount  && !players[playerPosition].busted  && !handPaidOut) { 
         const chipsWon = 
           ((betAmount[0] * 5) + 
           (betAmount[1] * 25) + 
@@ -123,10 +126,11 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: 0, data: `PAYING ${players[0].handCount+1}` } },
           { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "YOU WIN" } }
         ]});
+        setHandPaidOut(true);  
       }
 
       // if neither busted and dealer hand count >= user hand count
-      if (!players[0].busted && players[0].handCount >= players[playerPosition].handCount  && !players[playerPosition].busted) { 
+      if (!players[0].busted && players[0].handCount >= players[playerPosition].handCount  && !players[playerPosition].busted  && !handPaidOut) { 
         state.updateGameState({ newDispatches: [
           { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: 0, data: (players[0].handCount === 21)?"DEALER WINS":`PAYING ${players[0].handCount+1}` } },
           { which: UPDATE_PLAYER_HAND_RESULT, data: { whichPlayer: playerPosition, data: "YOU LOSE" } }
@@ -136,11 +140,19 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
   }
 
   const checkBusted = () => {
+    
+    console.log("------------- PLAYER " + playersTurn);
+    players[playersTurn].hand.map((card: string, index: number) => {
+      console.log(card)
+    });
+
     if (players[playersTurn].handCount > 21) {
+      console.log(">21");
+      const acesInHandWorthEleven: Array<any> = players[playersTurn].hand.filter((card:any) => card.points === 11);  
 
-      const acesInHandWorthEleven: Array<any> = players[playerPosition].hand.filter((card:any) => card.pip === "A" && card.points === 11);    
+      console.log(acesInHandWorthEleven);  
       if (acesInHandWorthEleven.length > 0) {
-
+        console.log("Aces in hand worth 11", acesInHandWorthEleven.length);
         let changedOneAceAlready = false;
         const newPlayersHand = players[playersTurn].hand.map(
           (obj:any) => {
@@ -170,6 +182,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
         } 
       }
       else {
+        console.log("No aces worth 11");
         state.updateGameState({ newDispatches: [
           { which: UPDATE_PLAYER_HAND_RESULT,  data: { whichPlayer: playersTurn, data: "BUSTED" } },
           { which: PLAYER_BUSTED,  data: { whichPlayer: playersTurn, data: true } },
@@ -217,7 +230,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
         dealCard("!firstRender"); 
       }
       else {
-        const playerHasBJ = checkBJ();
+        
         switch (players[playersTurn].playerType) {
 
           // ------------------------------------------------------------------------------------------------------- AI
@@ -253,6 +266,8 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
 
           // ------------------------------------------------------------------------------------------------------- USER
           case "user":         
+
+            const playerHasBJ = checkBJ();
 
             state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: false }]});
 
