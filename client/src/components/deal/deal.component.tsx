@@ -232,7 +232,11 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           // ------------------------------------------------------------------------------------------------------- AI
           case "ai":
             console.log("ai "+playersTurn+": ", players[playersTurn].handCount );
-            state.updateGameState({ newDispatches: [{ which: SHOW_PLAYER_TURN_ICON,  data: true }]});
+            state.updateGameState({ newDispatches: [
+              { which: SHOW_PLAYER_TURN_ICON,  data: true },
+              { which: SHOW_PLAY_BUTTONS, data: false }
+            ]});
+
             if (hitCard) {
               dealCard("hitCard");
               state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
