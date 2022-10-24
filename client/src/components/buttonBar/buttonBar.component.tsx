@@ -45,6 +45,7 @@ const ButtonBar = ({ buttons }: ButtonBarProps): React.ReactElement  => {
         );
       },1000);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   const localBetAmount = (betAmount[0]*5)+(betAmount[1]*25)+(betAmount[2]*50);
   console.log("localBetAmount",localBetAmount);
