@@ -53,9 +53,8 @@ export const APP_STATUS = () => {
     dealCounter: 0,
     playersTurn: 0,
     hitCard: false,
-    userHitCard: false,
     showStripeForm: false,
-    onlineStatus: false,
+    onlineStatus: true,
   }
 
   return appStatusArray;

@@ -219,7 +219,7 @@ const CasinoTable = (): JSX.Element => {
           state.updateGameState({ newDispatches: [{ which: LOGGED_IN, data: true }]});
           // if they are logged in, then they likely have deleted local storage
           // check if they are online
-          if (onlineStatus) {
+          if (navigator.onLine) {
             
             // try to fetch game data from server
             const user = Auth.getProfile();
@@ -248,7 +248,7 @@ const CasinoTable = (): JSX.Element => {
         else {
           // if they aren't logged in, and have no local game data, they may be new
           // are they online?
-          if (onlineStatus) {
+          if (navigator.onLine) {
             console.log("online");
             // if they are online, show the join form
             state.updateGameState(
