@@ -76,19 +76,19 @@ Practice your card counting and basic strategy skills with this training app.
 
 ## TECHNOLOGIES USED
 
-React
-TypeScript
-Sass - SCSS
-Apollo/GraphQL
-MongoDB/Mongoose
-MaterialUI
-Styled Components
-React Transition Group
-ESLint - Air BnB
-Husky
-bcrypt
-JSON Web Token
-PWA
+React  
+TypeScript  
+Sass - SCSS  
+Apollo/GraphQL  
+MongoDB/Mongoose  
+MaterialUI  
+Styled Components  
+React Transition Group  
+ESLint - Air BnB  
+Husky  
+bcrypt  
+JSON Web Token  
+PWA  
 Stripe Elements
 
 <a id="CONTRIBUTE"></a>
