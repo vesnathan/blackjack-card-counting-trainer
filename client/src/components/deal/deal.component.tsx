@@ -333,7 +333,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           state.updateGameState({ newDispatches: [{ which: SET_DEALER_DOWN_CARD,  data: true }]});
           
           const dealerHasBJ = checkBJ();
-          if (!dealerHasBJ) {
+          //if (!dealerHasBJ) {
             // if (hitCard) {
             //   dealCard("hitCard");
             //   state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: false }]});  
@@ -341,7 +341,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
   
             const dealerBusted = checkBusted();
             setTimeout(()=> { 
-              if (!dealerBusted) {
+              if (!dealerBusted && !dealerHasBJ) {
                 if (players[playersTurn].handCount <= 16) { 
                   state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
                 } 
@@ -356,7 +356,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
                 resetHand();
               }
             },2000);
-          }
+          //}
 
           break;   
         }
