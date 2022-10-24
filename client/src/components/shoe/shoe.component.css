@@ -26,8 +26,8 @@
 
 .shoeCardBack {
   width: 60%;
-  height: 100%;
-  background-image: url(../../assets/images/back.svg);
+  height: 50%;
+  background-image: url(../../assets/images/back.webp);
   background-size: 100% 100%;
   transform: rotate(90deg);
   position: absolute;

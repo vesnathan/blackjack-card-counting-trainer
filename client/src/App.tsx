@@ -78,7 +78,8 @@ function App() {
       <ApolloProvider client={client}>
         <CssBaseline>
           <ThemeProvider theme={theme}>
-            <div className="mainContainer"></div>
+          
+            <div className="mainContainer"><div className="vignette"></div></div>
             <ScoreBar />
             <Container disableGutters style={{ position: "relative", overflow: "hidden" , height: "100vh", alignItems: "center"}}>
               <Grid item sm={10}  style={{ position: "relative", top: "50%", transform: "translateY(-50%)"}}>

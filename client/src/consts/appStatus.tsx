@@ -1,4 +1,4 @@
-import Dealer from "../assets/images/characters/dealer.png";
+import Dealer from "../assets/images/characters/dealer.webp";
 
 export const APP_STATUS = () => {
   const appStatusArray: any = {

@@ -8,8 +8,8 @@
 
 .casinoTableHolder:before {
   opacity: .5;
-  background-image: url(../../assets/images/table.webp);
-  background-size: cover;
+  background-image: url(../../assets/images/tableBG.webp);
+  background-repeat: repeat;
   content: ' ';
   display: block;
   position: absolute;

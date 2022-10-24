@@ -4,7 +4,7 @@ import PlayingCard from "../playingCard/playingCard.component";
 import PlayingCardAnimation from "../playingCardAnimation/playingCardAnimation.component";
 import { useFirstRender } from "../../utils/firstRender";
 import { useGameContext } from "../../utils/GameStateContext";
-import Spacey from "../../assets/images/characters/spacey.png";
+import Spacey from "../../assets/images/characters/spacey.webp";
 import { WHAT_COUNT }  from "../../consts/whatCountMessage";
 import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
 import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
