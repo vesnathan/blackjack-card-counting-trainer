@@ -235,7 +235,11 @@ const CasinoTable = (): JSX.Element => {
               { newDispatches: 
                 [ 
                   { which: POPUP_MESSAGE,     data: NEED_CONNECTION() },
-                  { which: SHOW_JOIN_FORM,    data: false },
+                  { which: SHOW_JOIN_FORM,    data: false },                  
+                  { which: POPUP_TITLE,       data: "NO INTERNET CONNECTION" },
+                  { which: SHOW_POPUP,        data: true },
+                  { which: SHOW_PICK_SPOT,    data: false },
+                  { which: SHOW_JOIN_FORM_OK, data: false },
                 ]
               }
             );
@@ -266,7 +270,11 @@ const CasinoTable = (): JSX.Element => {
               { newDispatches: 
                 [ 
                   { which: POPUP_MESSAGE,     data: NEED_CONNECTION() },
-                  { which: SHOW_JOIN_FORM,    data: false },
+                  { which: SHOW_JOIN_FORM,    data: false },                  
+                  { which: POPUP_TITLE,       data: "NO INTERNET CONNECTION" },
+                  { which: SHOW_POPUP,        data: true },
+                  { which: SHOW_PICK_SPOT,    data: false },
+                  { which: SHOW_JOIN_FORM_OK, data: false },
                 ]
               }
             );
