@@ -107,7 +107,7 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
         // calc strategy
         const dealerUpCard = players[0].hand[1]?.points;
         const playerHand = players[playerPosition];
-        let strategyButtonName = "";
+
         const acesInHandWorthEleven: Array<any> = players[playersTurn].hand.filter((card:any) => card.points === 11);
         let playerHandRow: Array<string> = [];
         let logStratCardCalc: string = "";
@@ -125,37 +125,28 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
 
         logStratCardCalc += " COLUMN: "+dealerCol;
 
-        const strategy = " CORRECT: "+playerHandRow[dealerCol];
+        const strategy = playerHandRow[dealerCol];
 
-        logStratCardCalc += strategy;
+        logStratCardCalc += " CORRECT: "+strategy;
 
         console.log(logStratCardCalc);
-        
-        switch (strategy) {
-          case "H":
-            strategyButtonName = "HIT";
-          break;
-          case "D": // player can't double with > 2 cards
-            strategyButtonName = (players[playersTurn].hand.length === 2)? "DOUBLE" : "HIT";
-          break;
-          case "S":
-            strategyButtonName = "STAND";
-          break;
-          case "SP":
-            strategyButtonName = "SPLIT";
-          break;
-        }
+
+
+
+
         
         
         let newScore = 0;
 
         switch (whichButton) {
           case "HIT":
-            if (strategyButtonName === "HIT") {
+            if (strategy === "H") {
               newScore = 10*userStreak;
+              console.log("CORRECT STRATEGY PLAYED");
             }
             else {
               newScore = -5*userStreak;
+              console.log("INCORRECT STRATEGY PLAYED");
             }
             state.updateGameState( { newDispatches: [ 
               { which: SET_HIT_CARD, data: true },  
@@ -167,11 +158,13 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
   ;
           break;
           case "STAND":
-            if (strategyButtonName === "STAND") {
+            if (strategy === "S") {
               newScore = 10*userStreak;
+              console.log("CORRECT STRATEGY PLAYED");
             }
             else {
               newScore = -5*userStreak;
+              console.log("INCORRECT STRATEGY PLAYED");
             }
 
 
@@ -187,11 +180,13 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
 
           break;
           case "SPLIT":
-            if (strategyButtonName === "SPLIT") {
+            if (strategy === "SP") {
               newScore = 10*userStreak;
+              console.log("CORRECT STRATEGY PLAYED");
             }
             else {
               newScore = -5*userStreak;
+              console.log("INCORRECT STRATEGY PLAYED");
             }
 
             /*
@@ -205,11 +200,13 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
             */
           break;
           case "DOUBLE":
-            if (strategyButtonName === "DOUBLE") {
+            if (strategy === "D") {
               newScore = 10*userStreak;
+              console.log("CORRECT STRATEGY PLAYED");
             }
             else {
               newScore = -5*userStreak;
+              console.log("INCORRECT STRATEGY PLAYED");
             }
             let tempBetAmount = betAmount;
             tempBetAmount = [(betAmount[0] * 2), (betAmount[1] * 2), (betAmount[2] * 2)];
@@ -245,6 +242,7 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
   
           break;
         }
+        console.log("STRATEGY PLAYED: "+ whichButton);
         setTimeout(()=>{
           state.updateGameState( { newDispatches: [ 
             { which: SET_USER_SCORE_MESSAGE, data: 0 }, 

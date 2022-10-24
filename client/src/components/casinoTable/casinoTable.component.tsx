@@ -14,10 +14,13 @@ import TableMessage     from "../tableMessage/tableMessage.component";
 import PlayerHandResult from "../playerHandResult/playerHandResult.component";
 
 import { WELCOME_MESSAGE } from "../../consts/welcomeMessage";
+import { NEED_CONNECTION } from "../../consts/needConnectionMessage";
 
 // functions
 import setUpShoe from "../../functions/setUpShoe";
 import checkIndexedDBGamesExist from "../../functions/checkIndexedDBGamesExist";
+import { LOAD_GAME_MONGODB } from "../../storage/mongoDB/mutations";
+import { useMutation } from '@apollo/client';
 
 // classes
 import Auth from "../../utils/auth";
@@ -42,6 +45,9 @@ const CasinoTable = (): JSX.Element => {
   const { betButtons, playButtons } = state.state;
   const { numDecks, tableOverlays } = state.state.gameRules;
   const { players } = state.state;
+
+  const [loadGameMongoDB] = useMutation(LOAD_GAME_MONGODB);
+
   const {  
     dealerCutCard, 
     cardsDealt, 
@@ -62,6 +68,7 @@ const CasinoTable = (): JSX.Element => {
   useEffect(() => {
     const onlineCheck = setInterval(()=> {
       if (navigator.onLine !== onlineStatus) {
+        console.log(onlineStatus);
         state.updateGameState({ newDispatches: [{ which: SET_ONLINE_STATUS,    data: navigator.onLine }] });
       }
     }, 2000);
@@ -182,7 +189,7 @@ const CasinoTable = (): JSX.Element => {
       const gameExists = await checkIndexedDBGamesExist();
 
 
-      // if the game data exists load it
+      // if the game data exists in indexedDB load it
       if (gameExists) {
         
         state.updateGameState(
@@ -215,18 +222,30 @@ const CasinoTable = (): JSX.Element => {
           if (onlineStatus) {
             
             // try to fetch game data from server
+            const user = Auth.getProfile();
+            const userDataFromMongo = loadGameMongoDB({variables: {username: user.data.username }});
+            console.log(userDataFromMongo);
           }
           else {
             // if they are logged in, and have no local game data
             // show game unavailable till they get a connection
             // If we don't do this, they could just keep resetting local storage and never have to pay
             // we assume if they are actually a new user they would still have an internet connection as they just downloaded the app.
+            state.updateGameState(
+              { newDispatches: 
+                [ 
+                  { which: POPUP_MESSAGE,     data: NEED_CONNECTION() },
+                  { which: SHOW_JOIN_FORM,    data: false },
+                ]
+              }
+            );
           }
         }
         else {
           // if they aren't logged in, and have no local game data, they may be new
           // are they online?
           if (onlineStatus) {
+            console.log("online");
             // if they are online, show the join form
             state.updateGameState(
               { newDispatches: 
@@ -243,6 +262,14 @@ const CasinoTable = (): JSX.Element => {
           }
           else {
             // if they aren't online, show unavailable until they get a connection
+            state.updateGameState(
+              { newDispatches: 
+                [ 
+                  { which: POPUP_MESSAGE,     data: NEED_CONNECTION() },
+                  { which: SHOW_JOIN_FORM,    data: false },
+                ]
+              }
+            );
           }
           
         }

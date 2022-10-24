@@ -18,6 +18,7 @@ const typeDefs = gql`
     createUser(username: String!, email: String!, password: String!): User
     loginUser(username: String!, password: String!): User
     saveGame(username: String!, gameData: String!): User
+    loadGame(username: String!): User
   }
 `;
 

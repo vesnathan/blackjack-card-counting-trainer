@@ -45,3 +45,14 @@ mutation saveGame(
   }
 }
 `;
+
+export const LOAD_GAME_MONGODB = gql`
+mutation loadGame(
+  $username: String!
+)
+{
+  loadGame(username: $username){
+    gameData
+  }
+}
+`;

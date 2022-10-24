@@ -49,6 +49,11 @@ const resolvers = {
       );
       return thisUser;
     },
+
+    loadGame: async (parent, args) => {
+      const thisUser = await User.findOne({ username: args.username });
+      return thisUser;
+    },
   },
 };
 
