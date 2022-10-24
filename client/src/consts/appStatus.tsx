@@ -55,7 +55,7 @@ export const APP_STATUS = () => {
     hitCard: false,
     userHitCard: false,
     showStripeForm: false,
-    onlineStatus: true,
+    onlineStatus: false,
   }
 
   return appStatusArray;
