@@ -110,16 +110,25 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
         let strategyButtonName = "";
         const acesInHandWorthEleven: Array<any> = players[playersTurn].hand.filter((card:any) => card.points === 11);
         let playerHandRow: Array<string> = [];
+        let logStratCardCalc: string = "";
         // soft hand, the -4 adjusts for the fact that the array starts at 4
         if (acesInHandWorthEleven.length > 0) {
           playerHandRow = STRATEGY_SOFT[playerHand.handCount-14];
+          logStratCardCalc += " SOFT STRATEGY CARD";
         }
         else {
           playerHandRow = STRATEGY_HARD[playerHand.handCount-4];
+          logStratCardCalc += " HARD STRATEGY CARD";
         }
 
         const dealerCol = dealerUpCard-2;
-        const strategy = playerHandRow[dealerCol];
+
+        logStratCardCalc += " COLUMN: "+dealerCol;
+
+        const strategy = " CORRECT: "+playerHandRow[dealerCol];
+
+        logStratCardCalc += strategy;
+
         switch (strategy) {
           case "H":
             strategyButtonName = "HIT";
