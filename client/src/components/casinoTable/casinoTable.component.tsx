@@ -75,10 +75,11 @@ const CasinoTable = (): JSX.Element => {
 
   useEffect(() => {
     const onlineCheck = setInterval(()=> {
+      
       if (navigator.onLine !== onlineStatus) {
-        console.log(onlineStatus);
         state.updateGameState({ newDispatches: [{ which: SET_ONLINE_STATUS,    data: navigator.onLine }] });
         if (navigator.onLine) {
+          console.log("here");
           const jsonObjStr = JSON.stringify( { 
             chipsTotal: chipsTotal, 
             scoreTotal: scoreTotal, 
@@ -91,7 +92,7 @@ const CasinoTable = (): JSX.Element => {
           saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
         }
       }
-    }, 2000);
+    }, 10000);
 
     return () => {
       clearInterval(onlineCheck)

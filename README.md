@@ -83,7 +83,6 @@ Apollo/GraphQL
 MongoDB/Mongoose  
 MaterialUI  
 Styled Components  
-React Transition Group  
 ESLint - Air BnB  
 Husky  
 bcrypt  
@@ -107,7 +106,9 @@ Stripe Elements
 
 ## LICENCE
 
-    This software is copyright and is not to be used in any way shape or form unless written authorisation is obtained from it's developer.
+    This software is copyright and is not to be used in
+    any way shape or form unless written authorisation is
+    obtained from it's developer.
 
 <a id="LINKS"></a>
 
