@@ -129,6 +129,8 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
 
         logStratCardCalc += strategy;
 
+        console.log(logStratCardCalc);
+        
         switch (strategy) {
           case "H":
             strategyButtonName = "HIT";
