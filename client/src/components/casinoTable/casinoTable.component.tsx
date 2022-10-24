@@ -21,6 +21,7 @@ import setUpShoe from "../../functions/setUpShoe";
 import checkIndexedDBGamesExist from "../../functions/checkIndexedDBGamesExist";
 import { LOAD_GAME_MONGODB } from "../../storage/mongoDB/mutations";
 import { useMutation } from '@apollo/client';
+import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
 
 // classes
 import Auth from "../../utils/auth";
@@ -47,6 +48,7 @@ const CasinoTable = (): JSX.Element => {
   const { players } = state.state;
 
   const [loadGameMongoDB] = useMutation(LOAD_GAME_MONGODB);
+  const [saveGameMongoDB] = useMutation(SAVE_GAME_MONGODB);
 
   const {  
     dealerCutCard, 
@@ -62,14 +64,32 @@ const CasinoTable = (): JSX.Element => {
     tableMessage,
     userScoreMessage,
     shoeCards,
-    onlineStatus
+    onlineStatus,
+    chipsTotal,
+    scoreTotal,
+    userStreak,
+    gameLevel
   } = state.state.appStatus;
+
+  const { gameRules } = state.state;
 
   useEffect(() => {
     const onlineCheck = setInterval(()=> {
       if (navigator.onLine !== onlineStatus) {
         console.log(onlineStatus);
         state.updateGameState({ newDispatches: [{ which: SET_ONLINE_STATUS,    data: navigator.onLine }] });
+        if (navigator.onLine) {
+          const jsonObjStr = JSON.stringify( { 
+            chipsTotal: chipsTotal, 
+            scoreTotal: scoreTotal, 
+            playerPosition: playerPosition, 
+            userStreak: userStreak, 
+            gameLevel: gameLevel, 
+            gameRules: gameRules 
+          });
+          const user = Auth.getProfile();
+          saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
+        }
       }
     }, 2000);
 
