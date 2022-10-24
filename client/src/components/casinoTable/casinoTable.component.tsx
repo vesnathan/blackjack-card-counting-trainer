@@ -55,7 +55,6 @@ const CasinoTable = (): JSX.Element => {
     playButtonsShow,
     tableMessage,
     userScoreMessage,
-    reshuffleDue,
     shoeCards,
     onlineStatus
   } = state.state.appStatus;
@@ -275,7 +274,11 @@ const CasinoTable = (): JSX.Element => {
   
     // this function resets everything ready for the next hand
     const resetHand = () => {
-      if (reshuffleDue) {
+      console.log("resetHand");
+      console.log("dealerCutCard", (numDecks*52-dealerCutCard));
+      console.log("cardsDealt", cardsDealt);
+      if ( (numDecks*52-dealerCutCard) <= cardsDealt) {
+        console.log("resetHand reShuffle");
         shuffleShoe(shoeCards);
         state.updateGameState( { newDispatches: [ { which: SET_TABLE_MESSAGE, data: "SHUFFLING..." } ] } );
         setTimeout(()=>{state.updateGameState( { newDispatches: [ { which: SET_TABLE_MESSAGE, data: "" } ] } )},3000);
@@ -355,7 +358,8 @@ const CasinoTable = (): JSX.Element => {
           )
         })}
       </div>
-    </div>
+      <div id="devInfo">Dealer Cut Card: {(numDecks*52-dealerCutCard)}, Cards dealt: {cardsDealt}</div>
+    </div>  
   )
 }
 

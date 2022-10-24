@@ -20,7 +20,7 @@ const ChipStack = (): JSX.Element =>  {
       className="chipStackHolder" 
       style={{
         right: (players[playerPosition].position[0]-3)+"%", 
-        top: (players[playerPosition].position[1]+18)+"%"
+        top: (players[playerPosition].position[1]+20)+"%"
       }}>
       <div className="fiveStack">
         <FiveStack betAmount={betAmount[0]}/>

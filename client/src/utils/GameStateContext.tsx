@@ -17,13 +17,21 @@ function reducer(state: any, action: any) {
         tempStatus.popupTitle = action.payload;
         return { ...state, appStatus: tempStatus }
 
+      case "updateAutoBet" : 
+        tempStatus.autoBet = action.payload;
+        return { ...state, appStatus: tempStatus }
+
+      case "setAutoBetAmount" : 
+        tempStatus.autoBetAmount = action.payload;
+        return { ...state, appStatus: tempStatus }
+
       case "updateScore" :
 
         tempStatus.scoreTotal = action.payload;
         return { ...state, appStatus: tempStatus }
 
       case "updateChips" :
-
+        console.log(tempStatus.chipsTotal + " " + action.payload);
         tempStatus.chipsTotal = tempStatus.chipsTotal + action.payload;
         return { ...state, appStatus: tempStatus }
 

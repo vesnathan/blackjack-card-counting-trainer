@@ -1,6 +1,6 @@
 export const PLAYERS = () => {
   const playersArray = () => {
-    const tablePositions = [[50,20],[11,55],[29,62],[48.25,65],[68,62],[86,55]];
+    const tablePositions = [[50,20],[11,50],[29,57],[48.25,60],[68,57],[86,50]];
     const player = (i: number) => {
       const position = tablePositions[i];    
       const hand: any = [];

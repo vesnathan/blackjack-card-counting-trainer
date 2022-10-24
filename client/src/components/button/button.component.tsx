@@ -18,8 +18,11 @@ import {
   SET_PLAYERS_TURN,
   SHOW_POPUP,
   POPUP_MESSAGE,
-  SHOW_STRIPE_FORM
+  SHOW_STRIPE_FORM,
+  UPDATE_AUTO_BET,
+  SET_AUTO_BET_AMOUNT
 } from "../../utils/actions";
+
 
 
 
@@ -36,33 +39,50 @@ type ButtonProps = {
 const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonProps): JSX.Element =>  {
   
   const state: any = useGameContext();
-  let { betAmount, chipsTotal, playerPosition, userStreak, scoreTotal } = state.state.appStatus;
+  let { betAmount, chipsTotal, playerPosition, userStreak, scoreTotal, autoBet, playersTurn } = state.state.appStatus;
   const { players } = state.state;
 
   const clickHandler = (e: React.MouseEvent<HTMLButtonElement>, buttonType: string ) => {
     if (buttonType === "betButton") { 
-      switch ((e.target as HTMLElement).id) {
-        case "5":
-          betAmount[0] += 1;
-          break;      
-        case "25":
-          betAmount[1] += 1;
-          break;      
-        case "50":
-          betAmount[2] += 1;
-          break;     
-        case "DEAL":
-          state.updateGameState(
-            { newDispatches: 
-              [ 
-                { which: UPDATE_DEAL_HAND,  data: true },
-                { which: SHOW_BET_BUTTONS,  data: false },
-                { which: UPDATE_CHIPS,  data: -((betAmount[0]*5)+(betAmount[1]*25)+(betAmount[2]*50)) },
-              ]
+
+
+        switch ((e.target as HTMLElement).id) {
+          case "5":
+            betAmount[0] += 1;
+            break;      
+          case "25":
+            betAmount[1] += 1;
+            break;      
+          case "50":
+            betAmount[2] += 1;
+            break;     
+          case "DEAL":
+            state.updateGameState(
+              { newDispatches: 
+                [ 
+                  { which: UPDATE_DEAL_HAND,  data: true },
+                  { which: SHOW_BET_BUTTONS,  data: false },
+                  { which: UPDATE_CHIPS,  data: -((betAmount[0]*5)+(betAmount[1]*25)+(betAmount[2]*50)) },
+                ]
+              }
+            ); 
+            break;
+          case "AUTO" :
+            if (!autoBet) {
+              state.updateGameState({newDispatches:[
+                { which: UPDATE_AUTO_BET,  data: true },
+                { which: SET_AUTO_BET_AMOUNT,  data: [betAmount[0],betAmount[1],betAmount[2]] }
+              ]});
+            } 
+            else {
+              state.updateGameState({newDispatches:[
+                { which: UPDATE_AUTO_BET,  data: false },
+                { which: SET_AUTO_BET_AMOUNT,  data: [0,0,0] }
+              ]});
             }
-          ); 
-          break;
-      }
+            break;
+        }
+
       state.updateGameState({newDispatches:[{ which: BET_AMOUNT,  data: [betAmount[0],betAmount[1],betAmount[2]] }]}); 
       if (chipsTotal-((betAmount[0]*5)+(betAmount[1]*25)+(betAmount[2]*50)) >= 0 ) {
         // state.updateGameState({newDispatches:[{ which: UPDATE_BET_BUTTONS,  data: {whichButton: 3, whichProperty: "buttonDisabled", data: false } }]}); 
@@ -88,7 +108,7 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
         const dealerUpCard = players[0].hand[1]?.points;
         const playerHand = players[playerPosition];
         let strategyButtonName = "";
-        const acesInHandWorthEleven: Array<any> = players[playerPosition].hand.filter((card: any) => card.pip === "A" && card.points === 11);
+        const acesInHandWorthEleven: Array<any> = players[playersTurn].hand.filter((card:any) => card.points === 11);
         let playerHandRow: Array<string> = [];
         // soft hand, the -4 adjusts for the fact that the array starts at 4
         if (acesInHandWorthEleven.length > 0) {
@@ -104,8 +124,8 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
           case "H":
             strategyButtonName = "HIT";
           break;
-          case "D":
-            strategyButtonName = "DOUBLE";
+          case "D": // player can't double with > 2 cards
+            strategyButtonName = (players[playersTurn].hand.length === 2)? "DOUBLE" : "HIT";
           break;
           case "S":
             strategyButtonName = "STAND";

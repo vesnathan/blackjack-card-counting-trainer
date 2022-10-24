@@ -17,6 +17,8 @@ export const APP_STATUS = () => {
     count: 0,
     showCount: true,
     betAmount: [0,0,0],
+    autoBet: false,
+    autoBetAmount: [0,0,0],
     playerPosition: 3,
     showPlayerTurnIcon: false,
     cardsDealt: 0,
