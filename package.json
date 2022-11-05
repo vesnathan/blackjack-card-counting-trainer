@@ -18,7 +18,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": {    
+    "@middy/core": "^3.6.2",
+    "@middy/http-cors": "^3.6.2",
+    "concurrently": "^7.5.0",
+    "middy": "^0.36.0",
+    "serverless": "^3.23.0"
   },
   "devDependencies": {  
     "husky": "^8.0.0",
@@ -34,7 +39,12 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.8",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.7.1",
+    "@types/aws-lambda": "^8.10.108",
+    "serverless-offline": "^11.2.3",
+    "serverless-s3-sync": "^3.1.0",
+    "serverless-webpack": "^5.10.0",
+    "webpack": "^5.74.0"
     
   }
 }
