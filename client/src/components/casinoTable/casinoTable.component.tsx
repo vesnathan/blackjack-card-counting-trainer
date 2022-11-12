@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import './casinoTable.component.css';
 import { useMutation } from "react-query";
 import axios from "axios"; 
-import { API_URL, AWS_REGION } from "../../config/aws.config";
-import { gql } from "graphql-request";
-import { AppSyncClient, AssociateApiCommand } from "@aws-sdk/client-appsync";
+import { API_URL } from "../../config/aws.config";
+import { gql, request  } from "graphql-request";
+
 
 // import custom components
 import TableOverlay     from "../tableOverlay/tableOverlay.component";
@@ -44,30 +44,32 @@ import {
 import React from 'react';
 
 
-const client = new AppSyncClient({ region: AWS_REGION });
 
-const headers = {
-  'Authorization': `Bearer ${Auth.getToken()}` 
-}
 const CasinoTable = (): JSX.Element => {
-  const mutation = useMutation({
-    mutationFn: data => {
-      return axios.post(API_URL, gql`
-        mutation saveGame(
-          $username: String!,
-          $gameData: String!
-        )
-        {
-          saveGame(username: $username, gameData: $gameData){
-            username
-            gameData
-          }
-        }
-      `,
-      { headers: headers}
+  const headers = {
+    Authorization: `Bearer ${Auth.getToken()}` 
+  }
+  const saveGameQuery = gql`
+  mutation saveGame(
+    $username: String!,
+    $gameData: String!
+  )
+  {
+    saveGame(username: $username, gameData: $gameData){
+      username
+      gameData
+    }
+  }
+`;
+  const mutation = useMutation(async (data) => {
+    request(
+        API_URL, 
+        saveGameQuery,
+        data,
+        headers,
       )
     }
-  })
+  )
 
   // TODO: Fix the use of "any" type below
   const state: any = useGameContext();
@@ -414,8 +416,9 @@ const CasinoTable = (): JSX.Element => {
             { which: RESET_DEAL_COUNTER  }
           ] } );
           const user = Auth.getProfile();
+          const gameData = JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})
           // @ts-ignore
-          mutation.mutate({username: "vesnathan@gmail.com", gameData: JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})})
+          mutation.mutate({username: "vesnathan@gmail.com", gameData })
   
       },3000);
     }
