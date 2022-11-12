@@ -270,9 +270,6 @@ const CasinoTable = (): JSX.Element => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
-
-
-
   const shuffleShoe = (currentShoe: Array<object>) => {
     for (let i = currentShoe.length - 1; i > 0; i--) {
       let j = Math.floor(Math.random() * i);
@@ -341,17 +338,17 @@ const CasinoTable = (): JSX.Element => {
         <TableOverlay message={ tableOverlays[1]+tableOverlays[2] } messageSizeClass="h2"/> 
         <ChipStack />
         <Shoe numDecks={numDecks} cardsDealt={cardsDealt} dealerCutCard={dealerCutCard}/>
-        { showPickSpot            ? <PickSpot /> : null }
-        { betButtonsShow          ? <ButtonBar key="betButtons" buttons={betButtons} /> : null  }
-        { playButtonsShow         ? <ButtonBar key="playButtons" buttons={playButtons} /> : null  }
-        { dealHand                ? <Deal resetHand={resetHand}/> : null }
-        { showPlayerTurnIcon      ? <PlayerTurn playerPosition={players[playersTurn].position} /> : null }
-        { tableMessage !== ""     ? <TableMessage tableMessage={tableMessage} /> : null  }
-        { userScoreMessage !== 0  ? <UserScoreMessage userScoreMessage={userScoreMessage} position={players[playerPosition].position}/> : null }
+        { showPickSpot            && <PickSpot /> }
+        { betButtonsShow          && <ButtonBar key="betButtons" buttons={betButtons} /> }
+        { playButtonsShow         && <ButtonBar key="playButtons" buttons={playButtons} /> }
+        { dealHand                && <Deal resetHand={resetHand}/> }
+        { showPlayerTurnIcon      && <PlayerTurn playerPosition={players[playersTurn].position} /> }
+        { tableMessage !== ""     && <TableMessage tableMessage={tableMessage} /> }
+        { userScoreMessage !== 0  && <UserScoreMessage userScoreMessage={userScoreMessage} position={players[playerPosition].position}/> }
         { players.map((player: Object) => {
           return (
             // @ts-ignore
-            player.playerHandResult !== "" ? <PlayerHandResult key={`${player.position}-result`} playerPosition={player.position} positionAdjust={[50,0]} playerHandResult={player.playerHandResult}/> : null 
+            player.playerHandResult !== "" && <PlayerHandResult key={`${player.position}-result`} playerPosition={player.position} positionAdjust={[50,0]} playerHandResult={player.playerHandResult}/>
           )
         })}
       </div>
