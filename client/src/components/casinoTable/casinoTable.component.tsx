@@ -307,9 +307,7 @@ const CasinoTable = (): JSX.Element => {
         { which: SET_USER_HAD_TURN, data: false }
       ] } );
 
-      setTimeout(() => {
-
-        
+      setTimeout(() => {    
         // reset all the players hand details
         for (let i = 0; i <= 5; i++) {
           players[i].handCount = 0; 
@@ -329,9 +327,9 @@ const CasinoTable = (): JSX.Element => {
           { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true } },
           { which: RESET_DEAL_COUNTER  }
         ] } );
-          const gameData = JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})
-          // @ts-ignore
-          mutation.mutate({username: "vesnathan@gmail.com", gameData })
+        const gameData = JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})
+        // @ts-ignore
+        mutation.mutate({username: "vesnathan@gmail.com", gameData })
   
       },3000);
     }
