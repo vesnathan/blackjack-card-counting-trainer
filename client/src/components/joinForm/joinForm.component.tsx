@@ -5,7 +5,7 @@ import { useGameContext } from "../../utils/GameStateContext";
 import './joinForm.component.css';
 import Auth from '../../utils/auth';
 import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
-import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
+import useSaveGame from "../../storage/appSync/saveGame.mutation";
 
 // Material UI Components
 import Grid from '@mui/material/Grid';
@@ -13,8 +13,20 @@ import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { useMutation } from '@apollo/client';
-import{ CREATE_USER } from  "../../storage/mongoDB/mutations";
+
+
+import {
+	CognitoUserPool,
+	CognitoUserAttribute,
+	CognitoUser,
+  AuthenticationDetails,
+} from 'amazon-cognito-identity-js';
+
+
+
+
+
+import { AWS_USER_POOL_ID, AWS_CLIENT_ID, API_URL } from "../../config/aws.config";
 
 import { 
   UPDATE_CHIPS,
@@ -29,10 +41,12 @@ import {
   LOGGED_IN
 } from "../../utils/actions";
 
+
+
 const JoinForm = (): React.ReactElement  => {
-
   const state: any = useGameContext();
-
+  // @ts-ignore eslint-disable-next-line @typescript-eslint/no-unused-vars 
+  const { mutate: saveGame } = useSaveGame;
   const { 
     joinButtonText, 
     loginButtonText,
@@ -46,24 +60,26 @@ const JoinForm = (): React.ReactElement  => {
   } = state.state.appStatus;
 
   const { gameRules } = state.state;
-  const [createUser] = useMutation(CREATE_USER);
-  const [saveGameMongoDB] = useMutation(SAVE_GAME_MONGODB);
   const [inputs, setInputs] = useState({
     username: "",
     email: "",
     password: "",
     confirmpassword: ""
   });
-  const [usernameError, setUsernameError] = useState("");
+
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  
+            // -----------------------------------------------------------------------------------------------------------
+
+            
+            // ----------------------------------------------------------------------------------------------------------
+
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     const name = e.target.id.split("-");
     switch (name[0]) {
-      case "username":
-        setUsernameError("");
-        break;
       case "email":
         setEmailError("");
         break;
@@ -97,7 +113,6 @@ const JoinForm = (): React.ReactElement  => {
   }
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-
     e.preventDefault();
     state.updateGameState(
       { newDispatches: 
@@ -107,13 +122,6 @@ const JoinForm = (): React.ReactElement  => {
       }
     );   
     let continueProcessingForm = true;
-    if (!inputs.username) { setUsernameError("Please enter a user name."); continueProcessingForm = false; }
-    else {
-
-      if (inputs.username.length < 3) {
-        setUsernameError("Username must be at least 3 characters long."); continueProcessingForm = false;
-      }
-    }
     if (!inputs.email) { setEmailError("Please enter your email address."); continueProcessingForm = false;}
     else {
       if (
@@ -146,73 +154,134 @@ const JoinForm = (): React.ReactElement  => {
     }
     
     if (continueProcessingForm) {
-      try {
-      
-        const response = await createUser({
-          variables: { 
-            username: inputs.username,
-            password: inputs.password,
-            email: inputs.email,
-          }
-        });
-        if (!response.data.createUser.username) {
-          throw new Error('something went wrong!');
-        }
-        else {
-          state.updateGameState(
-            { newDispatches: 
-              [ 
-                { which: SHOW_JOIN_FORM_OK_MESSAGE, data: "Successfully joined! Enjoy your 1000 free chips!" },
-                { which: SHOW_JOIN_FORM_OK_STATUS,  data: "success" },
-                { which: UPDATE_CHIPS,              data: 100 },
-                { which: SHOW_JOIN_FORM,            data: false },
-                { which: SHOW_JOIN_FORM_OK,         data: true },
-             ]
-            }
-          );   
-          Auth.login(response.data.createUser.token);           
-          state.updateGameState(
-            { newDispatches: 
-              [ 
-                { which: LOGGED_IN, data: true },
-              ]
-            }
-          );
-          saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
-          const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
-          const user = Auth.getProfile();
-          saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
-        }
-      } catch (err: any) {
-        console.log(err);
-        state.updateGameState(
-          { newDispatches: 
-            [ 
-              { which: SHOW_JOIN_FORM_OK_MESSAGE, data: `ERROR 325.942: JOIN FAILED` },
-              { which: SHOW_JOIN_FORM_OK_STATUS,  data: "error" },
-              { which: SHOW_JOIN_FORM,            data: true },
-              { which: SHOW_JOIN_FORM_OK,         data: false },
-            ]
-          }
-        );    
+      const poolData = {
+        UserPoolId: AWS_USER_POOL_ID,
+        ClientId: AWS_CLIENT_ID
       }
+      
+      const userPool = new CognitoUserPool(poolData);
+      const attributeList : CognitoUserAttribute[] = [];
+      const dataEmail = {
+        Name: 'email',
+        Value: inputs.email,
+      };
+      const attributeEmail = new CognitoUserAttribute(dataEmail);
+      attributeList.push(attributeEmail);
+      // @ts-ignore
+      userPool.signUp(inputs.email, inputs.password, attributeList, null, function(
+        err,
+        result
+      ) {
+        if (err) {
+          setEmailError(err.message);
+          return;
+        }
+        // @ts-ignore
+        var cognitoUser = result.user;
+        
+        const authenticationData = {
+          Username : inputs.email,
+          Password : inputs.password,
+        };
+        var authenticationDetails = new AuthenticationDetails(authenticationData);
+        cognitoUser.authenticateUser(authenticationDetails, {
+          onSuccess: function(result) {
+            var accessToken = result.getAccessToken().getJwtToken();
+            Auth.login(accessToken);
+            console.log("accessToken", accessToken);
+            state.updateGameState(
+              { newDispatches: 
+                [ 
+                  { which: SHOW_JOIN_FORM_OK_MESSAGE,     data: "Successfully joined! Enjoy your 1000 free chips!" },
+                  { which: SHOW_JOIN_FORM_OK_STATUS,      data: "success" },
+                  { which: UPDATE_CHIPS,                  data: 1000 },
+                  { which: SHOW_JOIN_FORM,                data: false },
+                  { which: SHOW_JOIN_FORM_OK,             data: true },
+                  { which: LOGGED_IN,                     data: true }
+                ] 
+              }
+            );
+            saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules}); 
+
+            // -----------------------------------------------------------------------------------------------------------
+            // @ts-ignore
+            saveGame({username: inputs.email, gameData: JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})})
+            // ----------------------------------------------------------------------------------------------------------
+          }, 
+          onFailure: function(err) {
+            setEmailError(err.message);
+          },
+        });
+      });
     }
     state.updateGameState(
       { newDispatches: 
         [ 
-          { which: SHOW_JOIN_FORM_BUTTON_SPINNER,  data: false },
+          { which: SHOW_JOIN_FORM_BUTTON_SPINNER, data: false },
         ]
       }
-    ); 
+    );
   }
+
+
+
+      
+      //   const response = await createUser({
+      //     variables: { 
+// username: inputs.username,
+// password: inputs.password,
+// email: inputs.email,
+      //     }
+      //   });
+      //   if (!response.data.createUser.username) {
+      //     throw new Error('something went wrong!');
+      //   }
+      //   else {
+      //     state.updateGameState(
+// { newDispatches: 
+//   [ 
+//     { which: SHOW_JOIN_FORM_OK_MESSAGE, data: "Successfully joined! Enjoy your 1000 free chips!" },
+//     { which: SHOW_JOIN_FORM_OK_STATUS,  data: "success" },
+//     { which: UPDATE_CHIPS,              data: 100 },
+//     { which: SHOW_JOIN_FORM,            data: false },
+//     { which: SHOW_JOIN_FORM_OK,         data: true },
+//     { which: LOGGED_IN, data: true }
+//  ]
+// }
+      //     );   
+           
+      //     saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
+      //     const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
+      //     const user = Auth.getProfile();
+      //     saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
+      //   }
+      // } catch (err: any) {
+      //   console.log(err);
+      //   state.updateGameState(
+      //     { newDispatches: 
+// [ 
+//   { which: SHOW_JOIN_FORM_OK_MESSAGE, data: `ERROR 325.942: JOIN FAILED` },
+//   { which: SHOW_JOIN_FORM_OK_STATUS,  data: "error" },
+//   { which: SHOW_JOIN_FORM,            data: true },
+//   { which: SHOW_JOIN_FORM_OK,         data: false },
+// ]
+      //     }
+      //   );    
+      // }
+  //   }
+  //   state.updateGameState(
+  //     { newDispatches: 
+  //       [ 
+  //         { which: SHOW_JOIN_FORM_BUTTON_SPINNER, data: false },
+  //       ]
+  //     }
+  //   ); 
+  // }
   
   return (
     <div className="popupForm">
       <FormGroup className="marginBottom">
 
-        <input type="text" id="username-Input" name="username" placeholder="Username:" onFocus={handleFocus} onChange={handleChange} value={inputs.username} /> 
-        {usernameError ? <div className="joinFormErrorWrapper"><div id="username-Error" className="joinFormError">{usernameError}</div></div> : null }
-        
         <input type="text" id="email-Input" name="email" placeholder="Email:" onFocus={handleFocus} onChange={handleChange} value={inputs.email} /> 
         {emailError ? <div className="joinFormErrorWrapper"><div className="joinFormError">{emailError}</div></div> : null }
         

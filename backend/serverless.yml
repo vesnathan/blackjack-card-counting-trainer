@@ -1,0 +1,77 @@
+org: vesnathan
+app: blackjack
+service: blackjack
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  profile: blackjackUser
+  region: ap-southeast-2
+  httpApi:
+    cors: true
+
+plugins:
+  - serverless-s3-sync
+  - serverless-offline
+  - serverless-appsync-plugin
+  - serverless-webpack
+
+package:
+  individually: true
+  exclude:
+    - ./node_modules/**
+    - node_modules/**
+
+custom:
+  bucketName: blackjack-o5z9dq1v9p
+  s3Sync:
+    - bucketName: ${self:custom.bucketName}
+      localDir: ../client/build/
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+  appSync:
+    name: blackjack-appsync-api
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    additionalAuthenticationProviders:
+      - authenticationType: AWS_IAM
+    userPoolConfig:
+      awsRegion: ap-southeast-2
+      defaultAction: ALLOW
+      userPoolId: !Ref cognitoUserPool
+    mappintTemplatesLocation: mapping-templates
+    mappingTemplates: 
+      - type: Query
+        field: games
+        dataSource: gamesTable
+      - type: Mutation
+        field: saveGame
+        dataSource: gamesTable
+      - type: Mutation
+        field: loadGame
+        dataSource: gamesTable
+    dataSources: 
+      - type: AMAZON_DYNAMODB
+        name: gamesTable
+        config:
+          tableName: !Ref gamesTable
+
+    
+
+resources:
+  -  Resources:
+  -  ${file(./resources/DynamoDb/dynamoDb.yaml)}
+  -  ${file(./resources/Cognito/cognito.yaml)}
+  -  ${file(./resources/S3/s3.yaml)}
+  -  ${file(./resources/Cloudfront/cloudfront.yaml)}
+	
+functions:
+  preSignUp:
+    handler: handler.handler
+    events:
+      - cognitoUserPool:
+          pool: blackjackUserPool
+          trigger: PreSignUp
+          existing: true
+        
+

@@ -7,8 +7,7 @@ import { useGameContext } from "../../utils/GameStateContext";
 import Spacey from "../../assets/images/characters/spacey.webp";
 import { WHAT_COUNT }  from "../../consts/whatCountMessage";
 import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
-import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
-import { useMutation } from '@apollo/client';
+
 import Auth from "../../utils/auth";
 import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
@@ -43,7 +42,6 @@ type DealProps = {
 const Deal = ({ resetHand }: DealProps): JSX.Element => {
   const handPaidOut = useRef(false);
 
-  const [saveGameMongoDB] = useMutation(SAVE_GAME_MONGODB);
   const firstRender = useFirstRender();
   const state: any = useGameContext();
   const { players } = state.state;
@@ -370,7 +368,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
         saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
         const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
         const user = Auth.getProfile();
-        saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
+        //saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
       }
       
     }

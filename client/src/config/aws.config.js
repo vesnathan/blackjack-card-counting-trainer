@@ -1,0 +1,5 @@
+export const AWS_USER_POOL_ID = "ap-southeast-2_1HgEpWMKG"
+export const AWS_CLIENT_ID = "6o0dg6sk4pbot3cgst75tj7tl"
+export const AWS_REGION = "ap-southeast-2"
+// export const API_URL = "https://hmyndfpd6vgvboete75rp6jujq.appsync-api.ap-southeast-2.amazonaws.com/graphql"
+export const API_URL = "https://hmyndfpd6vgvboete75rp6jujq.appsync-api.ap-southeast-2.amazonaws.com/graphql"

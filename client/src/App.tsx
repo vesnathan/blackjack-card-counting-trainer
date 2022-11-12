@@ -2,7 +2,15 @@ import React, { useEffect } from 'react';
 import './App.css';
 import './storage/indexedDB/connect';
 
+import {
+	CognitoUserPool,
+	CognitoUserAttribute,
+	CognitoUser,
+} from 'amazon-cognito-identity-js';
 
+
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 // Material UI Components
 import { ThemeProvider } from '@mui/material/styles';
@@ -18,29 +26,9 @@ import CasinoTable from "./components/casinoTable/casinoTable.component";
 import Swiper from "./components/swiper/swiper.component";
 import ScoreBar from "./components/scoreBar/scoreBar.component";
 import Popup from "./components/popup/popup.component";
-
-import { ApolloClient, ApolloProvider, InMemoryCache, createHttpLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
 import  GameStateContext from "./utils/GameStateContext";
 
-const httpLink = createHttpLink({
-  uri: '/graphql',
-});
-
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('id_token');
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
-    },
-  };
-});
-
-const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
-});
+const queryClient = new QueryClient();
 
 function App() {
 
@@ -74,25 +62,25 @@ function App() {
 
 
   return (
-    <GameStateContext>
-      <ApolloProvider client={client}>
-        <CssBaseline>
-          <ThemeProvider theme={theme}>
-          
-            <div className="mainContainer"><div className="vignette"></div></div>
-            <ScoreBar />
-            <Container disableGutters style={{ position: "relative", overflow: "hidden" , height: "100vh", alignItems: "center"}}>
-              <Grid item sm={10}  style={{ position: "relative", top: "50%", transform: "translateY(-50%)"}}>
-                <CasinoTable />
-                <Popup />
-                <Swiper buttonString="STRATEGY" buttonPosition="top" swiperStatus="" swiperType="strategy" />
-                <Swiper buttonString="SETTINGS" buttonPosition="middle" swiperStatus="" swiperType="settings" />
-              </Grid>
-            </Container>
-          </ThemeProvider>
-        </CssBaseline>
-      </ApolloProvider>
-    </GameStateContext>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={true} />
+      <GameStateContext>
+          <CssBaseline>
+            <ThemeProvider theme={theme}>
+              <div className="mainContainer"><div className="vignette"></div></div>
+              <ScoreBar />
+              <Container disableGutters style={{ position: "relative", overflow: "hidden" , height: "100vh", alignItems: "center"}}>
+                <Grid item sm={10}  style={{ position: "relative", top: "50%", transform: "translateY(-50%)"}}>
+                  <CasinoTable />
+                  <Popup />
+                  <Swiper buttonString="STRATEGY" buttonPosition="top" swiperStatus="" swiperType="strategy" />
+                  <Swiper buttonString="SETTINGS" buttonPosition="middle" swiperStatus="" swiperType="settings" />
+                </Grid>
+              </Container>
+            </ThemeProvider>
+          </CssBaseline>
+      </GameStateContext>
+    </QueryClientProvider>
   );
 }
 

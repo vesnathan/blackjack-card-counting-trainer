@@ -1,0 +1,22 @@
+schema {
+  query: Query,
+  mutation: Mutation
+}
+
+type Mutation {
+    saveGame(username: String!, gameData: String!): Game! @aws_iam
+    loadGame(username: String!): Game
+}
+
+type Game @aws_iam {
+    _id: ID! 
+    userId: String!
+    username: String!
+    gameData: String
+  }
+
+  type Query {
+    games: Game
+  }
+
+

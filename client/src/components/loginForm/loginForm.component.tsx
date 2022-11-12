@@ -2,6 +2,9 @@ import React from 'react';
 import { useState } from 'react';
 import { useGameContext } from "../../utils/GameStateContext";
 
+
+
+
 import './loginForm.component.css';
 import Auth from '../../utils/auth';
 
@@ -24,15 +27,12 @@ import {
   SHOW_POPUP
 } from "../../utils/actions";
 
-import { useMutation } from '@apollo/client';
-import{ LOGIN_USER } from  "../../storage/mongoDB/mutations";
 
 
 const LoginForm = (): React.ReactElement  => {
 
   const state: any = useGameContext();
 
-  const [loginUser] = useMutation(LOGIN_USER);
 
   const { 
     joinButtonText, 
@@ -79,40 +79,40 @@ const LoginForm = (): React.ReactElement  => {
     if (!inputs.password) { setPasswordError("Please enter a password"); continueProcessingForm = false;  }
     
     if (continueProcessingForm) {
-      try {
-        const response = await loginUser({
-          variables: { 
-            password: inputs.password,
-            username: inputs.username,
-          }
-        });
-        if (!response.data.loginUser.username) {
-          throw new Error('something went wrong!');
-        }
-        else {
-          Auth.login(response.data.loginUser.token);
-          state.updateGameState(
-            { newDispatches: 
-              [ 
-                { which: SHOW_POPUP, data: false },
-                { which: LOGGED_IN, data: true },
-                { which: SHOW_PICK_SPOT, data: true },
-                { which: SHOW_LOGIN_FORM, data: false },
-             ]
-            }
-          );    
-        }
-      } catch (err: any) {
-        state.updateGameState(
-          { newDispatches: 
-            [ 
-              { which: LOGIN_FORM_MESSAGE, data: `ERROR 394.215: LOGIN FAILED` },
-              { which: LOGIN_FORM_STATUS,  data: "error" },
-              { which: SHOW_LOGIN_FORM,    data: true },
-            ]
-          }
-        );   
-      }
+      // try {
+      //   const response = await loginUser({
+      //     variables: { 
+      //       password: inputs.password,
+      //       username: inputs.username,
+      //     }
+      //   });
+      //   if (!response.data.loginUser.username) {
+      //     throw new Error('something went wrong!');
+      //   }
+      //   else {
+      //     Auth.login(response.data.loginUser.token);
+      //     state.updateGameState(
+      //       { newDispatches: 
+      //         [ 
+      //           { which: SHOW_POPUP, data: false },
+      //           { which: LOGGED_IN, data: true },
+      //           { which: SHOW_PICK_SPOT, data: true },
+      //           { which: SHOW_LOGIN_FORM, data: false },
+      //        ]
+      //       }
+      //     );    
+      //   }
+      // } catch (err: any) {
+      //   state.updateGameState(
+      //     { newDispatches: 
+      //       [ 
+      //         { which: LOGIN_FORM_MESSAGE, data: `ERROR 394.215: LOGIN FAILED` },
+      //         { which: LOGIN_FORM_STATUS,  data: "error" },
+      //         { which: SHOW_LOGIN_FORM,    data: true },
+      //       ]
+      //     }
+      //   );   
+      // }
     }
     state.updateGameState(
       { newDispatches: 

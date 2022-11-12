@@ -1,5 +1,10 @@
 import { useEffect } from 'react';
 import './casinoTable.component.css';
+import { useMutation } from "react-query";
+import axios from "axios"; 
+import { API_URL, AWS_REGION } from "../../config/aws.config";
+import { gql } from "graphql-request";
+import { AppSyncClient, AssociateApiCommand } from "@aws-sdk/client-appsync";
 
 // import custom components
 import TableOverlay     from "../tableOverlay/tableOverlay.component";
@@ -19,9 +24,6 @@ import { NEED_CONNECTION } from "../../consts/needConnectionMessage";
 // functions
 import setUpShoe from "../../functions/setUpShoe";
 import checkIndexedDBGamesExist from "../../functions/checkIndexedDBGamesExist";
-import { LOAD_GAME_MONGODB } from "../../storage/mongoDB/mutations";
-import { useMutation } from '@apollo/client';
-import { SAVE_GAME_MONGODB } from "../../storage/mongoDB/mutations";
 
 // classes
 import Auth from "../../utils/auth";
@@ -39,16 +41,39 @@ import {
   RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE,         LOGGED_IN,
   RESET_CARDS_DEALT
 } from "../../utils/actions";
+import React from 'react';
 
+
+const client = new AppSyncClient({ region: AWS_REGION });
+
+const headers = {
+  'Authorization': `Bearer ${Auth.getToken()}` 
+}
 const CasinoTable = (): JSX.Element => {
+  const mutation = useMutation({
+    mutationFn: data => {
+      return axios.post(API_URL, gql`
+        mutation saveGame(
+          $username: String!,
+          $gameData: String!
+        )
+        {
+          saveGame(username: $username, gameData: $gameData){
+            username
+            gameData
+          }
+        }
+      `,
+      { headers: headers}
+      )
+    }
+  })
+
   // TODO: Fix the use of "any" type below
   const state: any = useGameContext();
   const { betButtons, playButtons } = state.state;
   const { numDecks, tableOverlays } = state.state.gameRules;
   const { players } = state.state;
-
-  const [loadGameMongoDB] = useMutation(LOAD_GAME_MONGODB);
-  const [saveGameMongoDB] = useMutation(SAVE_GAME_MONGODB);
 
   const {  
     dealerCutCard, 
@@ -89,7 +114,7 @@ const CasinoTable = (): JSX.Element => {
             gameRules: gameRules 
           });
           const user = Auth.getProfile();
-          saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
+          //saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
         }
       }
     }, 10000);
@@ -244,8 +269,8 @@ const CasinoTable = (): JSX.Element => {
             
             // try to fetch game data from server
             const user = Auth.getProfile();
-            const userDataFromMongo = loadGameMongoDB({variables: {username: user.data.username }});
-            console.log(userDataFromMongo);
+            //const userDataFromMongo = loadGameMongoDB({variables: {username: user.data.username }});
+            //console.log(userDataFromMongo);
           }
           else {
             // if they are logged in, and have no local game data
@@ -388,7 +413,9 @@ const CasinoTable = (): JSX.Element => {
           state.updateGameState( { newDispatches: [
             { which: RESET_DEAL_COUNTER  }
           ] } );
-         
+          const user = Auth.getProfile();
+          // @ts-ignore
+          mutation.mutate({username: "vesnathan@gmail.com", gameData: JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})})
   
       },3000);
     }
