@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+
 import './casinoTable.component.css';
+
 import { useMutation } from "react-query";
-import axios from "axios"; 
 import { API_URL } from "../../config/aws.config";
 import { gql, request  } from "graphql-request";
-
 
 // import custom components
 import TableOverlay     from "../tableOverlay/tableOverlay.component";
@@ -41,9 +41,6 @@ import {
   RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE,         LOGGED_IN,
   RESET_CARDS_DEALT
 } from "../../utils/actions";
-import React from 'react';
-
-
 
 const CasinoTable = (): JSX.Element => {
   const headers = {
@@ -164,16 +161,12 @@ const CasinoTable = (): JSX.Element => {
     ];  // for testing
 
     const newTempShoe = [ ...stackDeck, ...tempShoe ];
-
     state.updateGameState({ newDispatches: [{ which: UPDATE_SHOE,    data: newTempShoe }] });
     state.updateGameState({ newDispatches: [{ which: SHOW_PICK_SPOT, data: true }]});
     const checkGames = async () => {
       const gameExists = await checkIndexedDBGamesExist();
-
-
       // if the game data exists in indexedDB load it
       if (gameExists) {
-        
         state.updateGameState(
           { newDispatches: 
             [ 
@@ -192,17 +185,14 @@ const CasinoTable = (): JSX.Element => {
         setUpShoe(numDecks);
       }
       else {
-
         // if there is no game data in IndexedDB, this may be a new user, or they may have deleted local data.
         // first, check to see if they are logged in with a valid token
         if (Auth.loggedIn()) {
-
           // firstly, show the logout button
           state.updateGameState({ newDispatches: [{ which: LOGGED_IN, data: true }]});
           // if they are logged in, then they likely have deleted local storage
           // check if they are online
-          if (navigator.onLine) {
-            
+          if (navigator.onLine) {  
             // try to fetch game data from server
             const user = Auth.getProfile();
             //const userDataFromMongo = loadGameMongoDB({variables: {username: user.data.username }});
