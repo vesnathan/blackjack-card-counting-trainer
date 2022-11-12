@@ -2,13 +2,6 @@ import React, { useEffect } from 'react';
 import './App.css';
 import './storage/indexedDB/connect';
 
-import {
-	CognitoUserPool,
-	CognitoUserAttribute,
-	CognitoUser,
-} from 'amazon-cognito-identity-js';
-
-
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
@@ -57,9 +50,6 @@ function App() {
       console.log('appinstalled', event);
     });
   },[]);
-
-
-
 
   return (
     <QueryClientProvider client={queryClient}>

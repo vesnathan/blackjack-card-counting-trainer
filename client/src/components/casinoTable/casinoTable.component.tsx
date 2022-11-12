@@ -135,98 +135,32 @@ const CasinoTable = (): JSX.Element => {
     const stackDeck: Array<Object> = [
       /*
       // P1 C1
-      {
-        suit: "H",
-        pip: "A",
-        count: -1,
-        points: 11
-      },
+      { suit: "H", pip: "A", count: -1, points: 11 },
       // P2 C1
-      {
-        suit: "H",
-        pip: "5",
-        count: -1,
-        points: 5
-      },
+      { suit: "H", pip: "5", count: -1, points: 5 },
       // P3 C1
-      {
-        suit: "H",
-        pip: "A",
-        count: -1,
-        points: 11
-      },
+      { suit: "H", pip: "A", count: -1,  points: 11 },
       // P4 C1
-      {
-        suit: "H",
-        pip: "4",
-        count: -1,
-        points: 4
-      },
+      { suit: "H", pip: "4", count: -1, points: 4 },
       // P5 C1
-      {
-        suit: "H",
-        pip: "5",
-        count: -1,
-        points: 5
-      },
+      { suit: "H", pip: "5", count: -1, points: 5 },
       // D C1
-      {
-        suit: "H",
-        pip: "A",
-        count: -1,
-        points: 11
-      },
+      { suit: "H",  pip: "A", count: -1, points: 11 },
       // P1 C2
-      {
-        suit: "H",
-        pip: "K",
-        count: -1,
-        points: 10
-      },
+      { suit: "H", pip: "K", count: -1, points: 10 },
       // P2 C2
-      {
-        suit: "H",
-        pip: "8",
-        count: -1,
-        points: 8
-      },
+      { suit: "H",  pip: "8", count: -1, points: 8 },
       // P3 C2
-      {
-        suit: "H",
-        pip: "K",
-        count: -1,
-        points: 10
-      },
+      { suit: "H", pip: "K", count: -1, points: 10 },
       // P4 C2
-      {
-        suit: "H",
-        pip: "K",
-        count: -1,
-        points: 10
-      },
+      { suit: "H", pip: "K", count: -1, points: 10 },
       // P5 C2
-      {
-        suit: "H",
-        pip: "A",
-        count: -1,
-        points: 11
-      },
+      { suit: "H", pip: "A", count: -1, points: 11 },
       // D C2
-      {
-        suit: "H",
-        pip: "K",
-        count: -1,
-        points: 10
-      },
+      { suit: "H", pip: "K", count: -1, points: 10 },
       // P1 C3
-      {
-        suit: "H",
-        pip: "A",
-        count: -1,
-        points: 11
-      },
-      
-*/
+      { suit: "H", pip: "A", count: -1,  points: 11  },     
+      */
     ];  // for testing
 
     const newTempShoe = [ ...stackDeck, ...tempShoe ];
@@ -374,12 +308,7 @@ const CasinoTable = (): JSX.Element => {
       ] } );
 
       setTimeout(() => {
-        // unmount the dealHand component
-        state.updateGameState( { newDispatches: [
-          { which: UPDATE_DEAL_HAND, data: false },
-          { which: SET_DEALER_DOWN_CARD, data: false },
-          { which: USER_DOUBLED, data: false }
-        ] } );
+
         
         // reset all the players hand details
         for (let i = 0; i <= 5; i++) {
@@ -389,33 +318,17 @@ const CasinoTable = (): JSX.Element => {
           players[i].playerHandResult = "";
         }
 
-
+        // unmount the dealHand component
         state.updateGameState( { newDispatches: [
-          { which: UPDATE_PLAYERS, data: players }
+          { which: UPDATE_DEAL_HAND, data: false },
+          { which: SET_DEALER_DOWN_CARD, data: false },
+          { which: USER_DOUBLED, data: false },
+          { which: UPDATE_PLAYERS, data: players },
+          { which: SHOW_BET_BUTTONS, data: true },
+          { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: true } },
+          { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true } },
+          { which: RESET_DEAL_COUNTER  }
         ] } );
-  
-
-          
-          // set deal button to disabled
-          state.updateGameState( { newDispatches: [
-            // { which: UPDATE_BET_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true } },
-            { which: SHOW_BET_BUTTONS, data: true }
-          ] } );
-     
-
-
-          // set Double and Split buttons to disabled
-          state.updateGameState( { newDispatches: [
-            { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: true } },
-            { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true } },
-            //{ which: SHOW_PLAY_BUTTONS, data: true }
-          ] } );
-  
-
-          state.updateGameState( { newDispatches: [
-            { which: RESET_DEAL_COUNTER  }
-          ] } );
-          const user = Auth.getProfile();
           const gameData = JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})
           // @ts-ignore
           mutation.mutate({username: "vesnathan@gmail.com", gameData })
