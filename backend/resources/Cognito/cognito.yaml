@@ -125,15 +125,11 @@ Resources:
                   Fn::Join:
                     - ""
                     - - "arn:aws:appsync:${self:provider.region}:"
-                      - Ref : AWS::AccountId # ${aws:accountId}
+                      - Ref : AWS::AccountId
                       - ":apis/"
                       - Fn::GetAtt:
                         - GraphQlApi
                         - ApiId
-                      - "/*"                    
-                #Resource:
-                  #- "arn:aws:appsync:ap-southeast-2:233071820248:apis/jwvvihaxrng5pgfzypppmifiai/*"
-                  # - !GetAtt custom.appSync.Arn
-                  # Resource: arn:aws:s3:::${self:custom.bucketName}/*
-                  #- "arn:aws:appsync:ap-southeast-2:233071820248:apis/jwvvihaxrng5pgfzypppmifiai/*"
+                      - "/types/Mutation/fields/gameData"                    
+
                   
