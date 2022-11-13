@@ -102,17 +102,7 @@ const CasinoTable = (): JSX.Element => {
       if (navigator.onLine !== onlineStatus) {
         state.updateGameState({ newDispatches: [{ which: SET_ONLINE_STATUS,    data: navigator.onLine }] });
         if (navigator.onLine) {
-          console.log("here");
-          const jsonObjStr = JSON.stringify( { 
-            chipsTotal: chipsTotal, 
-            scoreTotal: scoreTotal, 
-            playerPosition: playerPosition, 
-            userStreak: userStreak, 
-            gameLevel: gameLevel, 
-            gameRules: gameRules 
-          });
-          // const user = Auth.getProfile();
-          //saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
+         // SAVE GAME
         }
       }
     }, 10000);
@@ -218,6 +208,7 @@ const CasinoTable = (): JSX.Element => {
                   { which: SHOW_LOGIN_FORM,   data: false },
                   { which: JOIN_BUTTON_TEXT,  data: "JOIN" },
                   { which: LOGIN_BUTTON_TEXT, data: "OR LOG IN" },
+                  { which: POPUP_MESSAGE,     data: WELCOME_MESSAGE() },
                 ]
               }
             );  
