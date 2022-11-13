@@ -6,8 +6,6 @@ Resources:
         - email
       UserPoolName: "blackjackUserPool"
 
-
-
   cognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -82,54 +80,7 @@ Resources:
                   - "dynamodb:PutItem"
                 Resource:
                   - !GetAtt gamesTable.Arn
-# ------------------------------------------------------------------
-  cognitoIdentityPool:
-    Type: AWS::Cognito::IdentityPool
-    Properties:
-      AllowUnauthenticatedIdentities: true
-      CognitoIdentityProviders:
-        - ClientId: !Ref cognitoUserPoolClient
-          ProviderName: !GetAtt cognitoUserPool.ProviderName
-      IdentityPoolName: blackjackIdentityPool   
 
-  cognitoIdentityPoolRoleAttachment:
-    Type: AWS::Cognito::IdentityPoolRoleAttachment
-    Properties:
-      IdentityPoolId: !Ref cognitoIdentityPool
-      Roles:
-        unauthenticated: !GetAtt cognitoUnauthIAMRole.Arn  
-
-  cognitoUnauthIAMRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: "blackjack-unauth-role"
-      AssumeRolePolicyDocument: 
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Federated:
-                - "cognito-identity.amazonaws.com"
-            Action:
-              - "sts:AssumeRoleWithWebIdentity"
-      Description: "Unauth user Role"
-      Policies:
-        - PolicyName: "blackjack-unauth-user-policy"
-          PolicyDocument: 
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "appsync:GraphQL"
-                Resource:
-                  Fn::Join:
-                    - ""
-                    - - "arn:aws:appsync:${self:provider.region}:"
-                      - Ref : AWS::AccountId
-                      - ":apis/"
-                      - Fn::GetAtt:
-                        - GraphQlApi
-                        - ApiId
-                      - "/types/Mutation/fields/gameData"                    
+                 
 
                   

@@ -5,7 +5,6 @@ import { useGameContext } from "../../utils/GameStateContext";
 import './joinForm.component.css';
 import Auth from '../../utils/auth';
 import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
-import useSaveGame from "../../storage/appSync/saveGame.mutation";
 
 // Material UI Components
 import Grid from '@mui/material/Grid';
@@ -15,12 +14,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 
 
-import {
-	CognitoUserPool,
-	CognitoUserAttribute,
-	CognitoUser,
-  AuthenticationDetails,
-} from 'amazon-cognito-identity-js';
+import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
 
 
 
@@ -46,7 +40,7 @@ import {
 const JoinForm = (): React.ReactElement  => {
   const state: any = useGameContext();
   // @ts-ignore eslint-disable-next-line @typescript-eslint/no-unused-vars 
-  const { mutate: saveGame } = useSaveGame;
+
   const { 
     joinButtonText, 
     loginButtonText,
@@ -159,13 +153,13 @@ const JoinForm = (): React.ReactElement  => {
         ClientId: AWS_CLIENT_ID
       }
       
-      const userPool = new CognitoUserPool(poolData);
-      const attributeList : CognitoUserAttribute[] = [];
+      const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+      const attributeList : AmazonCognitoIdentity.CognitoUserAttribute[] = [];
       const dataEmail = {
         Name: 'email',
         Value: inputs.email,
       };
-      const attributeEmail = new CognitoUserAttribute(dataEmail);
+      const attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
       attributeList.push(attributeEmail);
       // @ts-ignore
       userPool.signUp(inputs.email, inputs.password, attributeList, null, function(
@@ -177,18 +171,16 @@ const JoinForm = (): React.ReactElement  => {
           return;
         }
         // @ts-ignore
-        var cognitoUser = result.user;
-        
+        // var cognitoUser = result.user;
+        var cognitoUser = new AmazonCognitoIdentity.CognitoUser(result.user);
         const authenticationData = {
           Username : inputs.email,
           Password : inputs.password,
         };
-        var authenticationDetails = new AuthenticationDetails(authenticationData);
+        var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
         cognitoUser.authenticateUser(authenticationDetails, {
           onSuccess: function(result) {
-            var accessToken = result.getAccessToken().getJwtToken();
-            Auth.login(accessToken);
-            console.log("accessToken", accessToken);
+            // var accessToken = result.getAccessToken().getJwtToken();
             state.updateGameState(
               { newDispatches: 
                 [ 
@@ -203,10 +195,6 @@ const JoinForm = (): React.ReactElement  => {
             );
             saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules}); 
 
-            // -----------------------------------------------------------------------------------------------------------
-            // @ts-ignore
-            saveGame({username: inputs.email, gameData: JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})})
-            // ----------------------------------------------------------------------------------------------------------
           }, 
           onFailure: function(err) {
             setEmailError(err.message);
@@ -222,61 +210,6 @@ const JoinForm = (): React.ReactElement  => {
       }
     );
   }
-
-
-
-      
-      //   const response = await createUser({
-      //     variables: { 
-// username: inputs.username,
-// password: inputs.password,
-// email: inputs.email,
-      //     }
-      //   });
-      //   if (!response.data.createUser.username) {
-      //     throw new Error('something went wrong!');
-      //   }
-      //   else {
-      //     state.updateGameState(
-// { newDispatches: 
-//   [ 
-//     { which: SHOW_JOIN_FORM_OK_MESSAGE, data: "Successfully joined! Enjoy your 1000 free chips!" },
-//     { which: SHOW_JOIN_FORM_OK_STATUS,  data: "success" },
-//     { which: UPDATE_CHIPS,              data: 100 },
-//     { which: SHOW_JOIN_FORM,            data: false },
-//     { which: SHOW_JOIN_FORM_OK,         data: true },
-//     { which: LOGGED_IN, data: true }
-//  ]
-// }
-      //     );   
-           
-      //     saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
-      //     const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
-      //     const user = Auth.getProfile();
-      //     saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
-      //   }
-      // } catch (err: any) {
-      //   console.log(err);
-      //   state.updateGameState(
-      //     { newDispatches: 
-// [ 
-//   { which: SHOW_JOIN_FORM_OK_MESSAGE, data: `ERROR 325.942: JOIN FAILED` },
-//   { which: SHOW_JOIN_FORM_OK_STATUS,  data: "error" },
-//   { which: SHOW_JOIN_FORM,            data: true },
-//   { which: SHOW_JOIN_FORM_OK,         data: false },
-// ]
-      //     }
-      //   );    
-      // }
-  //   }
-  //   state.updateGameState(
-  //     { newDispatches: 
-  //       [ 
-  //         { which: SHOW_JOIN_FORM_BUTTON_SPINNER, data: false },
-  //       ]
-  //     }
-  //   ); 
-  // }
   
   return (
     <div className="popupForm">

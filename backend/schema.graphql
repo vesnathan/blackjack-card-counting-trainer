@@ -4,11 +4,11 @@ schema {
 }
 
 type Mutation {
-    saveGame(username: String!, gameData: String!): Game! @aws_iam
+    saveGame(username: String!, gameData: String!): Game!
     loadGame(username: String!): Game
 }
 
-type Game @aws_iam {
+type Game {
     _id: ID! 
     userId: String!
     username: String!

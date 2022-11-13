@@ -3,8 +3,10 @@ import React, { useEffect } from 'react';
 import './casinoTable.component.css';
 
 import { useMutation } from "react-query";
-import { API_URL } from "../../config/aws.config";
+import { AWS_USER_POOL_ID, AWS_CLIENT_ID, API_URL } from "../../config/aws.config";
 import { gql, request  } from "graphql-request";
+import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
+import * as AWS from 'aws-sdk/global';
 
 // import custom components
 import TableOverlay     from "../tableOverlay/tableOverlay.component";
@@ -25,26 +27,23 @@ import { NEED_CONNECTION } from "../../consts/needConnectionMessage";
 import setUpShoe from "../../functions/setUpShoe";
 import checkIndexedDBGamesExist from "../../functions/checkIndexedDBGamesExist";
 
-// classes
-import Auth from "../../utils/auth";
-
 import { useGameContext } from "../../utils/GameStateContext";
 
 import { 
   UPDATE_CHIPS,       UPDATE_SCORE,               UPDATE_POSITION,          UPDATE_LEVEL, 
   SHOW_PICK_SPOT,     SHOW_BET_BUTTONS,           GAME_RULES,               POPUP_MESSAGE,
   SHOW_POPUP,         SHOW_JOIN_FORM_OK,          SHOW_JOIN_FORM,           POPUP_TITLE,        
-  UPDATE_SHOE,        UPDATE_COUNT,               UPDATE_DEALER_CUT_CARD, 
+  UPDATE_SHOE,        UPDATE_COUNT,               UPDATE_DEALER_CUT_CARD,   SHOW_LOGIN_FORM,
   UPDATE_STREAK,      RESHUFFLE,                  SHOW_PLAYER_TURN_ICON,    BET_AMOUNT,
   SET_TABLE_MESSAGE,  SET_USER_HAD_TURN,          UPDATE_DEAL_HAND,         SET_DEALER_DOWN_CARD,
-  USER_DOUBLED,       UPDATE_PLAYERS,             UPDATE_PLAY_BUTTONS,      
+  USER_DOUBLED,       UPDATE_PLAYERS,             UPDATE_PLAY_BUTTONS,      JOIN_BUTTON_TEXT,
   RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE,         LOGGED_IN,
-  RESET_CARDS_DEALT
+  RESET_CARDS_DEALT,  LOGIN_BUTTON_TEXT
 } from "../../utils/actions";
 
 const CasinoTable = (): JSX.Element => {
   const headers = {
-    Authorization: `Bearer ${Auth.getToken()}` 
+    // Authorization: `Bearer ${Auth.getToken()}` 
   }
   const saveGameQuery = gql`
   mutation saveGame(
@@ -112,7 +111,7 @@ const CasinoTable = (): JSX.Element => {
             gameLevel: gameLevel, 
             gameRules: gameRules 
           });
-          const user = Auth.getProfile();
+          // const user = Auth.getProfile();
           //saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
         }
       }
@@ -163,102 +162,89 @@ const CasinoTable = (): JSX.Element => {
     const newTempShoe = [ ...stackDeck, ...tempShoe ];
     state.updateGameState({ newDispatches: [{ which: UPDATE_SHOE,    data: newTempShoe }] });
     state.updateGameState({ newDispatches: [{ which: SHOW_PICK_SPOT, data: true }]});
-    const checkGames = async () => {
-      const gameExists = await checkIndexedDBGamesExist();
-      // if the game data exists in indexedDB load it
-      if (gameExists) {
+
+    // try to authenticate user
+    var poolData = {
+      UserPoolId: AWS_USER_POOL_ID,
+      ClientId: AWS_CLIENT_ID,
+    };
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    var cognitoUser = userPool.getCurrentUser();
+    if (cognitoUser != null) {
+      console.log(cognitoUser);
+      //@ts-ignore
+      cognitoUser.getSession(function(err, session) {
+        if (err) {
+          alert(err.message || JSON.stringify(err));
+          return;
+        }
+        console.log('session validity: ' + session.isValid());
+      });
+    }
+    else {
+      // can't authenticate user, show login or join depending on gameExists in local and online status
+      if (navigator.onLine) {   
+        // check if gameExists in local
+        const checkGames = async () => {
+          const gameExists = await checkIndexedDBGamesExist();
+          if (gameExists) {
+            // if game exist, show login form or need connection
+            
+            state.updateGameState(
+              { newDispatches: 
+                [ 
+                  { which: SHOW_JOIN_FORM,  data: false },
+                  { which: SHOW_LOGIN_FORM,  data: true },
+                  { which: JOIN_BUTTON_TEXT,  data: "OR JOIN" },
+                  { which: LOGIN_BUTTON_TEXT,  data: "LOG IN" },
+                  { which: UPDATE_CHIPS,     data: gameExists.game.chipsTotal },
+                  { which: UPDATE_SCORE,     data: gameExists.game.scoreTotal },
+                  { which: UPDATE_POSITION,  data: gameExists.game.playerPosition },
+                  { which: UPDATE_STREAK,    data: gameExists.game.userStreak },
+                  { which: UPDATE_LEVEL,     data: gameExists.game.gameLevel },
+                  { which: GAME_RULES,       data: gameExists.game.gameRules },
+                  { which: UPDATE_USER_TYPE, data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
+                ]
+              }
+            );
+            setUpShoe(numDecks);  
+          }
+          else {
+            // if game doesn't exist, show join form
+            state.updateGameState(
+              { newDispatches: 
+                [ 
+                  { which: SHOW_JOIN_FORM,  data: true },
+                  { which: SHOW_LOGIN_FORM,  data: false },
+                  { which: JOIN_BUTTON_TEXT,  data: "JOIN" },
+                  { which: LOGIN_BUTTON_TEXT,  data: "OR LOG IN" },
+                ]
+              }
+            );  
+          }
+        }
+        checkGames();
+      } 
+      else {
+        // user is offline
         state.updateGameState(
           { newDispatches: 
             [ 
-              { which: UPDATE_CHIPS,     data: gameExists.game.chipsTotal },
-              { which: UPDATE_SCORE,     data: gameExists.game.scoreTotal },
-              { which: UPDATE_POSITION,  data: gameExists.game.playerPosition },
-              { which: UPDATE_STREAK,    data: gameExists.game.userStreak },
-              { which: UPDATE_LEVEL,     data: gameExists.game.gameLevel },
-              { which: SHOW_PICK_SPOT,   data: false },
-              { which: SHOW_BET_BUTTONS, data: true },
-              { which: GAME_RULES,       data: gameExists.game.gameRules },
-              { which: UPDATE_USER_TYPE, data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
+              { which: POPUP_MESSAGE,     data: NEED_CONNECTION() },
+              { which: SHOW_JOIN_FORM,    data: false },                  
+              { which: POPUP_TITLE,       data: "NO INTERNET CONNECTION" },
+              { which: SHOW_POPUP,        data: true },
+              { which: SHOW_PICK_SPOT,    data: false },
+              { which: SHOW_JOIN_FORM_OK, data: false },
             ]
           }
-        );
-        setUpShoe(numDecks);
-      }
-      else {
-        // if there is no game data in IndexedDB, this may be a new user, or they may have deleted local data.
-        // first, check to see if they are logged in with a valid token
-        if (Auth.loggedIn()) {
-          // firstly, show the logout button
-          state.updateGameState({ newDispatches: [{ which: LOGGED_IN, data: true }]});
-          // if they are logged in, then they likely have deleted local storage
-          // check if they are online
-          if (navigator.onLine) {  
-            // try to fetch game data from server
-            const user = Auth.getProfile();
-            //const userDataFromMongo = loadGameMongoDB({variables: {username: user.data.username }});
-            //console.log(userDataFromMongo);
-          }
-          else {
-            // if they are logged in, and have no local game data
-            // show game unavailable till they get a connection
-            // If we don't do this, they could just keep resetting local storage and never have to pay
-            // we assume if they are actually a new user they would still have an internet connection as they just downloaded the app.
-            state.updateGameState(
-              { newDispatches: 
-                [ 
-                  { which: POPUP_MESSAGE,     data: NEED_CONNECTION() },
-                  { which: SHOW_JOIN_FORM,    data: false },                  
-                  { which: POPUP_TITLE,       data: "NO INTERNET CONNECTION" },
-                  { which: SHOW_POPUP,        data: true },
-                  { which: SHOW_PICK_SPOT,    data: false },
-                  { which: SHOW_JOIN_FORM_OK, data: false },
-                ]
-              }
-            );
-          }
-        }
-        else {
-          // if they aren't logged in, and have no local game data, they may be new
-          // are they online?
-          if (navigator.onLine) {
-            console.log("online");
-            // if they are online, show the join form
-            state.updateGameState(
-              { newDispatches: 
-                [ 
-                  { which: POPUP_MESSAGE,     data: WELCOME_MESSAGE() },
-                  { which: POPUP_TITLE,       data: "WELCOME" },
-                  { which: SHOW_POPUP,        data: true },
-                  { which: SHOW_PICK_SPOT,    data: false },
-                  { which: SHOW_JOIN_FORM_OK, data: false },
-                  { which: SHOW_JOIN_FORM,    data: true },
-                ]
-              }
-            );
-          }
-          else {
-            // if they aren't online, show unavailable until they get a connection
-            state.updateGameState(
-              { newDispatches: 
-                [ 
-                  { which: POPUP_MESSAGE,     data: NEED_CONNECTION() },
-                  { which: SHOW_JOIN_FORM,    data: false },                  
-                  { which: POPUP_TITLE,       data: "NO INTERNET CONNECTION" },
-                  { which: SHOW_POPUP,        data: true },
-                  { which: SHOW_PICK_SPOT,    data: false },
-                  { which: SHOW_JOIN_FORM_OK, data: false },
-                ]
-              }
-            );
-          }
-          
-        }
+        );  
       }
     }
-    checkGames();
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
+
+
 
   const shuffleShoe = (currentShoe: Array<object>) => {
     for (let i = currentShoe.length - 1; i > 0; i--) {
