@@ -42,27 +42,27 @@ import {
 } from "../../utils/actions";
 
 const CasinoTable = (): JSX.Element => {
-  const headers = {
-    // Authorization: `Bearer ${Auth.getToken()}` 
-  }
+
   const saveGameQuery = gql`
-  mutation saveGame(
-    $username: String!,
-    $gameData: String!
-  )
-  {
-    saveGame(username: $username, gameData: $gameData){
-      username
-      gameData
+    mutation saveGame(
+      $username: String!,
+      $gameData: String!
+    )
+    {
+      saveGame(username: $username, gameData: $gameData){
+        username
+        gameData
+      }
     }
-  }
-`;
+  `;
   const mutation = useMutation(async (data) => {
     request(
         API_URL, 
         saveGameQuery,
-        data,
-        headers,
+        // @ts-ignore
+        { username: data.username, gameData: data.gameData }, 
+        // @ts-ignore
+        data.headers,
       )
     }
   )
@@ -196,10 +196,13 @@ const CasinoTable = (): JSX.Element => {
       UserPoolId: AWS_USER_POOL_ID,
       ClientId: AWS_CLIENT_ID,
     };
+
+  
+
+
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var cognitoUser = userPool.getCurrentUser();
     if (cognitoUser != null) {
-      console.log(cognitoUser);
       //@ts-ignore
       cognitoUser.getSession(function(err, session) {
         if (err) {
@@ -208,20 +211,12 @@ const CasinoTable = (): JSX.Element => {
         }
         console.log('session validity: ' + session.isValid());
         checkGames();      
-        state.updateGameState(
-          { newDispatches: 
-            [ 
-              { which: LOGGED_IN,        data: true },
-            ]
-          }
-        );
+        state.updateGameState( { newDispatches: [ { which: LOGGED_IN, data: true } ] } );
       });
     }
     else {
       // can't authenticate user, show login or join depending on gameExists in local and online status
-      if (navigator.onLine) {   
-        // check if gameExists in local
-        
+      if (navigator.onLine) {      
         checkGames();
       } 
       else {
@@ -263,9 +258,6 @@ const CasinoTable = (): JSX.Element => {
   
     // this function resets everything ready for the next hand
     const resetHand = () => {
-      console.log("resetHand");
-      console.log("dealerCutCard", (numDecks*52-dealerCutCard));
-      console.log("cardsDealt", cardsDealt);
       if ( (numDecks*52-dealerCutCard) <= cardsDealt) {
         console.log("resetHand reShuffle");
         shuffleShoe(shoeCards);
@@ -300,8 +292,13 @@ const CasinoTable = (): JSX.Element => {
           { which: RESET_DEAL_COUNTER  }
         ] } );
         const gameData = JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})
+        const headers = {
+          Authorization: `1` 
+        }
+      
+        // getAccessToken().getJwtToken();
         // @ts-ignore
-        mutation.mutate({username: "vesnathan@gmail.com", gameData })
+        mutation.mutate({headers, username: "vesnathan@gmail.com", gameData })
   
       },3000);
     }
