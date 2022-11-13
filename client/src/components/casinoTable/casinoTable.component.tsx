@@ -95,7 +95,45 @@ const CasinoTable = (): JSX.Element => {
   } = state.state.appStatus;
 
   const { gameRules } = state.state;
-
+  const checkGames = async () => {
+    const gameExists = await checkIndexedDBGamesExist();
+    if (gameExists) {
+      // if game exist, show login form or need connection
+      
+      state.updateGameState(
+        { newDispatches: 
+          [ 
+            { which: SHOW_JOIN_FORM,    data: false },
+            { which: SHOW_LOGIN_FORM,   data: true },
+            { which: JOIN_BUTTON_TEXT,  data: "OR JOIN" },
+            { which: LOGIN_BUTTON_TEXT, data: "LOG IN" },
+            { which: UPDATE_CHIPS,      data: gameExists.game.chipsTotal },
+            { which: UPDATE_SCORE,      data: gameExists.game.scoreTotal },
+            { which: UPDATE_POSITION,   data: gameExists.game.playerPosition },
+            { which: UPDATE_STREAK,     data: gameExists.game.userStreak },
+            { which: UPDATE_LEVEL,      data: gameExists.game.gameLevel },
+            { which: GAME_RULES,        data: gameExists.game.gameRules },
+            { which: UPDATE_USER_TYPE,  data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
+          ]
+        }
+      );
+      setUpShoe(numDecks);  
+    }
+    else {
+      // if game doesn't exist, show join form
+      state.updateGameState(
+        { newDispatches: 
+          [ 
+            { which: SHOW_JOIN_FORM,    data: true },
+            { which: SHOW_LOGIN_FORM,   data: false },
+            { which: JOIN_BUTTON_TEXT,  data: "JOIN" },
+            { which: LOGIN_BUTTON_TEXT, data: "OR LOG IN" },
+            { which: POPUP_MESSAGE,     data: WELCOME_MESSAGE() },
+          ]
+        }
+      );  
+    }
+  }
   useEffect(() => {
     const onlineCheck = setInterval(()=> {
       
@@ -169,51 +207,14 @@ const CasinoTable = (): JSX.Element => {
           return;
         }
         console.log('session validity: ' + session.isValid());
+        checkGames();
       });
     }
     else {
       // can't authenticate user, show login or join depending on gameExists in local and online status
       if (navigator.onLine) {   
         // check if gameExists in local
-        const checkGames = async () => {
-          const gameExists = await checkIndexedDBGamesExist();
-          if (gameExists) {
-            // if game exist, show login form or need connection
-            
-            state.updateGameState(
-              { newDispatches: 
-                [ 
-                  { which: SHOW_JOIN_FORM,    data: false },
-                  { which: SHOW_LOGIN_FORM,   data: true },
-                  { which: JOIN_BUTTON_TEXT,  data: "OR JOIN" },
-                  { which: LOGIN_BUTTON_TEXT, data: "LOG IN" },
-                  { which: UPDATE_CHIPS,      data: gameExists.game.chipsTotal },
-                  { which: UPDATE_SCORE,      data: gameExists.game.scoreTotal },
-                  { which: UPDATE_POSITION,   data: gameExists.game.playerPosition },
-                  { which: UPDATE_STREAK,     data: gameExists.game.userStreak },
-                  { which: UPDATE_LEVEL,      data: gameExists.game.gameLevel },
-                  { which: GAME_RULES,        data: gameExists.game.gameRules },
-                  { which: UPDATE_USER_TYPE,  data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
-                ]
-              }
-            );
-            setUpShoe(numDecks);  
-          }
-          else {
-            // if game doesn't exist, show join form
-            state.updateGameState(
-              { newDispatches: 
-                [ 
-                  { which: SHOW_JOIN_FORM,    data: true },
-                  { which: SHOW_LOGIN_FORM,   data: false },
-                  { which: JOIN_BUTTON_TEXT,  data: "JOIN" },
-                  { which: LOGIN_BUTTON_TEXT, data: "OR LOG IN" },
-                  { which: POPUP_MESSAGE,     data: WELCOME_MESSAGE() },
-                ]
-              }
-            );  
-          }
-        }
+        
         checkGames();
       } 
       else {
