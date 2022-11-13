@@ -207,7 +207,14 @@ const CasinoTable = (): JSX.Element => {
           return;
         }
         console.log('session validity: ' + session.isValid());
-        checkGames();
+        checkGames();      
+        state.updateGameState(
+          { newDispatches: 
+            [ 
+              { which: LOGGED_IN,        data: true },
+            ]
+          }
+        );
       });
     }
     else {
