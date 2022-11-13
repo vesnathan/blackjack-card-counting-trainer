@@ -193,17 +193,17 @@ const CasinoTable = (): JSX.Element => {
             state.updateGameState(
               { newDispatches: 
                 [ 
-                  { which: SHOW_JOIN_FORM,  data: false },
-                  { which: SHOW_LOGIN_FORM,  data: true },
+                  { which: SHOW_JOIN_FORM,    data: false },
+                  { which: SHOW_LOGIN_FORM,   data: true },
                   { which: JOIN_BUTTON_TEXT,  data: "OR JOIN" },
-                  { which: LOGIN_BUTTON_TEXT,  data: "LOG IN" },
-                  { which: UPDATE_CHIPS,     data: gameExists.game.chipsTotal },
-                  { which: UPDATE_SCORE,     data: gameExists.game.scoreTotal },
-                  { which: UPDATE_POSITION,  data: gameExists.game.playerPosition },
-                  { which: UPDATE_STREAK,    data: gameExists.game.userStreak },
-                  { which: UPDATE_LEVEL,     data: gameExists.game.gameLevel },
-                  { which: GAME_RULES,       data: gameExists.game.gameRules },
-                  { which: UPDATE_USER_TYPE, data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
+                  { which: LOGIN_BUTTON_TEXT, data: "LOG IN" },
+                  { which: UPDATE_CHIPS,      data: gameExists.game.chipsTotal },
+                  { which: UPDATE_SCORE,      data: gameExists.game.scoreTotal },
+                  { which: UPDATE_POSITION,   data: gameExists.game.playerPosition },
+                  { which: UPDATE_STREAK,     data: gameExists.game.userStreak },
+                  { which: UPDATE_LEVEL,      data: gameExists.game.gameLevel },
+                  { which: GAME_RULES,        data: gameExists.game.gameRules },
+                  { which: UPDATE_USER_TYPE,  data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
                 ]
               }
             );
@@ -214,10 +214,10 @@ const CasinoTable = (): JSX.Element => {
             state.updateGameState(
               { newDispatches: 
                 [ 
-                  { which: SHOW_JOIN_FORM,  data: true },
-                  { which: SHOW_LOGIN_FORM,  data: false },
+                  { which: SHOW_JOIN_FORM,    data: true },
+                  { which: SHOW_LOGIN_FORM,   data: false },
                   { which: JOIN_BUTTON_TEXT,  data: "JOIN" },
-                  { which: LOGIN_BUTTON_TEXT,  data: "OR LOG IN" },
+                  { which: LOGIN_BUTTON_TEXT, data: "OR LOG IN" },
                 ]
               }
             );  
