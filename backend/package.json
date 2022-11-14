@@ -10,5 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "serverless-appsync-plugin": "^1.14.0"
+  },
+  "dependencies": {
+    "stripe": "^10.17.0"
   }
 }

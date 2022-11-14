@@ -1,10 +1,10 @@
 import { useMutation } from "react-query";
-import {  API_URL } from "../../config/aws.config";
+import {  GRAPHQL_URL } from "../../config/aws.config";
 
 const useSaveGame = () => {
   useMutation(
     (post) => {
-      fetch(API_URL, {
+      fetch(GRAPHQL_URL, {
         body: JSON.stringify(post),
         method: "POST",
       })
@@ -20,14 +20,3 @@ const useSaveGame = () => {
 
 export default useSaveGame;
 
-
-
-// import { gql } from "graphql-request";
-
-// export const saveGame = gql`
-// mutation AddExpense($data: ExpenseInsertInput!) {
-//   insertOneExpense(data: $data) {
-//     _id
-//   }
-// }
-// `;

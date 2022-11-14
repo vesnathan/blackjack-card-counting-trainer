@@ -2,11 +2,11 @@ import React from 'react';
 import { useState } from 'react';
 import { useGameContext } from "../../utils/GameStateContext";
 
-
-
+import { AWS_USER_POOL_ID, AWS_CLIENT_ID } from "../../config/aws.config";
+import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
+import * as AWS from 'aws-sdk/global';
 
 import './loginForm.component.css';
-import Auth from '../../utils/auth';
 
 // Material UI Components
 import Grid from '@mui/material/Grid';
@@ -42,16 +42,16 @@ const LoginForm = (): React.ReactElement  => {
   } = state.state.appStatus;
   
   const [inputs, setInputs] = useState({
-    username: "",
+    email: "",
     password: ""
   });
-  const [usernameError, setUsernameError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     const name = e.target.id.split("-");
     switch (name[0]) {
-      case "username":
-        setUsernameError("");
+      case "email":
+        setEmailError("");
         break;
       case "password":
         setPasswordError("");
@@ -75,44 +75,47 @@ const LoginForm = (): React.ReactElement  => {
       }
     );  
     let continueProcessingForm = true;
-    if (!inputs.username) { setUsernameError("Please enter a user name."); continueProcessingForm = false;  }
+    if (!inputs.email) { setEmailError("Please enter your email."); continueProcessingForm = false;  }
     if (!inputs.password) { setPasswordError("Please enter a password"); continueProcessingForm = false;  }
     
     if (continueProcessingForm) {
-      // try {
-      //   const response = await loginUser({
-      //     variables: { 
-      //       password: inputs.password,
-      //       username: inputs.username,
-      //     }
-      //   });
-      //   if (!response.data.loginUser.username) {
-      //     throw new Error('something went wrong!');
-      //   }
-      //   else {
-      //     Auth.login(response.data.loginUser.token);
-      //     state.updateGameState(
-      //       { newDispatches: 
-      //         [ 
-      //           { which: SHOW_POPUP, data: false },
-      //           { which: LOGGED_IN, data: true },
-      //           { which: SHOW_PICK_SPOT, data: true },
-      //           { which: SHOW_LOGIN_FORM, data: false },
-      //        ]
-      //       }
-      //     );    
-      //   }
-      // } catch (err: any) {
-      //   state.updateGameState(
-      //     { newDispatches: 
-      //       [ 
-      //         { which: LOGIN_FORM_MESSAGE, data: `ERROR 394.215: LOGIN FAILED` },
-      //         { which: LOGIN_FORM_STATUS,  data: "error" },
-      //         { which: SHOW_LOGIN_FORM,    data: true },
-      //       ]
-      //     }
-      //   );   
-      // }
+
+
+      var authenticationData = {
+        Username : inputs.email,
+        Password : inputs.password,
+      };
+      var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+        authenticationData
+      );
+      const poolData = {
+        UserPoolId: AWS_USER_POOL_ID,
+        ClientId: AWS_CLIENT_ID
+      }
+      var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+      var userData = {
+        Username: inputs.email, // 'username',
+        Pool: userPool,
+      };
+      var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+      cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function(result) {
+          state.updateGameState(
+            { newDispatches: 
+              [ 
+                { which: LOGGED_IN,       data: true },
+                { which: SHOW_LOGIN_FORM, data: false },
+                { which: SHOW_POPUP,      data: false },
+              ] 
+            }
+          );
+        },
+      
+        onFailure: function(err) {
+          setEmailError(emailError);
+        },
+      });
     }
     state.updateGameState(
       { newDispatches: 
@@ -121,6 +124,7 @@ const LoginForm = (): React.ReactElement  => {
         ]
       }
     ); 
+    
   }
 
   const showJoinFormFunction = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -140,8 +144,8 @@ const LoginForm = (): React.ReactElement  => {
   return (
     <div className="popupForm">
       <FormGroup className="marginBottom">
-        <input type="text" id="username-Input" name="username" placeholder="Username:" onFocus={handleFocus} onChange={handleChange}/> 
-        {usernameError ? <div className="joinFormErrorWrapper"><div id="username-Error" className="joinFormError">{usernameError}</div></div> : null }
+        <input type="text" id="email-Input" name="email" placeholder="Email:" onFocus={handleFocus} onChange={handleChange}/> 
+        {emailError ? <div className="joinFormErrorWrapper"><div id="email-Error" className="joinFormError">{emailError}</div></div> : null }
         <input type="password" id="password-Input" name="password" placeholder="Password:" onFocus={handleFocus} onChange={handleChange}/>
         {passwordError ? <div className="joinFormErrorWrapper"><div className="joinFormError">{passwordError}</div></div> : null }
         <Grid container  sx={{mt: 2}} >

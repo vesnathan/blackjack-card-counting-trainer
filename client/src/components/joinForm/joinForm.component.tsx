@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useGameContext } from "../../utils/GameStateContext";
 
 import './joinForm.component.css';
-import Auth from '../../utils/auth';
 import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
 
 // Material UI Components
@@ -12,15 +11,9 @@ import FormGroup from '@mui/material/FormGroup';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 
-
-
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
 
-
-
-
-
-import { AWS_USER_POOL_ID, AWS_CLIENT_ID, API_URL } from "../../config/aws.config";
+import { AWS_USER_POOL_ID, AWS_CLIENT_ID } from "../../config/aws.config";
 
 import { 
   UPDATE_CHIPS,
@@ -32,10 +25,12 @@ import {
   SHOW_LOGIN_FORM,
   JOIN_BUTTON_TEXT,
   LOGIN_BUTTON_TEXT,
-  LOGGED_IN
+  LOGGED_IN,
+  SET_SESSION_DATA,
+  // SET_USER_ID,   
+  // SET_USER_EMAIL,
+  // SET_USER_PASSWORD
 } from "../../utils/actions";
-
-
 
 const JoinForm = (): React.ReactElement  => {
   const state: any = useGameContext();
@@ -55,7 +50,6 @@ const JoinForm = (): React.ReactElement  => {
 
   const { gameRules } = state.state;
   const [inputs, setInputs] = useState({
-    username: "",
     email: "",
     password: "",
     confirmpassword: ""
@@ -64,12 +58,6 @@ const JoinForm = (): React.ReactElement  => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
-
-  
-            // -----------------------------------------------------------------------------------------------------------
-
-            
-            // ----------------------------------------------------------------------------------------------------------
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     const name = e.target.id.split("-");
@@ -171,8 +159,12 @@ const JoinForm = (): React.ReactElement  => {
           return;
         }
         // @ts-ignore
-        // var cognitoUser = result.user;
-        var cognitoUser = new AmazonCognitoIdentity.CognitoUser(result.user);
+        var user = result.user;
+        var userData = {
+          Username : user.getUsername(),
+          Pool : userPool
+        };
+        var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
         const authenticationData = {
           Username : inputs.email,
           Password : inputs.password,
@@ -180,6 +172,26 @@ const JoinForm = (): React.ReactElement  => {
         var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
         cognitoUser.authenticateUser(authenticationDetails, {
           onSuccess: function(result) {
+
+            // @ts-ignore
+            cognitoUser.getSession(function(err, session) {
+              if (err) {
+                alert(err.message || JSON.stringify(err));
+                return;
+              }
+
+              state.updateGameState(
+                { newDispatches: 
+                  [ 
+                    { which: SET_SESSION_DATA, data: session },
+                  ] 
+                }
+              );
+            });
+
+
+
+            console.log("result", result);
             // var accessToken = result.getAccessToken().getJwtToken();
             state.updateGameState(
               { newDispatches: 
@@ -189,7 +201,7 @@ const JoinForm = (): React.ReactElement  => {
                   { which: UPDATE_CHIPS,                  data: 1000 },
                   { which: SHOW_JOIN_FORM,                data: false },
                   { which: SHOW_JOIN_FORM_OK,             data: true },
-                  { which: LOGGED_IN,                     data: true }
+                  { which: LOGGED_IN,                     data: true },
                 ] 
               }
             );

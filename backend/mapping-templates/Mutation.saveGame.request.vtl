@@ -1,8 +1,8 @@
 {
   "version" : "2017-02-28",
   "operation" : "PutItem",
-  "key"" {
-    "username": $util.dynamodb.toDynamoDBJson($ctx.args.username)
+  "key" : {
+    "userId": $util.dynamodb.toDynamoDBJson($ctx.args.userId)
   },
   "attributeValues": {
     "gameData": $util.dynamodb.toDynamoDBJson($ctx.args.gameData)

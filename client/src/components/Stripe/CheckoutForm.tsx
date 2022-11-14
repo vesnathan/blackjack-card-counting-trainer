@@ -7,7 +7,7 @@ import {
 
 import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
 
-
+import { AWS_CLOUDFRONT_URL } from "../../config/aws.config";
 
 import Auth from '../../utils/auth';
 
@@ -81,7 +81,7 @@ export default function CheckoutForm() {
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3002",
+        return_url: AWS_CLOUDFRONT_URL,
       },
       redirect: 'if_required',
     })

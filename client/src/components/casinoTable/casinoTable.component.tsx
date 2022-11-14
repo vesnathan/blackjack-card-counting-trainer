@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './casinoTable.component.css';
 
 import { useMutation } from "react-query";
-import { AWS_USER_POOL_ID, AWS_CLIENT_ID, API_URL } from "../../config/aws.config";
+import { AWS_USER_POOL_ID, AWS_CLIENT_ID, GRAPHQL_URL } from "../../config/aws.config";
 import { gql, request  } from "graphql-request";
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
 import * as AWS from 'aws-sdk/global';
@@ -38,29 +38,29 @@ import {
   SET_TABLE_MESSAGE,  SET_USER_HAD_TURN,          UPDATE_DEAL_HAND,         SET_DEALER_DOWN_CARD,
   USER_DOUBLED,       UPDATE_PLAYERS,             UPDATE_PLAY_BUTTONS,      JOIN_BUTTON_TEXT,
   RESET_DEAL_COUNTER, SET_ONLINE_STATUS,          UPDATE_USER_TYPE,         LOGGED_IN,
-  RESET_CARDS_DEALT,  LOGIN_BUTTON_TEXT
+  RESET_CARDS_DEALT,  LOGIN_BUTTON_TEXT,          SET_SESSION_DATA
 } from "../../utils/actions";
 
 const CasinoTable = (): JSX.Element => {
 
   const saveGameQuery = gql`
     mutation saveGame(
-      $username: String!,
+      $userId: String!,
       $gameData: String!
     )
     {
-      saveGame(username: $username, gameData: $gameData){
-        username
+      saveGame(userId: $userId, gameData: $gameData){
+        userId
         gameData
       }
     }
   `;
   const mutation = useMutation(async (data) => {
     request(
-        API_URL, 
+        GRAPHQL_URL, 
         saveGameQuery,
         // @ts-ignore
-        { username: data.username, gameData: data.gameData }, 
+        { userId: data.userId, gameData: data.gameData }, 
         // @ts-ignore
         data.headers,
       )
@@ -91,36 +91,60 @@ const CasinoTable = (): JSX.Element => {
     chipsTotal,
     scoreTotal,
     userStreak,
-    gameLevel
+    gameLevel,
+    sessionData
   } = state.state.appStatus;
 
   const { gameRules } = state.state;
-  const checkGames = async () => {
+  const checkGames = async (loggedIn: boolean) => {
     const gameExists = await checkIndexedDBGamesExist();
     if (gameExists) {
       // if game exist, show login form or need connection
       
-      state.updateGameState(
-        { newDispatches: 
-          [ 
-            { which: SHOW_JOIN_FORM,    data: false },
-            { which: SHOW_LOGIN_FORM,   data: true },
-            { which: JOIN_BUTTON_TEXT,  data: "OR JOIN" },
-            { which: LOGIN_BUTTON_TEXT, data: "LOG IN" },
-            { which: UPDATE_CHIPS,      data: gameExists.game.chipsTotal },
-            { which: UPDATE_SCORE,      data: gameExists.game.scoreTotal },
-            { which: UPDATE_POSITION,   data: gameExists.game.playerPosition },
-            { which: UPDATE_STREAK,     data: gameExists.game.userStreak },
-            { which: UPDATE_LEVEL,      data: gameExists.game.gameLevel },
-            { which: GAME_RULES,        data: gameExists.game.gameRules },
-            { which: UPDATE_USER_TYPE,  data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
-          ]
-        }
-      );
+      console.log("found local game");
+      if (loggedIn) {
+        state.updateGameState(
+          { newDispatches: 
+            [ 
+              { which: UPDATE_CHIPS,      data: gameExists.game.chipsTotal },
+              { which: UPDATE_SCORE,      data: gameExists.game.scoreTotal },
+              { which: UPDATE_POSITION,   data: gameExists.game.playerPosition },
+              { which: UPDATE_STREAK,     data: gameExists.game.userStreak },
+              { which: UPDATE_LEVEL,      data: gameExists.game.gameLevel },
+              { which: GAME_RULES,        data: gameExists.game.gameRules },
+              { which: SHOW_PICK_SPOT,    data: true },
+              { which: UPDATE_USER_TYPE,  data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},
+            ]
+          }
+        );
+      }
+      else {
+        state.updateGameState(
+          { newDispatches: 
+            [ 
+              { which: SHOW_JOIN_FORM,    data: false },
+              { which: SHOW_LOGIN_FORM,   data: true },
+              { which: JOIN_BUTTON_TEXT,  data: "OR JOIN" },
+              { which: LOGIN_BUTTON_TEXT, data: "LOG IN" },
+              { which: UPDATE_CHIPS,      data: gameExists.game.chipsTotal },
+              { which: UPDATE_SCORE,      data: gameExists.game.scoreTotal },
+              { which: UPDATE_POSITION,   data: gameExists.game.playerPosition },
+              { which: UPDATE_STREAK,     data: gameExists.game.userStreak },
+              { which: UPDATE_LEVEL,      data: gameExists.game.gameLevel },
+              { which: GAME_RULES,        data: gameExists.game.gameRules },
+              { which: UPDATE_USER_TYPE,  data: { whichPlayer: gameExists.game.playerPosition, playerType: "user" }},                  
+              { which: POPUP_TITLE,       data: "LOG BACK IN" },
+              { which: SHOW_POPUP,        data: true },
+              { which: SHOW_PICK_SPOT,    data: false },
+            ]
+          }
+        );
+      }
       setUpShoe(numDecks);  
     }
     else {
       // if game doesn't exist, show join form
+      console.log("no local game stored");
       state.updateGameState(
         { newDispatches: 
           [ 
@@ -128,7 +152,10 @@ const CasinoTable = (): JSX.Element => {
             { which: SHOW_LOGIN_FORM,   data: false },
             { which: JOIN_BUTTON_TEXT,  data: "JOIN" },
             { which: LOGIN_BUTTON_TEXT, data: "OR LOG IN" },
-            { which: POPUP_MESSAGE,     data: WELCOME_MESSAGE() },
+            { which: POPUP_MESSAGE,     data: WELCOME_MESSAGE() },                  
+            { which: POPUP_TITLE,       data: "WELCOME" },
+            { which: SHOW_POPUP,        data: true },
+            { which: SHOW_PICK_SPOT,    data: false },
           ]
         }
       );  
@@ -197,12 +224,10 @@ const CasinoTable = (): JSX.Element => {
       ClientId: AWS_CLIENT_ID,
     };
 
-  
-
-
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var cognitoUser = userPool.getCurrentUser();
     if (cognitoUser != null) {
+      console.log("found local cognito user");
       //@ts-ignore
       cognitoUser.getSession(function(err, session) {
         if (err) {
@@ -210,17 +235,29 @@ const CasinoTable = (): JSX.Element => {
           return;
         }
         console.log('session validity: ' + session.isValid());
-        checkGames();      
+        // try session.accessToken.jwtToken
+        state.updateGameState(
+          { newDispatches: 
+            [ 
+              { which: SET_SESSION_DATA, data: session },
+            ] 
+          }
+        );
+        checkGames(session.isValid());      
         state.updateGameState( { newDispatches: [ { which: LOGGED_IN, data: true } ] } );
       });
     }
     else {
       // can't authenticate user, show login or join depending on gameExists in local and online status
-      if (navigator.onLine) {      
-        checkGames();
+      
+      console.log("unable to find local cognito user");
+      if (navigator.onLine) { 
+        console.log("user is online");     
+        checkGames(false);
       } 
       else {
         // user is offline
+        console.log("user is offline"); 
         state.updateGameState(
           { newDispatches: 
             [ 
@@ -291,14 +328,16 @@ const CasinoTable = (): JSX.Element => {
           { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true } },
           { which: RESET_DEAL_COUNTER  }
         ] } );
+        console.log("sessionData", sessionData);
         const gameData = JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})
         const headers = {
-          Authorization: `1` 
+          // @ts-ignore
+          Authorization: sessionData.accessToken.jwtToken 
         }
-      
-        // getAccessToken().getJwtToken();
         // @ts-ignore
-        mutation.mutate({headers, username: "vesnathan@gmail.com", gameData })
+        console.log(sessionData.idToken.payload.sub);
+        // @ts-ignore
+        mutation.mutate({headers, userId: sessionData.idToken.payload.sub, gameData })
   
       },3000);
     }

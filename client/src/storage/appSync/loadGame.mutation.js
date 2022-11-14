@@ -1,9 +1,9 @@
-import { API_URL } from "../../config/aws.config";
+import { GRAPHQL_URL } from "../../config/aws.config";
 import { useQuery } from "react-query";
 import { GraphQLClient, gql } from "graphql-request";
 
 
-const graphQLClient = new GraphQLClient(API_URL, {
+const graphQLClient = new GraphQLClient(GRAPHQL_URL, {
   headers: {
     Authorization: `Bearer ${process.env.API_KEY}`
   }

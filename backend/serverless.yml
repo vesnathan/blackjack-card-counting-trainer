@@ -39,9 +39,6 @@ custom:
       userPoolId: !Ref cognitoUserPool
     mappintTemplatesLocation: mapping-templates
     mappingTemplates: 
-      - type: Query
-        field: games
-        dataSource: gamesTable
       - type: Mutation
         field: saveGame
         dataSource: gamesTable
@@ -65,11 +62,18 @@ resources:
 	
 functions:
   preSignUp:
-    handler: handler.handler
+    handler: handler.autoConfirmUser
     events:
       - cognitoUserPool:
           pool: blackjackUserPool
           trigger: PreSignUp
           existing: true
+  stripePaymentIntent:
+    handler: handler.getStripePaymentIntent
+    events:
+      - http:
+          path: getStripePaymentIntent
+          method: post
+          cors: true
         
 

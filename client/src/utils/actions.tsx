@@ -51,6 +51,8 @@ export const OVERWRITE_PLAYERS_HAND = "overwritePlayersHand";
 export const RESET_AUTO_BET = "resetAutoBet";
 export const UPDATE_AUTO_BET = "updateAutoBet";
 export const SET_AUTO_BET_AMOUNT = "setAutoBetAmount";
+export const SET_SESSION_DATA = "setSessionData";
+
 
 // shoe/deal/hand stuff
 export const UPDATE_DEAL_HAND = "updateDealHand";

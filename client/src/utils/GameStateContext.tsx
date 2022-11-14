@@ -227,6 +227,11 @@ function reducer(state: any, action: any) {
         tempStatus.spaceyFormMessage = action.payload;
         return { ...state, appStatus: tempStatus }
 
+        case "setSessionData":
+          console.log("setSessionData", action.payload);
+          tempStatus.sessionData = action.payload;
+          return { ...state, appStatus: tempStatus }
+
         
 
 

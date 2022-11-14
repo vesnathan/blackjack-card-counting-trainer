@@ -8,7 +8,7 @@ import Spacey from "../../assets/images/characters/spacey.webp";
 import { WHAT_COUNT }  from "../../consts/whatCountMessage";
 import { saveGameIndexedDB } from "../../storage/indexedDB/functions";
 
-import Auth from "../../utils/auth";
+
 import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
 import { 
@@ -366,9 +366,6 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           break;   
         }
         saveGameIndexedDB({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules});
-        const jsonObjStr = JSON.stringify( { chipsTotal: chipsTotal, scoreTotal: scoreTotal, playerPosition: playerPosition, userStreak: userStreak, gameLevel: gameLevel, gameRules: gameRules });
-        const user = Auth.getProfile();
-        //saveGameMongoDB({variables: {gameData: jsonObjStr, username: user.data.username }});
       }
       
     }

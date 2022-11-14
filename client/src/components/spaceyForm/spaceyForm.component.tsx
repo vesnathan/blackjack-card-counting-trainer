@@ -105,7 +105,7 @@ You lose ${(scoreAdjustment > -1)?scoreAdjustment:-scoreAdjustment} points.
         {
           showFormGroup
           ? <FormGroup className="marginBottom">
-              <input type="tel" id="count-Input" name="count" placeholder="Count:" value={inputCount} onChange={handleChange}/> 
+              <input type="text" id="count-Input" name="count" placeholder="Count:" value={inputCount} onChange={handleChange}/> 
               <Grid container  sx={{mt: 2}} >
                 <Grid item sm={6} container justifyContent="left">
                 <Button id="guessButton" variant="contained" color="primary" sx={{width: "90%", height: "40px"}} onClick={(e) => {handleSubmit(e)}}>

@@ -4,14 +4,12 @@ schema {
 }
 
 type Mutation {
-    saveGame(username: String!, gameData: String!): Game!
-    loadGame(username: String!): Game
+    saveGame(userId: String!, gameData: String!): Game!
+    loadGame(userId: String!): Game
 }
 
 type Game {
-    _id: ID! 
     userId: String!
-    username: String!
     gameData: String
   }
 

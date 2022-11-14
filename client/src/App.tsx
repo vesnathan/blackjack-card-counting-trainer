@@ -19,7 +19,7 @@ import CasinoTable from "./components/casinoTable/casinoTable.component";
 import Swiper from "./components/swiper/swiper.component";
 import ScoreBar from "./components/scoreBar/scoreBar.component";
 import Popup from "./components/popup/popup.component";
-import  GameStateContext from "./utils/GameStateContext";
+import GameStateContext from "./utils/GameStateContext";
 
 const queryClient = new QueryClient();
 

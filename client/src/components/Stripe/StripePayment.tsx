@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-
+import { GET_PAYMENT_INTENT_URL } from "../../config/aws.config";
 import CheckoutForm from "./CheckoutForm";
 import "./Stripe.css";
 
@@ -17,7 +17,7 @@ export default function StripePayment() {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("/create-payment-intent", {
+    fetch(GET_PAYMENT_INTENT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ items: [{ id: "1000-chips" }] }),
