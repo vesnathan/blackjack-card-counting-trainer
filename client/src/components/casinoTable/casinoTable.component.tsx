@@ -161,6 +161,7 @@ const CasinoTable = (): JSX.Element => {
       );  
     }
   }
+  
   useEffect(() => {
     const onlineCheck = setInterval(()=> {
       

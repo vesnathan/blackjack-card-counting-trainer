@@ -49,7 +49,6 @@ export const APP_STATUS = () => {
     reshuffleDue: false,
     tableMessage: "",
     loggedIn: false,
-    awaitingUserInput: true,
     dealCounter: 0,
     playersTurn: 0,
     hitCard: false,

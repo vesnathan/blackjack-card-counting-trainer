@@ -107,6 +107,7 @@ const LoginForm = (): React.ReactElement  => {
                 { which: LOGGED_IN,       data: true },
                 { which: SHOW_LOGIN_FORM, data: false },
                 { which: SHOW_POPUP,      data: false },
+                { which: SHOW_PICK_SPOT,  data: true },
               ] 
             }
           );

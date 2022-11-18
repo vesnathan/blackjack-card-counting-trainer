@@ -135,10 +135,6 @@ function reducer(state: any, action: any) {
         tempStatus.dealCounter += 1;
           return { ...state, appStatus: tempStatus }
 
-      case "awaitingInput" :
-        tempStatus.awaitingUserInput = action.payload;
-        return { ...state, appStatus: tempStatus }
-
       case "updateCardsDealt" :
         tempStatus.cardsDealt += 1;
         if (action.payload.addToCount) {

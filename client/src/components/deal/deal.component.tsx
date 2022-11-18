@@ -338,18 +338,24 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
           
           const dealerHasBJ = checkBJ(); 
           if (!dealerHasBJ) {
+            console.log("!dealerHasBJ");
             const dealerBusted = checkBusted();
             setTimeout(()=> { 
               if (!dealerBusted ) {
+                
+                console.log("!dealerBusted");
                 if (players[0].handCount <= 16) { 
+                  console.log("players[0].handCount <= 16");
                   state.updateGameState({ newDispatches: [{ which: SET_HIT_CARD,  data: true }]});
                 } 
                 else {
+                  console.log("!players[0].handCount > 16");
                   calcPayout(); 
                   resetHand();
                 }
               }
               else {
+                console.log("dealerBusted");
                 state.updateGameState({ newDispatches: [{ which: RESET_PLAYER_HAND, data: playersTurn }]});
                 calcPayout(); 
                 resetHand();
@@ -357,6 +363,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
             },2000);
           }
           else {
+            console.log("dealerHasBJ");
             setTimeout(()=>{
               calcPayout(); 
               resetHand();

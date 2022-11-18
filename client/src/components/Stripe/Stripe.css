@@ -35,7 +35,12 @@ form {
 #payment-element {
   margin-bottom: 24px;
 }
-
+.hide {
+  opacity: 0;
+}
+.show {
+  opacity: 1;
+}
 /* Buttons and links */
 #payment-form button {
   background: rgb(58, 136, 69);

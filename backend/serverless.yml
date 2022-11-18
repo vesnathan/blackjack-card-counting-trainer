@@ -75,5 +75,7 @@ functions:
           path: getStripePaymentIntent
           method: post
           cors: true
+    environment:
+      STRIPE_SECRET_KEY:  ${param:STRIPE_SK}
         
 

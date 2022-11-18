@@ -32,6 +32,7 @@ export default function CheckoutForm() {
 
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [formClass, setFormClass] = useState(false);
 
 
   useEffect(() => {
@@ -108,13 +109,13 @@ export default function CheckoutForm() {
       }
     }
 
-    setIsLoading(false);
+    // setIsLoading(false);
   };
 
   return (
     // @ts-ignore
     <form id="payment-form" onSubmit={handleSubmit}>
-      <PaymentElement id="payment-element" />
+      <PaymentElement className={(formClass)?"show":"hide"}id="payment-element" onReady={() => setFormClass(true)}/>
       <button disabled={isLoading || !stripe || !elements} id="submit">
         <span id="button-text">
           {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
