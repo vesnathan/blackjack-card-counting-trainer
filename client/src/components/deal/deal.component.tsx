@@ -291,6 +291,10 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
               state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 2, whichProperty: "buttonDisabled", data: true }}]});
             }
             
+            // can player split
+            if (players[playersTurn].hand.length === 2 && players[playersTurn].hand[0].pip === players[playersTurn].hand[1].pip) {
+              state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: false }}]});
+            }
            
             if (playerHasBJ /*&& playersTurn === playerPosition*/) {
               state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});

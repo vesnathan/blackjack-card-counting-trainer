@@ -15,6 +15,7 @@ plugins:
   - serverless-offline
   - serverless-appsync-plugin
   - serverless-webpack
+  - serverless-cloudfront-invalidate
 
 package:
   individually: true
@@ -23,6 +24,12 @@ package:
     - node_modules/**
 
 custom:
+  cloudfrontInvalidate:
+    - distributionIdKey: CDNDistributionId
+      items:
+        - "/index.html"
+        - "/manifest*"
+        - "/static*"
   bucketName: blackjack-o5z9dq1v9p
   s3Sync:
     - bucketName: ${self:custom.bucketName}

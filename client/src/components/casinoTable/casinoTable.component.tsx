@@ -185,7 +185,7 @@ const CasinoTable = (): JSX.Element => {
     shuffleShoe(tempShoe);
 
     const stackDeck: Array<Object> = [
-      /*
+      
       // P1 C1
       { suit: "H", pip: "A", count: -1, points: 11 },
       // P2 C1
@@ -203,7 +203,7 @@ const CasinoTable = (): JSX.Element => {
       // P2 C2
       { suit: "H",  pip: "8", count: -1, points: 8 },
       // P3 C2
-      { suit: "H", pip: "K", count: -1, points: 10 },
+      { suit: "H", pip: "A", count: -1, points: 11 },
       // P4 C2
       { suit: "H", pip: "K", count: -1, points: 10 },
       // P5 C2
@@ -212,7 +212,7 @@ const CasinoTable = (): JSX.Element => {
       { suit: "H", pip: "K", count: -1, points: 10 },
       // P1 C3
       { suit: "H", pip: "A", count: -1,  points: 11  },     
-      */
+      
     ];  // for testing
 
     const newTempShoe = [ ...stackDeck, ...tempShoe ];
@@ -338,7 +338,7 @@ const CasinoTable = (): JSX.Element => {
         // @ts-ignore
         console.log(sessionData.idToken.payload.sub);
         // @ts-ignore
-        mutation.mutate({headers, userId: sessionData.idToken.payload.sub, gameData })
+        mutation.mutate({headers, userId: sessionData.idToken.payload.sub, gameData });
   
       },3000);
     }

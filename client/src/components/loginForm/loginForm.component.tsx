@@ -21,7 +21,7 @@ import {
   LOGIN_BUTTON_TEXT,
   SHOW_LOGIN_FORM_BUTTON_SPINNER,
   LOGIN_FORM_MESSAGE,
-  LOGIN_FORM_STATUS,
+  SET_SESSION_DATA,
   LOGGED_IN,
   SHOW_PICK_SPOT,
   SHOW_POPUP
@@ -101,6 +101,20 @@ const LoginForm = (): React.ReactElement  => {
 
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function(result) {
+          cognitoUser.getSession(function(err: { message: any; }, session: any) {
+            if (err) {
+              alert(err.message || JSON.stringify(err));
+              return;
+            }
+
+            state.updateGameState(
+              { newDispatches: 
+                [ 
+                  { which: SET_SESSION_DATA, data: session },
+                ] 
+              }
+            );
+          });
           state.updateGameState(
             { newDispatches: 
               [ 

@@ -33,3 +33,8 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
         ViewerCertificate:
           CloudFrontDefaultCertificate: true	
+Outputs:
+  CDNDistributionId:
+    Description: CDN distribution id.
+    Value:
+      Ref: CloudFrontDistribution
