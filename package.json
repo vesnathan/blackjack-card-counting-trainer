@@ -7,7 +7,8 @@
     "prepare": "husky install",
     "lint": "eslint ./ --fix",
     "install:all": "concurrently \"cd client && npm i --legacy-peer-deps\" \"cd backend && npm i\" ",
-    "deploy": "cd backend && sls deploy",
+    "deploy:dev": "cd client && npm run build && cd .. && cd backend && sls deploy --stage dev",
+    "deploy:prod": "cd client && npm run build && cd .. && cd backend && sls deploy --stage prod",
     "localdev": "concurrently \"cd client && npm run start\" \"cd backend && sls offline\" "
   },
   "keywords": [],

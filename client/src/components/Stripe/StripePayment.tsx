@@ -24,7 +24,6 @@ export default function StripePayment() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data.paymentIntent.client_secret);
         setClientSecret(data.paymentIntent.client_secret);
       });
 

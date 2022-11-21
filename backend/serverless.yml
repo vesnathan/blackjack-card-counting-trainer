@@ -7,6 +7,7 @@ provider:
   runtime: nodejs16.x
   profile: blackjackUser
   region: ap-southeast-2
+  stage: ${opt:stage}
   httpApi:
     cors: true
 
@@ -32,7 +33,7 @@ custom:
         - "/static*"
   bucketName: blackjack-o5z9dq1v9p
   s3Sync:
-    - bucketName: ${self:custom.bucketName}
+    - bucketName: ${self:custom.bucketName}-${opt:stage}
       localDir: ../client/build/
   webpack:
     webpackConfig: 'webpack.config.js'
@@ -72,7 +73,7 @@ functions:
     handler: handler.autoConfirmUser
     events:
       - cognitoUserPool:
-          pool: blackjackUserPool
+          pool: blackjackUserPool-${opt:stage}
           trigger: PreSignUp
           existing: true
   stripePaymentIntent:

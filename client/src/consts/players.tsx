@@ -3,8 +3,8 @@ export const PLAYERS = () => {
     const tablePositions = [[50,20],[11,50],[29,57],[48.25,60],[68,57],[86,50]];
     const player = (i: number) => {
       const position = tablePositions[i];    
-      const hand: any = [];
-      const handCount = 0; 
+      const hand: any = [[]];
+      const handCount: Array<number> = [0]; 
       const busted = false;
       const playerType = (i===0)?"dealer":"ai"; 
       const aiDumbAssFactor = .05; 
