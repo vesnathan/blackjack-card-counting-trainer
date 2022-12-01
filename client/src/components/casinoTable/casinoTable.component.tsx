@@ -55,7 +55,7 @@ const CasinoTable = (): JSX.Element => {
       }
     }
   `;
-  const mutation = useMutation(async (data) => {
+  const saveGameMutation = useMutation(async (data) => {
     request(
         GRAPHQL_URL, 
         saveGameQuery,
@@ -66,6 +66,30 @@ const CasinoTable = (): JSX.Element => {
       )
     }
   )
+
+
+  const loadGameQuery = gql`
+  mutation saveGame(
+    $userId: String!
+  )
+  {
+    saveGame(userId: $userId){
+      gameData
+    }
+  }
+`;
+const loagGameMutation = useMutation(async (data) => {
+  request(
+      GRAPHQL_URL, 
+      loadGameQuery,
+      // @ts-ignore
+      { userId: data.userId }, 
+      // @ts-ignore
+      data.headers,
+    )
+  }
+)
+
 
   // TODO: Fix the use of "any" type below
   const state: any = useGameContext();
@@ -101,7 +125,7 @@ const CasinoTable = (): JSX.Element => {
     if (gameExists) {
       // if game exist, show login form or need connection
       
-      console.log("found local game");
+
       if (loggedIn) {
         state.updateGameState(
           { newDispatches: 
@@ -144,7 +168,7 @@ const CasinoTable = (): JSX.Element => {
     }
     else {
       // if game doesn't exist, show join form
-      console.log("no local game stored");
+
       state.updateGameState(
         { newDispatches: 
           [ 
@@ -189,19 +213,19 @@ const CasinoTable = (): JSX.Element => {
       // P1 C1
       { suit: "H", pip: "A", count: -1, points: 11 },
       // P2 C1
-      { suit: "H", pip: "5", count: -1, points: 5 },
+      { suit: "H", pip: "5", count: 1, points: 5 },
       // P3 C1
       { suit: "H", pip: "A", count: -1,  points: 11 },
       // P4 C1
-      { suit: "H", pip: "4", count: -1, points: 4 },
+      { suit: "H", pip: "4", count: 1, points: 4 },
       // P5 C1
-      { suit: "H", pip: "5", count: -1, points: 5 },
+      { suit: "H", pip: "5", count: 1, points: 5 },
       // D C1
-      { suit: "H",  pip: "A", count: -1, points: 11 },
+      { suit: "H",  pip: "7", count: 0, points: 7 },
       // P1 C2
       { suit: "H", pip: "K", count: -1, points: 10 },
       // P2 C2
-      { suit: "H",  pip: "8", count: -1, points: 8 },
+      { suit: "H",  pip: "8", count: 0, points: 8 },
       // P3 C2
       { suit: "H", pip: "A", count: -1, points: 11 },
       // P4 C2
@@ -228,14 +252,14 @@ const CasinoTable = (): JSX.Element => {
     var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
     var cognitoUser = userPool.getCurrentUser();
     if (cognitoUser != null) {
-      console.log("found local cognito user");
+
       //@ts-ignore
       cognitoUser.getSession(function(err, session) {
         if (err) {
           alert(err.message || JSON.stringify(err));
           return;
         }
-        console.log('session validity: ' + session.isValid());
+
         // try session.accessToken.jwtToken
         state.updateGameState(
           { newDispatches: 
@@ -251,14 +275,14 @@ const CasinoTable = (): JSX.Element => {
     else {
       // can't authenticate user, show login or join depending on gameExists in local and online status
       
-      console.log("unable to find local cognito user");
+
       if (navigator.onLine) { 
-        console.log("user is online");     
+    
         checkGames(false);
       } 
       else {
         // user is offline
-        console.log("user is offline"); 
+
         state.updateGameState(
           { newDispatches: 
             [ 
@@ -297,7 +321,7 @@ const CasinoTable = (): JSX.Element => {
     // this function resets everything ready for the next hand
     const resetHand = () => {
       if ( (numDecks*52-dealerCutCard) <= cardsDealt) {
-        console.log("resetHand reShuffle");
+
         shuffleShoe(shoeCards);
         state.updateGameState( { newDispatches: [ { which: SET_TABLE_MESSAGE, data: "SHUFFLING..." } ] } );
         setTimeout(()=>{state.updateGameState( { newDispatches: [ { which: SET_TABLE_MESSAGE, data: "" } ] } )},3000);
@@ -312,8 +336,8 @@ const CasinoTable = (): JSX.Element => {
       setTimeout(() => {    
         // reset all the players hand details
         for (let i = 0; i <= 5; i++) {
-          players[i].handCount = 0; 
-          players[i].hand = []; 
+          players[i].handCount = [0]; 
+          players[i].hand = [[]]; 
           players[i].busted = false;
           players[i].playerHandResult = "";
         }
@@ -329,16 +353,16 @@ const CasinoTable = (): JSX.Element => {
           { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true } },
           { which: RESET_DEAL_COUNTER  }
         ] } );
-        console.log("sessionData", sessionData);
+
         const gameData = JSON.stringify({chipsTotal, scoreTotal, playerPosition, userStreak, gameLevel, gameRules})
         const headers = {
           // @ts-ignore
           Authorization: sessionData.accessToken.jwtToken 
         }
         // @ts-ignore
-        console.log(sessionData.idToken.payload.sub);
+
         // @ts-ignore
-        mutation.mutate({headers, userId: sessionData.idToken.payload.sub, gameData });
+        saveGameMutation.mutate({headers, userId: sessionData.idToken.payload.sub, gameData });
   
       },3000);
     }

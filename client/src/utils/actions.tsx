@@ -33,6 +33,7 @@ export const SHOW_PLAYER_TURN_ICON = "showPlayerTurnIcon";
 export const SET_USER_HAD_TURN = "setUserHadTurn";
 export const UPDATE_PLAYER_HAND_CARDS = "updatePlayerHandCards";
 export const UPDATE_PLAYER_HAND_COUNT = "updatePlayerHandCount";
+export const UPDATE_PLAYER_HAND_NUMBER = "updatePlayerHandNumber";
 export const UPDATE_PLAYER_HAND_RESULT = "updatePlayerHandResult";
 export const RESET_PLAYER_HAND = "resetPlayerHand";
 export const USER_DOUBLED = "userDoubled";
@@ -52,7 +53,7 @@ export const RESET_AUTO_BET = "resetAutoBet";
 export const UPDATE_AUTO_BET = "updateAutoBet";
 export const SET_AUTO_BET_AMOUNT = "setAutoBetAmount";
 export const SET_SESSION_DATA = "setSessionData";
-
+export const SPLIT_CARDS = "splitCards";
 
 // shoe/deal/hand stuff
 export const UPDATE_DEAL_HAND = "updateDealHand";

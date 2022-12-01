@@ -2,7 +2,7 @@ Resources:
   BlackjackBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: ${self:custom.bucketName}
+      BucketName: ${self:custom.bucketName}-${opt:stage}
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
@@ -20,4 +20,4 @@ Resources:
             Principal: '*'
             Action:
               - s3:GetObject
-            Resource: arn:aws:s3:::${self:custom.bucketName}/*
+            Resource: arn:aws:s3:::${self:custom.bucketName}-${opt:stage}/*

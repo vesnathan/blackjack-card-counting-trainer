@@ -31,7 +31,6 @@ function reducer(state: any, action: any) {
         return { ...state, appStatus: tempStatus }
 
       case "updateChips" :
-        console.log(tempStatus.chipsTotal + " " + action.payload);
         tempStatus.chipsTotal = tempStatus.chipsTotal + action.payload;
         return { ...state, appStatus: tempStatus }
 
@@ -211,9 +210,9 @@ function reducer(state: any, action: any) {
         tempStatus.popupCharacter = action.payload;
         return { ...state, appStatus: tempStatus }
       
-        case "showWhatCountForm":
-          tempStatus.showWhatCountForm = action.payload;
-          return { ...state, appStatus: tempStatus }
+      case "showWhatCountForm":
+        tempStatus.showWhatCountForm = action.payload;
+        return { ...state, appStatus: tempStatus }
 
       case "showCount":
         tempStatus.showCount = action.payload;
@@ -223,11 +222,13 @@ function reducer(state: any, action: any) {
         tempStatus.spaceyFormMessage = action.payload;
         return { ...state, appStatus: tempStatus }
 
-        case "setSessionData":
-          console.log("setSessionData", action.payload);
-          tempStatus.sessionData = action.payload;
-          return { ...state, appStatus: tempStatus }
+      case "setSessionData":
+        tempStatus.sessionData = action.payload;
+        return { ...state, appStatus: tempStatus }
 
+      case "updatePlayerHandNumber":
+        tempStatus.playerHandNumber = action.payload;
+        return { ...state, appStatus: tempStatus }
         
 
 
@@ -236,7 +237,7 @@ function reducer(state: any, action: any) {
           return { ...state, players: tempPlayers }
 
       case "resetPlayerHand" :
-        tempPlayers[action.payload].hand = [];
+        tempPlayers[action.payload.playersTurn].hand[action.payload.playerHandNumber] = [];
           return { ...state, players: tempPlayers }
 
       case "userType" :
@@ -244,14 +245,27 @@ function reducer(state: any, action: any) {
           return { ...state, players: tempPlayers }
 
       case "updatePlayerHandCards" :
-        tempPlayers[action.payload.player].hand.push(action.payload.card);
-        // tempPlayers[action.payload.player].handCount += parseInt(action.payload.card.points)
+        if (action.payload.playerHandNumber > tempPlayers[action.payload.playerNumber].hand.length - 1) { 
+          tempPlayers[action.payload.playerNumber].hand.push([]);
+        }
+        tempPlayers[action.payload.playerNumber].hand[action.payload.playerHandNumber].push(action.payload.card);
         return { ...state, players: tempPlayers }
 
-      case "updatePlayerHandCount" :
-      tempPlayers[action.payload.player].handCount += parseInt(action.payload.card.points);
-      return { ...state, players: tempPlayers }
-        
+      case "splitCards":
+        // get the second card and remove from hand 1 and update hand 1 count
+        const secondCard = tempPlayers[action.payload.playerNumber].hand[action.payload.playerHandNumber].pop();
+        tempPlayers[action.payload.playerNumber].hand.push([secondCard]);
+        tempPlayers[action.payload.playerNumber].handCount[action.payload.playerHandNumber] = parseInt(secondCard.points);
+        tempPlayers[action.payload.playerNumber].handCount[action.payload.playerHandNumber+1] = parseInt(secondCard.points);
+        return { ...state, players: tempPlayers }
+
+      case "updatePlayerHandCount" :        
+        if (action.payload.playerHandNumber > tempPlayers[action.payload.playerNumber].hand.length - 1) { 
+          tempPlayers[action.payload.playerNumber].handCount.push(0);
+        }
+        tempPlayers[action.payload.playerNumber].handCount[action.payload.playerHandNumber] = parseInt(tempPlayers[action.payload.playerNumber].handCount[action.payload.playerHandNumber]) + parseInt(action.payload.card.points);
+        return { ...state, players: tempPlayers }
+
       case "updatePlayers" :
         tempPlayers = action.payload;
           return { ...state, players: tempPlayers }
@@ -261,8 +275,8 @@ function reducer(state: any, action: any) {
         return { ...state, players: tempPlayers }
 
       case "overwritePlayersHand" :
-        tempPlayers[action.payload.whichPlayer].hand = action.payload.data.hand;
-        tempPlayers[action.payload.whichPlayer].handCount = action.payload.data.handCount;
+        tempPlayers[action.payload.whichPlayer].hand[action.payload.data.playerHandNumber] = action.payload.data.hand;
+        tempPlayers[action.payload.whichPlayer].handCount[action.payload.data.playerHandNumber] = action.payload.data.handCount;
         return { ...state, players: tempPlayers }
 
 

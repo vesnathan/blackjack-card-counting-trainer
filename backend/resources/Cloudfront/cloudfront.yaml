@@ -4,7 +4,7 @@ Resources:
     Properties:
       DistributionConfig:
         Origins:
-          - DomainName: ${self:custom.bucketName}.s3.amazonaws.com
+          - DomainName: ${self:custom.bucketName}-${opt:stage}.s3.amazonaws.com
             Id: Blackjack
             CustomOriginConfig:
               HTTPPort: 80

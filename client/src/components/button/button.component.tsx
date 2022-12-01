@@ -1,7 +1,7 @@
 import './button.component.css';
 
 import { useGameContext } from "../../utils/GameStateContext";
-import { STRATEGY_HARD, STRATEGY_SOFT } from "../../consts/strategyCard";
+import { STRATEGY_HARD, STRATEGY_PAIRS, STRATEGY_SOFT } from "../../consts/strategyCard";
 import { STRIPE_MESSAGE } from "../../consts/stripeMessage";
 import { 
   SHOW_BET_BUTTONS,
@@ -20,7 +20,10 @@ import {
   POPUP_MESSAGE,
   SHOW_STRIPE_FORM,
   UPDATE_AUTO_BET,
-  SET_AUTO_BET_AMOUNT
+  SET_AUTO_BET_AMOUNT,
+  UPDATE_PLAYER_HAND_CARDS,
+  UPDATE_CARDS_DEALT,
+  SPLIT_CARDS
 } from "../../utils/actions";
 
 
@@ -39,7 +42,7 @@ type ButtonProps = {
 const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonProps): JSX.Element =>  {
   
   const state: any = useGameContext();
-  let { betAmount, chipsTotal, playerPosition, userStreak, scoreTotal, autoBet, playersTurn } = state.state.appStatus;
+  let { betAmount, chipsTotal, playerPosition, userStreak, scoreTotal, autoBet, playersTurn, playerHandNumber, shoeCards, cardsDealt } = state.state.appStatus;
   const { players } = state.state;
 
   const clickHandler = (e: React.MouseEvent<HTMLButtonElement>, buttonType: string ) => {
@@ -105,22 +108,32 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
       )
       {
         // calc strategy
-        const dealerUpCard = players[0].hand[1]?.points;
+        const dealerUpCard = players[0].hand[0][1]?.points;
         const playerHand = players[playerPosition];
 
-        const acesInHandWorthEleven: Array<any> = players[playersTurn].hand.filter((card:any) => card.points === 11);
         let playerHandRow: Array<string> = [];
         let logStratCardCalc: string = "";
-        // soft hand, the -4 adjusts for the fact that the array starts at 4
-        if (acesInHandWorthEleven.length > 0) {
-          playerHandRow = STRATEGY_SOFT[playerHand.handCount-14];
-          logStratCardCalc += " SOFT STRATEGY CARD";
+
+        const acesInHandWorthEleven: Array<any> = playerHand.hand[playerHandNumber].filter((card:any) => card.points === 11);
+
+        // First, check pairs
+        if (playerHand.hand[playerHandNumber][0].pip === playerHand.hand[playerHandNumber][1].pip && playerHand.hand[playerHandNumber].length === 2) {
+          playerHandRow = STRATEGY_PAIRS[playerHand.hand[playerHandNumber][1].points-2];
+          logStratCardCalc += " PAIRS STRATEGY CARD";
         }
         else {
-          playerHandRow = STRATEGY_HARD[playerHand.handCount-4];
-          logStratCardCalc += " HARD STRATEGY CARD";
-        }
 
+          // if the player has an ace worth 11 use the soft strat card
+          // soft hand, the -14 adjusts for the fact that the array starts at 4 and give the ace a value of 1
+          if (acesInHandWorthEleven.length > 0) {
+            playerHandRow = STRATEGY_SOFT[playerHand.handCount[playerHandNumber]-14];
+            logStratCardCalc += " SOFT STRATEGY CARD";
+          }
+          else {
+            playerHandRow = STRATEGY_HARD[playerHand.handCount[playerHandNumber]-4];
+            logStratCardCalc += " HARD STRATEGY CARD";
+          }
+        }
         const dealerCol = dealerUpCard-2;
 
         logStratCardCalc += " COLUMN: "+dealerCol;
@@ -129,7 +142,7 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
 
         logStratCardCalc += " CORRECT: "+strategy;
 
-        console.log(logStratCardCalc);
+
 
 
 
@@ -142,11 +155,9 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
           case "HIT":
             if (strategy === "H") {
               newScore = 10*userStreak;
-              console.log("CORRECT STRATEGY PLAYED");
             }
             else {
               newScore = -5*userStreak;
-              console.log("INCORRECT STRATEGY PLAYED");
             }
             state.updateGameState( { newDispatches: [ 
               { which: SET_HIT_CARD, data: true },  
@@ -160,11 +171,9 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
           case "STAND":
             if (strategy === "S") {
               newScore = 10*userStreak;
-              console.log("CORRECT STRATEGY PLAYED");
             }
             else {
               newScore = -5*userStreak;
-              console.log("INCORRECT STRATEGY PLAYED");
             }
 
 
@@ -182,31 +191,30 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
           case "SPLIT":
             if (strategy === "SP") {
               newScore = 10*userStreak;
-              console.log("CORRECT STRATEGY PLAYED");
             }
             else {
               newScore = -5*userStreak;
-              console.log("INCORRECT STRATEGY PLAYED");
             }
 
-            /*
-            setPlayersTurn(appStatus.playerPosition+1);
-            setAppStatus((prevState: Object) => ({ ...prevState, 
-              playButtonsShow: false, 
-              scoreTotal: appStatus.scoreTotal+newScore, 
-              userScoreMessage: newScore, 
-              userStreak: (newScore < 0)?1:appStatus.userStreak+=1  }));
-            setAwaitingUserInput(false);
-            */
+            state.updateGameState( 
+              { newDispatches: [ 
+                { which: SHOW_PLAY_BUTTONS, data: false },
+                { which: SPLIT_CARDS, data: { playerNumber: playersTurn, playerHandNumber: playerHandNumber} },
+                { which: UPDATE_SCORE, data: scoreTotal+newScore },
+                { which: SET_USER_SCORE_MESSAGE, data: newScore }, 
+                { which: UPDATE_STREAK, data: (newScore < 0)?1:userStreak+=1 },
+                { which: UPDATE_PLAYER_HAND_CARDS,  data: { playerNumber: playersTurn, playerHandNumber: playerHandNumber, card: shoeCards[cardsDealt] } },
+                { which: UPDATE_PLAYER_HAND_CARDS,  data: { playerNumber: playersTurn, playerHandNumber: playerHandNumber+1, card: shoeCards[cardsDealt+1] } },
+                { which: SET_PLAYERS_TURN, data: (playersTurn === 5) ? 0 : playersTurn+1 },
+                { which: UPDATE_PLAY_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: true }},
+              ]});
           break;
           case "DOUBLE":
             if (strategy === "D") {
               newScore = 10*userStreak;
-              console.log("CORRECT STRATEGY PLAYED");
             }
             else {
               newScore = -5*userStreak;
-              console.log("INCORRECT STRATEGY PLAYED");
             }
             let tempBetAmount = betAmount;
             tempBetAmount = [(betAmount[0] * 2), (betAmount[1] * 2), (betAmount[2] * 2)];
@@ -242,7 +250,6 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
   
           break;
         }
-        console.log("STRATEGY PLAYED: "+ whichButton);
         setTimeout(()=>{
           state.updateGameState( { newDispatches: [ 
             { which: SET_USER_SCORE_MESSAGE, data: 0 }, 

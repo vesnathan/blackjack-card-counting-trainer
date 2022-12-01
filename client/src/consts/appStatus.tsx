@@ -51,6 +51,7 @@ export const APP_STATUS = () => {
     loggedIn: false,
     dealCounter: 0,
     playersTurn: 0,
+    playerHandNumber: 0,
     hitCard: false,
     showStripeForm: false,
     onlineStatus: true,

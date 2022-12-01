@@ -38,7 +38,8 @@ const LoginForm = (): React.ReactElement  => {
     joinButtonText, 
     loginButtonText,
     showLoginFormButtonSpinner,
-    loginFormMessage
+    loginFormMessage,
+    sessionData
   } = state.state.appStatus;
   
   const [inputs, setInputs] = useState({
@@ -103,10 +104,17 @@ const LoginForm = (): React.ReactElement  => {
         onSuccess: function(result) {
           cognitoUser.getSession(function(err: { message: any; }, session: any) {
             if (err) {
-              alert(err.message || JSON.stringify(err));
+              setEmailError(err.message || JSON.stringify(err));
+              // alert(err.message || JSON.stringify(err));
               return;
             }
-
+            const headers = {
+              // @ts-ignore
+              Authorization: sessionData.accessToken.jwtToken 
+            }
+            // @ts-ignore
+            // @ts-ignore
+            const loadedGame = loadGameMutation.mutate({headers, userId: sessionData.idToken.payload.sub });
             state.updateGameState(
               { newDispatches: 
                 [ 

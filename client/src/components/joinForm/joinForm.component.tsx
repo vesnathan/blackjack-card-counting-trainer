@@ -191,7 +191,7 @@ const JoinForm = (): React.ReactElement  => {
 
 
 
-            console.log("result", result);
+
             // var accessToken = result.getAccessToken().getJwtToken();
             state.updateGameState(
               { newDispatches: 

@@ -4,19 +4,19 @@ Resources:
     Properties:
       UsernameAttributes:
         - email
-      UserPoolName: "blackjackUserPool"
+      UserPoolName: "blackjackUserPool-${opt:stage}"
 
   cognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
-      ClientName: Web
+      ClientName: Web-${opt:stage}
       UserPoolId: !Ref cognitoUserPool
 
   cognitoAdminGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
       Description: "Admin User Group"
-      GroupName: "Admin"
+      GroupName: "Admin-${opt:stage}"
       Precedence: 0
       RoleArn: !GetAtt cognitoAdminIAMRole.Arn
       UserPoolId: !Ref cognitoUserPool
@@ -35,7 +35,7 @@ Resources:
               - "sts:AssumeRoleWithWebIdentity"
       Description: "Admin Role"
       Policies:
-        - PolicyName: "blackjack-admin-group-policy"
+        - PolicyName: "blackjack-admin-group-policy-${opt:stage}"
           PolicyDocument: 
             Version: "2012-10-17"
             Statement:
@@ -44,13 +44,13 @@ Resources:
                   - "dynamodb:*"
                 Resource: 
                   - !GetAtt gamesTable.Arn
-      RoleName: "blackjack-admin-role"
+      RoleName: "blackjack-admin-role-${opt:stage}"
 
   cognitoCustomerGroup:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
       Description: "Customer User Group"
-      GroupName: "Customer"
+      GroupName: "Customer-${opt:stage}"
       Precedence: 1
       RoleArn: !GetAtt cognitoUserIAMRole.Arn
       UserPoolId: !Ref cognitoUserPool
@@ -58,7 +58,7 @@ Resources:
   cognitoUserIAMRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: "blackjack-customer-role"
+      RoleName: "blackjack-customer-role-${opt:stage}"
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement:
@@ -70,7 +70,7 @@ Resources:
               - "sts:AssumeRoleWithWebIdentity"
       Description: "User Role"
       Policies:
-        - PolicyName: "blackjack-customer-group-policy"
+        - PolicyName: "blackjack-customer-group-policy-${opt:stage}"
           PolicyDocument: 
             Version: "2012-10-17"
             Statement:

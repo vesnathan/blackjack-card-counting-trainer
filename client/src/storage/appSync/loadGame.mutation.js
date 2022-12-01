@@ -1,26 +1,22 @@
-import { GRAPHQL_URL } from "../../config/aws.config";
-import { useQuery } from "react-query";
-import { GraphQLClient, gql } from "graphql-request";
+import { useMutation } from "react-query";
+import {  GRAPHQL_URL } from "../../config/aws.config";
 
 
-const graphQLClient = new GraphQLClient(GRAPHQL_URL, {
-  headers: {
-    Authorization: `Bearer ${process.env.API_KEY}`
-  }
-});
-
-export function useLoadGame() {
-  return useQuery("get-posts", async () => {
-    const { loadGame } = await graphQLClient.request(gql`
-      mutation {
-        loadGame {
-          items {
-            userName
-            gameData
-          }
-        }
-      }
-    `);
-    return loadGame;
-  });
+const useLoadGame = () => {
+  useMutation(
+    (post) => {
+      fetch(GRAPHQL_URL, {
+        body: JSON.stringify(post),
+        method: "POST",
+      })
+    },
+    {
+      onSuccess: () => { },
+    },
+    {
+      onError: (err) => { console.log(err)},
+    },
+  );
 }
+
+export default useLoadGame;
