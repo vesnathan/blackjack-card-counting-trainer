@@ -285,7 +285,7 @@ const Deal = ({ resetHand }: DealProps): JSX.Element => {
               state.updateGameState({ newDispatches: [{ which: UPDATE_PLAY_BUTTONS, data: { whichButton: 3, whichProperty: "buttonDisabled", data: false }}]});
             }
            
-            if (playerHasBJ /*&& playersTurn === playerPosition*/) {
+            if (playerHasBJ ) {
               state.updateGameState({ newDispatches: [{ which: SHOW_PLAY_BUTTONS, data: false }]});
             }
             else {
