@@ -45,7 +45,7 @@
   "homepage": "https://github.com/vesnathan/blackjack-card-counting-trainer#readme",
   "dependencies": {
     "graphql": "^16.6.0",
-    "serverless": "^3.24.1",
+    "serverless": "^3.25.1",
     "serverless-cloudfront-invalidate": "^1.12.2"
   }
 }

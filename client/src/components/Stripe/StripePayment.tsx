@@ -5,6 +5,9 @@ import { GET_PAYMENT_INTENT_URL } from "../../config/aws.config";
 import CheckoutForm from "./CheckoutForm";
 import "./Stripe.css";
 
+import { useGameContext } from "../../utils/GameStateContext";
+
+
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
 // This is a public sample test API key.
@@ -14,12 +17,15 @@ const stripePromise = loadStripe("pk_test_51LvezMATqsXJH023Ck7YKY2IOuoIHoRGJxJm0
 
 export default function StripePayment() {
   const [clientSecret, setClientSecret] = useState("");
-
+  const state: any = useGameContext();
+  const { sessionData } = state.state.appStatus;
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
     fetch(GET_PAYMENT_INTENT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": sessionData.accessToken.jwtToken,
+        },
       body: JSON.stringify({ items: [{ id: "1000-chips" }] }),
     })
       .then((res) => res.json())

@@ -8,6 +8,7 @@ import * as AWS from 'aws-sdk/global';
 
 import './loginForm.component.css';
 
+import loadGameMutation from '../../storage/appSync/loadGame.mutation';
 // Material UI Components
 import Grid from '@mui/material/Grid';
 import FormGroup from '@mui/material/FormGroup';
@@ -102,19 +103,21 @@ const LoginForm = (): React.ReactElement  => {
 
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function(result) {
+          console.log("cognitoUser.authenticateUser: success");
           cognitoUser.getSession(function(err: { message: any; }, session: any) {
             if (err) {
               setEmailError(err.message || JSON.stringify(err));
+              console.log("cognitoUser.getSession: error: ", err.message || JSON.stringify(err));
               // alert(err.message || JSON.stringify(err));
               return;
             }
             const headers = {
               // @ts-ignore
-              Authorization: sessionData.accessToken.jwtToken 
+              "Authorization": sessionData.accessToken.jwtToken,
             }
             // @ts-ignore
             // @ts-ignore
-            const loadedGame = loadGameMutation.mutate({headers, userId: sessionData.idToken.payload.sub });
+            // const loadedGame = loadGameMutation.mutate({headers, userId: sessionData.idToken.payload.sub });
             state.updateGameState(
               { newDispatches: 
                 [ 
@@ -123,6 +126,7 @@ const LoginForm = (): React.ReactElement  => {
               }
             );
           });
+          console.log("cognitoUser.getSession: success");
           state.updateGameState(
             { newDispatches: 
               [ 
@@ -136,6 +140,7 @@ const LoginForm = (): React.ReactElement  => {
         },
       
         onFailure: function(err) {
+          console.log("cognitoUser.authenticateUser: failure", err.message || JSON.stringify(err));
           setEmailError(emailError);
         },
       });
