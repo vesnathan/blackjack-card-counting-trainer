@@ -111,6 +111,7 @@ const LoginForm = (): React.ReactElement  => {
               // alert(err.message || JSON.stringify(err));
               return;
             }
+            /*
             const headers = {
               // @ts-ignore
               "Authorization": sessionData.accessToken.jwtToken,
@@ -118,6 +119,7 @@ const LoginForm = (): React.ReactElement  => {
             // @ts-ignore
             // @ts-ignore
             // const loadedGame = loadGameMutation.mutate({headers, userId: sessionData.idToken.payload.sub });
+            */
             state.updateGameState(
               { newDispatches: 
                 [ 
@@ -141,7 +143,7 @@ const LoginForm = (): React.ReactElement  => {
       
         onFailure: function(err) {
           console.log("cognitoUser.authenticateUser: failure", err.message || JSON.stringify(err));
-          setEmailError(emailError);
+          setEmailError(err.message || JSON.stringify(err));
         },
       });
     }

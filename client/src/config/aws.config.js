@@ -1,4 +1,5 @@
 // dev
+
 export const AWS_USER_POOL_ID = "ap-southeast-2_oyw5l8g5v"
 export const AWS_CLIENT_ID = "7hgeevfouhu3i5kj525irnij9d"
 export const AWS_REGION = "ap-southeast-2"

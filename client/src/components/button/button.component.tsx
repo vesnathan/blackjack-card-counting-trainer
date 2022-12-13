@@ -138,7 +138,11 @@ const Button = ({ buttonString, bgColor, buttonDisabled, buttonType }: ButtonPro
 
         logStratCardCalc += " COLUMN: "+dealerCol;
 
-        const strategy = playerHandRow[dealerCol];
+        let strategy = playerHandRow[dealerCol];
+
+        if (strategy === "D" && playerHand.hand[playerHandNumber].length > 2) {
+          strategy = "H";
+        }
 
         logStratCardCalc += " CORRECT: "+strategy;
 

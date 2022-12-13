@@ -215,7 +215,7 @@ const loagGameMutation = useMutation(async (data) => {
       // P2 C1
       { suit: "H", pip: "5", count: 1, points: 5 },
       // P3 C1
-      { suit: "H", pip: "A", count: -1,  points: 11 },
+      { suit: "H", pip: "8", count: 0,  points: 8 },
       // P4 C1
       { suit: "H", pip: "4", count: 1, points: 4 },
       // P5 C1
@@ -227,7 +227,7 @@ const loagGameMutation = useMutation(async (data) => {
       // P2 C2
       { suit: "H",  pip: "8", count: 0, points: 8 },
       // P3 C2
-      { suit: "H", pip: "A", count: -1, points: 11 },
+      { suit: "H", pip: "8", count: 0, points: 8 },
       // P4 C2
       { suit: "H", pip: "K", count: -1, points: 10 },
       // P5 C2
