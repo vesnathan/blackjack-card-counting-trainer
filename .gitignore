@@ -5,3 +5,4 @@ node_modules
 .git
 .DS_Store
 keys.js
+"POLICY STATEMENT FOR S3 BUCKET.txt"

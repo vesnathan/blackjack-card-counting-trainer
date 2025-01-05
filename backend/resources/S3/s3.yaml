@@ -3,10 +3,11 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: ${self:custom.bucketName}-${opt:stage}
-      AccessControl: PublicRead
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        ErrorDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
 
   S3AccessPolicy:
     Type: AWS::S3::BucketPolicy
@@ -14,10 +15,27 @@ Resources:
       Bucket:
         Ref: BlackjackBucket
       PolicyDocument:
+        Version: "2012-10-17"
         Statement:
-          - Sid: PublicReadGetObject
-            Effect: Allow
-            Principal: '*'
+          - Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt:
+                  - CloudFrontOriginAccessIdentity
+                  - S3CanonicalUserId
             Action:
               - s3:GetObject
-            Resource: arn:aws:s3:::${self:custom.bucketName}-${opt:stage}/*
+            Resource:
+              - arn:aws:s3:::${self:custom.bucketName}-${opt:stage}/*
+
+Outputs:
+  BlackjackBucketName:
+    Description: The name of the S3 bucket
+    Value: !Ref BlackjackBucket
+    Export:
+      Name: BlackjackBucketName
+  BlackjackBucketArn:
+    Description: The ARN of the S3 bucket
+    Value: !GetAtt BlackjackBucket.Arn
+    Export:
+      Name: BlackjackBucketArn

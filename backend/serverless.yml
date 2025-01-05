@@ -67,6 +67,7 @@ resources:
   -  ${file(./resources/Cognito/cognito.yaml)}
   -  ${file(./resources/S3/s3.yaml)}
   -  ${file(./resources/Cloudfront/cloudfront.yaml)}
+  -  ${file(./resources/CloudWatch/CloudWatch.yaml)}
 	
 functions:
   preSignUp:

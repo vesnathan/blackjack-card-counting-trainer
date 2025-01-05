@@ -33,6 +33,11 @@ Resources:
                 - "cognito-identity.amazonaws.com"
             Action:
               - "sts:AssumeRoleWithWebIdentity"
+            Condition: {
+              StringEquals: {
+                "cognito-identity.amazonaws.com:aud": !Ref cognitoUserPool
+              },
+            }
       Description: "Admin Role"
       Policies:
         - PolicyName: "blackjack-admin-group-policy-${opt:stage}"
@@ -68,6 +73,11 @@ Resources:
                 - "cognito-identity.amazonaws.com"
             Action:
               - "sts:AssumeRoleWithWebIdentity"
+            Condition: {
+              StringEquals: {
+                "cognito-identity.amazonaws.com:aud": !Ref cognitoUserPool
+              },
+            }
       Description: "User Role"
       Policies:
         - PolicyName: "blackjack-customer-group-policy-${opt:stage}"

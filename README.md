@@ -59,7 +59,13 @@ Practice your card counting and basic strategy skills with this training app.
     STRIPE_SK_TEST="XXX"
 
     Run the following command in the root directory:
-        npm i
+        "yarn"
+
+     Run the following command in the client directory:
+        "yarn"
+
+    Run the following command in the backend directory:
+        "yarn"
 
     Install and start MongoDB Community Server
 
@@ -67,8 +73,8 @@ Practice your card counting and basic strategy skills with this training app.
 
 ## USAGE
 
-    Run the following command:
-        "npm build:dev"
+    Run the following command from the root:
+        "yarn deploy:dev"
 
     Go to localhost:3002 to view running app
 

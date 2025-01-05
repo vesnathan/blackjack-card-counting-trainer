@@ -1,0 +1,13 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity EQHXKJGGH6R5P"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::blackjack-o5z9dq1v9p-dev/*"
+        }
+    ]
+}
