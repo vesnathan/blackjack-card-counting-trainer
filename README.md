@@ -44,16 +44,10 @@ Practice your card counting and basic strategy skills with this training app.
         git clone https://github.com/vesnathan/blackjack-card-counting-trainer
         cd blackjack-card-counting-trainer
 
-    Run the following command in the root directory:
-        "yarn"
-
-     Run the following command in the client directory:
-        "yarn"
-
-    Run the following command in the backend directory:
-        "yarn"
-
-    Install and start MongoDB Community Server
+    Run  "yarn" in the following directories:
+       root
+       client
+       backend
 
 <a id="USAGE"></a>
 
