@@ -63,7 +63,7 @@ Practice your card counting and basic strategy skills with this training app.
 React  
 TypeScript  
 Sass - SCSS  
-Apollo/GraphQL 
+Apollo/GraphQL  
 MaterialUI  
 Styled Components  
 ESLint - Air BnB  
