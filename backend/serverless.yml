@@ -13,7 +13,6 @@ provider:
 
 plugins:
   - serverless-s3-sync
-  - serverless-offline
   - serverless-appsync-plugin
   - serverless-webpack
   - serverless-cloudfront-invalidate
@@ -86,5 +85,62 @@ functions:
           cors: true
     environment:
       STRIPE_SECRET_KEY:  ${param:STRIPE_SK}
+
+Outputs:
+  stripePaymentIntent:
+    Value: !GetAtt stripePaymentIntent.Arn
+    Export:
+      Name: stripePaymentIntentArn
+
+  cognitoUserPoolId:
+    Value: !Ref cognitoUserPool
+    Export:
+      Name: cognitoUserPoolId
+
+  cognitoUserPoolClientId:
+    Value: !Ref cognitoUserPoolClient
+    Export:
+      Name: cognitoUserPoolClientId
+
+  cognitoAdminGroup:
+    Value: !Ref cognitoAdminGroup
+    Export:
+      Name: cognitoAdminGroup
+
+  cognitoAdminIAMRole:
+    Value: !GetAtt cognitoAdminIAMRole.Arn
+    Export:
+      Name: cognitoAdminIAMRole
+
+  cognitoCustomerGroup:
+    Value: !Ref cognitoCustomerGroup
+    Export:
+      Name: cognitoCustomerGroup
+
+  cognitoUserIAMRole:
+    Value: !GetAtt cognitoUserIAMRole.Arn
+    Export:
+      Name: cognitoUserIAMRole
+
+  gamesTable:
+    Value: !Ref gamesTable
+    Export:
+      Name: gamesTable
+
+  gamesTableArn:
+    Value: !GetAtt gamesTable.Arn
+    Export:
+      Name: gamesTableArn
+
+  gamesTableStreamArn:
+    Value: !GetAtt gamesTable.StreamArn
+    Export:
+      Name: gamesTableStreamArn
+
+  gamesTableStreamName:
+    Value: !GetAtt gamesTable.StreamArn
+    Export:
+      Name: gamesTableStreamName
+
         
 

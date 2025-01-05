@@ -91,6 +91,32 @@ Resources:
                 Resource:
                   - !GetAtt gamesTable.Arn
 
+Outputs:
+  UserPoolId:
+    Value: !Ref cognitoUserPool
+    Export:
+      Name: "UserPoolId"
+  UserPoolClientId:
+    Value: !Ref cognitoUserPoolClient
+    Export:
+      Name: "UserPoolClientId"
+  AdminGroupName:
+    Value: !Ref cognitoAdminGroup
+    Export:
+      Name: "AdminGroupName"
+  CustomerGroupName:
+    Value: !Ref cognitoCustomerGroup
+    Export:
+      Name: "CustomerGroupName"
+  AdminRoleArn:
+    Value: !GetAtt cognitoAdminIAMRole.Arn
+    Export:
+      Name: "AdminRoleArn"
+  UserRoleArn:
+    Value: !GetAtt cognitoUserIAMRole.Arn
+    Export:
+      Name: "UserRoleArn"
+
                  
 
                   
