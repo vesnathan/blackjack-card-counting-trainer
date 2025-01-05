@@ -44,20 +44,6 @@ Practice your card counting and basic strategy skills with this training app.
         git clone https://github.com/vesnathan/blackjack-card-counting-trainer
         cd blackjack-card-counting-trainer
 
-    Create a file called .env in the project root, and set the following vars.
-    Make sure to swap the Stripe keys for your own.
-
-    NODE_ENV="development"
-    SERVER_PORT=3002
-    DB_NAME="bjcct"
-    DB_PORT=27017
-    DB_HOST="localhost"
-    MONGODB_URI="mongodb://localhost/bjcct"
-    STRIPE_PK="XXX"
-    STRIPE_SK="XXX"
-    STRIPE_PK_TEST="XXX"
-    STRIPE_SK_TEST="XXX"
-
     Run the following command in the root directory:
         "yarn"
 
@@ -74,9 +60,7 @@ Practice your card counting and basic strategy skills with this training app.
 ## USAGE
 
     Run the following command from the root:
-        "yarn deploy:dev"
-
-    Go to localhost:3002 to view running app
+        "yarn dev"
 
 <a id="TECHNOLOGIESUSED"></a>
 
@@ -85,8 +69,7 @@ Practice your card counting and basic strategy skills with this training app.
 React  
 TypeScript  
 Sass - SCSS  
-Apollo/GraphQL  
-MongoDB/Mongoose  
+Apollo/GraphQL 
 MaterialUI  
 Styled Components  
 ESLint - Air BnB  

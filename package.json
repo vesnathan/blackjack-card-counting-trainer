@@ -6,10 +6,9 @@
     "build": "cd client && npm run build",
     "prepare": "husky install",
     "lint": "eslint ./ --fix",
-    "install:all": "concurrently \"cd client && npm i --legacy-peer-deps\" \"cd backend && npm i\" ",
     "deploy:dev": "cd client && npm run build && cd .. && cd backend && sls deploy --stage dev",
     "deploy:prod": "cd client && npm run build && cd .. && cd backend && sls deploy --stage prod",
-    "localdev": "concurrently \"cd client && npm run start\" \"cd backend && sls offline\" "
+    "dev": "cd client && yarn start"
   },
   "keywords": [],
   "author": "",
@@ -34,7 +33,9 @@
     "serverless-s3-sync": "^3.1.0",
     "serverless-webpack": "^5.10.0",
     "webpack": "^5.97.1",
-    "webpack-cli": "^4.10.0"
+    "webpack-cli": "^4.10.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.5.4"
   },
   "repository": {
     "type": "git",

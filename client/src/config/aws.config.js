@@ -1,11 +1,11 @@
 // dev
 
-export const AWS_USER_POOL_ID = "ap-southeast-2_oyw5l8g5v"
-export const AWS_CLIENT_ID = "7hgeevfouhu3i5kj525irnij9d"
+export const AWS_USER_POOL_ID = "ap-southeast-2_AWzFO4zM5"
+export const AWS_CLIENT_ID = "7vip9akjvcns4cl3tcuj2hnf15"
 export const AWS_REGION = "ap-southeast-2"
-export const GRAPHQL_URL = "https://oxd3g4c4rrgtlmg546becsvqya.appsync-api.ap-southeast-2.amazonaws.com/graphql"
-export const GET_PAYMENT_INTENT_URL = "https://xh7l0vo6ec.execute-api.ap-southeast-2.amazonaws.com/dev/getStripePaymentIntent"
-export const AWS_CLOUDFRONT_URL = "https://d17ljm23rspjl3.cloudfront.net" 
+export const GRAPHQL_URL = "https://3tjjqrcytjcu5komoi2igj6lwa.appsync-api.ap-southeast-2.amazonaws.com/graphql"
+export const GET_PAYMENT_INTENT_URL = "https://n70ojc3do3.execute-api.ap-southeast-2.amazonaws.com/dev/getStripePaymentIntent"
+export const AWS_CLOUDFRONT_URL = "https://d3ze7h7tukqiz.cloudfront.net" 
 
 // prod
 /*
