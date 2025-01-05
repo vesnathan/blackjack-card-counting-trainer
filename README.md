@@ -44,7 +44,7 @@ Practice your card counting and basic strategy skills with this training app.
         git clone https://github.com/vesnathan/blackjack-card-counting-trainer
         cd blackjack-card-counting-trainer
 
-    Run  "yarn" in the following directories:
+    Run "yarn" in the following directories:
        root
        client
        backend
