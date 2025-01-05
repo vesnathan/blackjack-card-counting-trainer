@@ -98,4 +98,4 @@ Stripe Elements
 ## LINKS
 
 [GITHUB](https://github.com/vesnathan/blackjack-card-counting-trainer) <br>
-[HEROKU](https://bjcct.herokuapp.com/) <br>
+[Cloudfront](https://d3ze7h7tukqiz.cloudfront.net/) <br>
